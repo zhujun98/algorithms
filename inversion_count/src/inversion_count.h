@@ -52,6 +52,10 @@ inline long splitInversion(const std::vector<int>& b, const std::vector<int>& c)
     if (b[j] > c[k])
     {
       ++k;
+      // If an element j in the left array is bigger than the element k
+      // in the right array, it means that the element j and the rest
+      // elements after it in the left array are all inversions to the
+      // element k in the right array.
       count += l_b - j;
       if (k == l_c) { break; }
     }
