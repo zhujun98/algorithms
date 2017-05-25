@@ -1,4 +1,4 @@
-project(algorithm)
+project(karatsuba)
 
 cmake_minimum_required (VERSION 3.5)
 
@@ -9,4 +9,4 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 set(sources src/main.cpp)
 
-add_executable(algorithm ${sources})
+add_executable(karatsuba ${sources})
