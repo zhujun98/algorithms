@@ -1,6 +1,9 @@
 //
 // Created by jun on 5/18/17.
 // TODO:: generalize the implementation!
+// References:
+// 1. http://www.geeksforgeeks.org/divide-and-conquer-set-2-karatsuba-algorithm-for-fast-multiplication/
+// 2. http://numbers.computation.free.fr/Constants/Algorithms/fft.html
 //
 
 #ifndef ALGORITHM_STRING_ARITHMETIC_H

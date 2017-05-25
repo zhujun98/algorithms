@@ -6,7 +6,7 @@
 #define ALGORITHM_TEST_STRING_ARITHMETIC_H
 
 #include <iostream>
-#include "../utilities/string_arithmetic.h"
+#include "string_arithmetic.h"
 
 
 inline void test_string_arithmetic()
