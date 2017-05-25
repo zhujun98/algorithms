@@ -3,9 +3,12 @@
 // Calculate the number of inversions in a 1D array by using two algorithms:
 // the brute force and the splitting algorithm
 //
+// The correct answer is 2407905288 for "IntegerArray.txt"
+//
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <queue>
 #include <time.h>
 
 #include "inversion_count.h"

@@ -15,7 +15,8 @@
 //
 // @param a: input 1D array
 //
-inline long inversionCountBruteForce(const std::vector<int>& a)
+template<typename T>
+inline long inversionCountBruteForce(const T& a)
 {
   long count = 0;
 
@@ -36,7 +37,8 @@ inline long inversionCountBruteForce(const std::vector<int>& a)
 // @param b: left 1D array
 // @param c: right 1D array
 //
-inline long splitInversion(const std::vector<int>& b, const std::vector<int>& c)
+template <typename T>
+inline long splitInversion(const T& b, const T& c)
 {
   long count = 0;
 
@@ -75,7 +77,8 @@ inline long splitInversion(const std::vector<int>& b, const std::vector<int>& c)
 //
 // @param a: input 1D array
 //
-inline long quickInversion(const std::vector<int>& a)
+template <typename T>
+inline long quickInversion(const T& a)
 {
   long count = 0;
 
@@ -84,8 +87,8 @@ inline long quickInversion(const std::vector<int>& a)
   int split = a.size()/2;
 
   // divide the original vector by left vector and right vector
-  std::vector<int> b (a.begin(), a.begin() + split);
-  std::vector<int> c (a.begin() + split, a.end());
+  T b (a.begin(), a.begin() + split);
+  T c (a.begin() + split, a.end());
 
   // recursively calculate the number of inversions in the left and right vectors
   count += quickInversion(b);
