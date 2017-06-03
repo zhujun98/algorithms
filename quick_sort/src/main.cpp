@@ -42,8 +42,9 @@ int main()
 
   // test my quicksort algorithm
   t0 = clock();
-  quicksort(numbers.begin(), numbers.begin() + test_length);
+  long long total_comparison = quicksort(numbers.begin(), numbers.begin() + test_length);
   std::cout << "Testing my quicksort algorithm" << std::endl;
+  std::cout << "Estimated total comparisons: " << total_comparison << std::endl;
   std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
 
   bool ok = true;
