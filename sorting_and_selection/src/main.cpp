@@ -8,7 +8,7 @@
 
 #include <time.h>
 
-#include "quicksort.h"
+#include "sorting.h"
 
 
 int main()
