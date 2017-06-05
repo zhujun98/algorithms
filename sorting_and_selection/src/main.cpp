@@ -34,7 +34,9 @@ int main()
 
   unsigned long long test_length = numbers.end() - numbers.begin();
 
+  //
   // test the sort algorithm implemented in <algorithm> library
+  //
   std::vector<int> numbers_cp1 = numbers;
   clock_t t0 = clock();
   std::sort(numbers_cp1.begin(), numbers_cp1.begin() + test_length);
@@ -42,23 +44,45 @@ int main()
   std::cout << "Using default sort algorithm:" << std::endl;
   std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
 
-  // test my sorting algorithm
+  //
+  // test my quicksort (median of three)
+  //
   std::vector<int> numbers_cp2 = numbers;
   t0 = clock();
-  long long total_comparison = quicksort(
-      numbers_cp2.begin(), numbers_cp2.begin() + test_length);
+  quicksort(numbers_cp2.begin(), numbers_cp2.begin() + test_length);
   std::cout << "-------------------------" << std::endl;
-  std::cout << "Testing my sorting algorithm" << std::endl;
-  std::cout << "Estimated total comparisons: " << total_comparison << std::endl;
+  std::cout << "Testing my median of three sorting algorithm" << std::endl;
   std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
 
-  bool sorting_ok = true;
+  bool quicksort_ok = true;
   for ( int i=0; i< test_length; ++i) {
 //    std::cout << numbers_cp1[i] << " " << numbers_cp2[i] << std::endl;
-    if ( numbers_cp1[i] != numbers_cp2[i] ) { sorting_ok = false; }
+    if ( numbers_cp1[i] != numbers_cp2[i] ) { quicksort_ok = false; }
   }
 
-  if (sorting_ok) {
+  if (quicksort_ok) {
+    std::cout << "correct implementation of sorting!" << std::endl;
+  } else {
+    std::cout << "incorrect implementation of sorting!" << std::endl;
+  }
+
+  //
+  // test my rSort
+  //
+  std::vector<int> numbers_cp3 = numbers;
+  t0 = clock();
+  rSort(numbers_cp3.begin(), numbers_cp3.begin() + test_length);
+  std::cout << "-------------------------" << std::endl;
+  std::cout << "Testing my random sorting algorithm" << std::endl;
+  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+
+  bool rsort_ok = true;
+  for ( int i=0; i< test_length; ++i) {
+//    std::cout << numbers_cp1[i] << " " << numbers_cp2[i] << std::endl;
+    if ( numbers_cp1[i] != numbers_cp2[i] ) { rsort_ok = false; }
+  }
+
+  if (rsort_ok) {
     std::cout << "correct implementation of sorting!" << std::endl;
   } else {
     std::cout << "incorrect implementation of sorting!" << std::endl;
@@ -66,8 +90,8 @@ int main()
 
   // test my selection algorithm
   t0 = clock();
-  long unsigned n = 709;
-  std::vector<int>::iterator selected = randomSelect(numbers.begin(), numbers.end(), n);
+  long unsigned n = 1203;
+  std::vector<int>::iterator selected = rSelect(numbers.begin(), numbers.end(), n);
   std::cout << "-------------------------" << std::endl;
   std::cout << "Testing my selection algorithm" << std::endl;
   std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;

@@ -1,6 +1,8 @@
 //
 // Created by jun on 6/5/17.
 //
+// various helping functions
+//
 
 #ifndef SORTING_AND_SELECTION_UTILITIES_H
 #define SORTING_AND_SELECTION_UTILITIES_H

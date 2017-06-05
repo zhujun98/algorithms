@@ -1,8 +1,7 @@
 //
 // Created by jun on 5/25/17.
 //
-// This is an implementation of the "quicksort" algorithms taught in the
-// Stanford course in Coursera by Tim Roughgarden
+// Implementations of sorting algorithms
 //
 // TODO: fix the *char argument issue in the function quicksort()
 //
@@ -16,65 +15,77 @@
 
 
 //
-// implementation of quicksort method
+// implementation of quicksort method with random pivot:
 // Sort the elements in the range [first, last) into ascending order.
-// Note: The return value is for the assignment in the course.
 //
 // @param first: iterator to the first position
 // @param last: iterator to the last position
 //
-// @return count: estimated number of total comparisons.
-//                It is calculated by the following method: 
-//                We assume there is m-1 comparisons in a recursive call on a 
-//                sub-array of length m. (This is because the pivot element is 
-//                compared to each of the other m−1 elements in the sub-array 
-//                in this recursive call.)
-//
 template <class Iterator>
-inline int quicksort(Iterator first, Iterator last, char* method = "median_of_three") {
+inline void rSort(Iterator first, Iterator last) {
 
-  long long count = 0;
-
-  if ( last - first <= 1 ) { return count; }
+  if ( last - first <= 1 ) { return; }
 
   // there are two elements
   if ( last - first == 2 ) {
     myPartition(first, last, first);
-    count += 1;
-    return count;
+    return;
   }
 
-  Iterator pivot;
-  if ( method == "first") {
-    pivot = first;
-  } else if ( method == "last") {
-    pivot = last - 1;
-  } else if ( method == "median_of_three") {
-    int middle_index = (last - first - 1)/2;
-    pivot = medianOfThree(first, first + middle_index, last - 1);
-  } else {
-    std::random_device rd;
+  std::random_device rd;
 
-    /* Random number generator */
-    std::default_random_engine generator(rd());
+  /* Random number generator */
+  std::default_random_engine generator(rd());
 
-    /* Distribution on which to apply the generator */
-    std::uniform_int_distribution<long long unsigned> distribution(0, last - first - 1);
+  /* Distribution on which to apply the generator */
+  std::uniform_int_distribution<long long unsigned> distribution(0, last - first - 1);
 
-    long long unsigned random_pivot = distribution(generator);
-    pivot = first + random_pivot;
-  }
+  Iterator pivot, boundary;
 
-  pivot = myPartition(first, last, pivot);
+  long long unsigned random_pivot = distribution(generator);
+  pivot = first + random_pivot;
+
+  boundary = myPartition(first, last, pivot);
 
   // recursive sort the left and right array
-  if ( pivot - first > 1 ) { count += quicksort(first, pivot); }
-  if ( last - pivot - 1 > 1 ) { count += quicksort(pivot + 1, last); }
+  if ( boundary - first > 1 ) { rSort(first, boundary); }
+  if ( last - boundary - 1 > 1 ) { rSort(boundary + 1, last); }
 
-  count += last - first - 1;
-
-  return count;
+  return;
 }
 
+
+//
+// implementation of quicksort method with pivot being the median among the
+// first, last and middle elements:
+// Sort the elements in the range [first, last) into ascending order.
+//
+// @param first: iterator to the first position
+// @param last: iterator to the last position
+//
+template <class Iterator>
+inline void quicksort(Iterator first, Iterator last) {
+
+  if ( last - first <= 1 ) { return; }
+
+  // there are two elements
+  if ( last - first == 2 ) {
+    myPartition(first, last, first);
+    return;
+  }
+
+  Iterator pivot, boundary;
+
+  int middle_index = (last - first - 1)/2;
+  pivot = medianOfThree(first, first + middle_index, last - 1);
+
+  boundary = myPartition(first, last, pivot);
+
+  // recursive sort the left and right array
+  if ( boundary - first > 1 ) { quicksort(first, boundary); }
+  if ( last - boundary - 1 > 1 ) { quicksort(boundary + 1, last); }
+
+  return;
+}
 
 #endif // SORTING_AND_SELECTION_SORTING_H
