@@ -30,7 +30,7 @@
 //                compared to each of the other m−1 elements in the sub-array 
 //                in this recursive call.)
 //
-template <typename Iterator>
+template <class Iterator>
 inline int quicksort(Iterator first, Iterator last, char* method = "median_of_three") {
 
   long long count = 0;

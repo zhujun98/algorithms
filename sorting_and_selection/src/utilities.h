@@ -9,19 +9,30 @@
 #include <iostream>
 #include <random>
 
+//
+// swap two values
+//
+// @param a: first value
+// @param b: second value
+//
+template <class T>
+inline void mySwap(T& a, T& b) {
+  T tmp = std::move(a);
+  a = std::move(b);
+  b = std::move(a);
+  return;
+}
+
 
 //
 // swap the referenced value of two iterators
 //
-// @param first: first iterator
-// @param second: second iterator
+// @param a: first iterator
+// @param b: second iterator
 //
-template <typename Iterator>
-inline void mySwap(Iterator first, Iterator second) {
-  auto tmp = *first;
-  *first = *second;
-  *second = tmp;
-
+template <class Iterator>
+inline void myIterSwap(Iterator a, Iterator b) {
+  mySwap(*a, *b);
   return;
 }
 
@@ -34,7 +45,7 @@ inline void mySwap(Iterator first, Iterator second) {
 //               elements, it refers to the mth element.
 // @param last: iterator to the last position
 //
-template <typename Iterator>
+template <class Iterator>
 inline Iterator medianOfThree(const Iterator first, const Iterator middle, const Iterator last) {
   if ( *last > *first ) {
     if ( *first > *middle ) {
@@ -69,14 +80,14 @@ inline Iterator medianOfThree(const Iterator first, const Iterator middle, const
 // @param last: iterator to the last position
 // @param pivot: iterator to the position of the pivot
 //
-template <typename Iterator>
+template <class Iterator>
 inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
 
   if ( last - first <= 1 ) { return first; }
 
   // there are only two elements
   if ( last - first == 2 ) {
-    if ( *first > *(first + 1) ) { mySwap(first, first + 1); }
+    if ( *first > *(first + 1) ) { myIterSwap(first, first + 1); }
     return first;
   }
 
@@ -85,7 +96,7 @@ inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
   //
 
   // first swap the first element and the pivot
-  if ( first != pivot ) { mySwap(first, pivot); }
+  if ( first != pivot ) { myIterSwap(first, pivot); }
 
 
   // partition the rest elements into too parts
@@ -104,7 +115,7 @@ inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
     } else {
       unpartitioned_start += 1;
       if ( *first > *unpartitioned_start ) {
-        mySwap(boundary, unpartitioned_start);
+        myIterSwap(boundary, unpartitioned_start);
         boundary += 1;
       }
     }
@@ -114,13 +125,13 @@ inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
 
   if ( *first > *boundary ) {
     // this happens when the pivot is greater than all the rest elements
-    mySwap(first, boundary);
+    myIterSwap(first, boundary);
     return boundary;
   } else if ( boundary - first == 1 ) {
     // this happens when the pivot is smaller than all the rest elements
     return first;
   } else {
-    mySwap(first, boundary - 1);
+    myIterSwap(first, boundary - 1);
     return boundary - 1;
   }
 
