@@ -1,6 +1,8 @@
 //
 // Created by jun on 6/5/17.
 //
+// Implementations of selecting algorithms
+//
 
 #ifndef SORTING_AND_SELECTION_SELECTION_H
 #define SORTING_AND_SELECTION_SELECTION_H
@@ -18,7 +20,7 @@
 //
 //
 template <class Iterator>
-inline Iterator randomSelect(Iterator first, Iterator last, long unsigned n) {
+inline Iterator rSelect(Iterator first, Iterator last, long unsigned n) {
 
   if ( n > last - first ) {
     throw std::invalid_argument("n is larger than the length of the array!");
@@ -26,10 +28,10 @@ inline Iterator randomSelect(Iterator first, Iterator last, long unsigned n) {
 
   // the following two conditions ensured that the length of the array is
   // bigger than 2.
-  if ( n == 0 ) { return first; }
+  if ( n == 0 || n == 1 ) { return first; }
   if ( n == last - first ) { return last - 1; }
 
-  Iterator pivot;
+  Iterator pivot, boundary;
 
   // randomly pick the pivot
 
@@ -45,14 +47,19 @@ inline Iterator randomSelect(Iterator first, Iterator last, long unsigned n) {
   pivot = first + random_pivot;
 
   // applying partition
-  pivot = myPartition(first, last, pivot);
+  boundary = myPartition(first, last, pivot);
 
-  if ( pivot - first == n - 1 ) {
-    return pivot;
-  } else if ( pivot - first > n - 1) {
-    return randomSelect(first, pivot, n);
+  if ( boundary - first == n - 1 ) {
+    return boundary;
+  } else if ( boundary - first > n - 1) {
+    // Important !!!
+    // Here one must use "boundary + 1" as the second argument since "boundary - 1"
+    // is not guaranteed to be the largest number int the array [first, boundary).
+    // If it happens that "boundary - first - 1 == n - 1", the algorithm will return
+    // "boundary - 1" if "boundary" were used as the second argument.
+    return rSelect(first, boundary + 1, n);
   } else {
-    return randomSelect(pivot + 1, last, n - (pivot - first + 1));
+    return rSelect(boundary, last, n - (boundary - first));
   }
 
 }
