@@ -19,7 +19,7 @@ template <class T>
 inline void mySwap(T& a, T& b) {
   T tmp = std::move(a);
   a = std::move(b);
-  b = std::move(a);
+  b = std::move(tmp);
   return;
 }
 
