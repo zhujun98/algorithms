@@ -7,7 +7,7 @@
 #include <sstream>
 #include <string>
 
-#include "graph.h"
+#include "ud_graph_adj.h"
 
 
 //
@@ -42,7 +42,7 @@ int main() {
 //
 //  }
 
-  Graph graph(5);
+  UdGraphAdj graph(5);
   graph.addEdge(0, 1);
   graph.addEdge(0, 4);
   graph.addEdge(1, 2);

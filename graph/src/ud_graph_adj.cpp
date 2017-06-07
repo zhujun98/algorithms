@@ -2,10 +2,10 @@
 // Created by jun on 6/6/17.
 //
 
-#include "graph.h"
+#include "ud_graph_adj.h"
 
 
-Graph::Graph(int n) {
+UdGraphAdj::UdGraphAdj(int n) {
   n_vertex_ = n;
   n_edge_ = 0;
 
@@ -17,7 +17,7 @@ Graph::Graph(int n) {
 
 }
 
-Graph::~Graph() {}
+UdGraphAdj::~UdGraphAdj() {}
 
 AdjListNode* newAdjListNode(int v) {
 
@@ -28,7 +28,7 @@ AdjListNode* newAdjListNode(int v) {
   return new_node;
 }
 
-void Graph::addEdge(int a, int b) {
+void UdGraphAdj::addEdge(int a, int b) {
 
   // we need to add a node for the lists a and b respectively
 
@@ -49,7 +49,7 @@ void Graph::addEdge(int a, int b) {
   ++n_edge_;
 }
 
-void Graph::delEdgeNode(int a, int b) {
+void UdGraphAdj::delEdgeNode(int a, int b) {
 
   AdjListNode* current = adj_list_[a].head;
   AdjListNode* previous = adj_list_[a].head;
@@ -72,7 +72,7 @@ void Graph::delEdgeNode(int a, int b) {
   }
 }
 
-void Graph::delEdge(int a, int b) {
+void UdGraphAdj::delEdge(int a, int b) {
 
   // we need to delete a node in lists a and b respectively
 
@@ -82,7 +82,7 @@ void Graph::delEdge(int a, int b) {
   --n_edge_;
 }
 
-void Graph::delVertexEdge(int v) {
+void UdGraphAdj::delVertexEdge(int v) {
 
   AdjListNode* conductor = adj_list_[v].head;
   while ( conductor ) {
@@ -99,7 +99,7 @@ void Graph::delVertexEdge(int v) {
   }
 }
 
-void Graph::printGraph() {
+void UdGraphAdj::printGraph() {
   for (int i=0; i<n_vertex_; ++i) {
     AdjListNode* pprint = adj_list_[i].head;
 
@@ -113,11 +113,11 @@ void Graph::printGraph() {
   }
 }
 
-void Graph::contract(int a, int b) {
+void UdGraphAdj::contract(int a, int b) {
   delEdge(a, b);
 }
 
-void Graph::validateVertex(int v) {
+void UdGraphAdj::validateVertex(int v) {
 
   if ( v < 0 || v > n_vertex_ ) {
     throw std::invalid_argument("vertex is out of range");

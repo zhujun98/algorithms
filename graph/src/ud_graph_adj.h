@@ -2,8 +2,8 @@
 // Created by jun on 6/6/17.
 //
 
-#ifndef CONTRACTION_GRAPH_H
-#define CONTRACTION_GRAPH_H
+#ifndef GRAPH_UD_GRAPH_ADJ_H
+#define GRAPH_UD_GRAPH_ADJ_H
 
 
 #include <iostream>
@@ -25,7 +25,7 @@ struct AdjList {
   AdjListNode* head;
 };
 
-class Graph {
+class UdGraphAdj {
 private:
 
   int n_vertex_;  // number of vertices
@@ -39,12 +39,12 @@ public:
   //
   // constructor
   //
-  Graph(int n);
+  UdGraphAdj(int n);
 
   //
   // destructor
   //
-  ~Graph();
+  ~UdGraphAdj();
 
   //
   // add an edge with two vertices a and b
@@ -79,4 +79,4 @@ public:
 };
 
 
-#endif //CONTRACTION_GRAPH_H
+#endif //GRAPH_UD_GRAPH_ADJ_H
