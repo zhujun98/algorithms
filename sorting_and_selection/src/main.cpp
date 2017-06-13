@@ -28,9 +28,10 @@ int main()
   in.close();
 
   // show the first 10 numbers
-//  for (auto it=numbers.begin(); it <numbers.begin()+10; ++it) {
-//    std::cout << *it << std::endl;
-//  }
+  for (auto it=numbers.begin(); it <numbers.begin()+10; ++it) {
+    std::cout << *it << ", ";
+  }
+  std::cout << std::endl;
 
   unsigned long long test_length = numbers.end() - numbers.begin();
 
@@ -89,9 +90,10 @@ int main()
   }
 
   // test my selection algorithm
+
   t0 = clock();
-  long unsigned n = 1203;
-  std::vector<int>::iterator selected = rSelect(numbers.begin(), numbers.end(), n);
+  long unsigned n = 10000;
+  std::vector<int>::iterator selected = rSelect(numbers.begin(), numbers.begin() + test_length, n);
   std::cout << "-------------------------" << std::endl;
   std::cout << "Testing my selection algorithm" << std::endl;
   std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
@@ -106,6 +108,10 @@ int main()
     std::cout << "incorrect implementation of selection!" << std::endl;
   }
 
+  for ( int i=0; i< 10; ++i) {
+    std::cout << numbers[i] << ", ";
+  }
+  std::cout << std::endl;
 }
 
 

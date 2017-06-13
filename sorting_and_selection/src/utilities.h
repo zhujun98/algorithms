@@ -87,14 +87,8 @@ inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
 
   if ( last - first <= 1 ) { return first; }
 
-  // there are only two elements
-  if ( last - first == 2 ) {
-    if ( *first > *(first + 1) ) { myIterSwap(first, first + 1); }
-    return first;
-  }
-
   //
-  // if there are more than two elements in the array:
+  // if there are more than one element in the array:
   //
 
   // first swap the first element and the pivot
@@ -139,5 +133,18 @@ inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
 
 }
 
+
+//
+// Re-arrange the elements in the range [first, last) to form a heap
+//
+//templte <class Iterator, class T>
+//inline T* make_heap(Iterator first, Iterator last) {
+//
+//  unsigned int heap_size = last - first;
+//
+//  std::iterator_traits::value_type my_heap[heap_size];
+//
+//  return my_heap;
+//}
 
 #endif // SORTING_AND_SELECTION_UTILITIES_H

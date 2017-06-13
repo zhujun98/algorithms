@@ -34,8 +34,7 @@ inline Iterator rSelect_inplace(Iterator first, Iterator last, int unsigned n) {
     throw std::invalid_argument("Out of range: n!");
   }
 
-  // the following two conditions ensured that the length of the array is
-  // bigger than 2.
+  // if the array has only 1 element
   if ( n == 1 && last - first == 1 ) { return first; }
 
   Iterator pivot, boundary;
@@ -48,7 +47,7 @@ inline Iterator rSelect_inplace(Iterator first, Iterator last, int unsigned n) {
   std::default_random_engine generator(rd());
 
   /* Distribution on which to apply the generator */
-  std::uniform_int_distribution<long long unsigned> distribution(0, last - first - 1);
+  std::uniform_int_distribution<long unsigned> distribution(0, last - first - 1);
 
   long unsigned random_pivot = distribution(generator);
   pivot = first + random_pivot;
