@@ -3,7 +3,7 @@
 //
 // Implementations of sorting algorithms
 //
-// TODO: fix the *char argument issue in the function quicksort()
+// TODO: implement the heapsort
 //
 
 #ifndef SORTING_AND_SELECTION_SORTING_H
@@ -38,11 +38,11 @@ inline void rSort(Iterator first, Iterator last) {
   std::default_random_engine generator(rd());
 
   /* Distribution on which to apply the generator */
-  std::uniform_int_distribution<long long unsigned> distribution(0, last - first - 1);
+  std::uniform_int_distribution<long unsigned> distribution(0, last - first - 1);
 
   Iterator pivot, boundary;
 
-  long long unsigned random_pivot = distribution(generator);
+  long unsigned random_pivot = distribution(generator);
   pivot = first + random_pivot;
 
   boundary = myPartition(first, last, pivot);
@@ -57,7 +57,8 @@ inline void rSort(Iterator first, Iterator last) {
 
 //
 // implementation of quicksort method with pivot being the median among the
-// first, last and middle elements:
+// first, last and middle elements
+//
 // Sort the elements in the range [first, last) into ascending order.
 //
 // @param first: iterator to the first position
@@ -86,6 +87,20 @@ inline void quicksort(Iterator first, Iterator last) {
   if ( last - boundary - 1 > 1 ) { quicksort(boundary + 1, last); }
 
   return;
+}
+
+//
+// implementation of heapsort algorithm
+//
+// Sort the elements in the range [first, last) into ascending order.
+//
+// @param first: iterator to the first position
+// @param last: iterator to the last position
+//
+template <class Iterator>
+inline void heapsort(Iterator first, Iterator last) {
+
+
 }
 
 #endif // SORTING_AND_SELECTION_SORTING_H
