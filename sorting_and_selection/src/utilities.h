@@ -135,6 +135,19 @@ inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
 
 
 //
+// print all the elements in a queue
+//
+// @param q: input queue
+//
+template<typename T> void print_queue(T& q) {
+  while(!q.empty()) {
+    std::cout << q.top() << " ";
+    q.pop();
+  }
+  std::cout << '\n';
+}
+
+//
 // Re-arrange the elements in the range [first, last) to form a heap
 //
 //templte <class Iterator, class T>

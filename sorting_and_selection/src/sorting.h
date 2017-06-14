@@ -3,19 +3,19 @@
 //
 // Implementations of sorting algorithms
 //
-// TODO: implement the heapsort
 //
 
 #ifndef SORTING_AND_SELECTION_SORTING_H
 #define SORTING_AND_SELECTION_SORTING_H
 
 #include <iostream>
-
+#include <queue>
+#include <functional>
 #include "utilities.h"
 
 
 //
-// implementation of quicksort method with random pivot:
+// implementation of quick sort method with random pivot:
 // Sort the elements in the range [first, last) into ascending order.
 //
 // @param first: iterator to the first position
@@ -56,7 +56,7 @@ inline void rSort(Iterator first, Iterator last) {
 
 
 //
-// implementation of quicksort method with pivot being the median among the
+// implementation of quick sort method with pivot being the median among the
 // first, last and middle elements
 //
 // Sort the elements in the range [first, last) into ascending order.
@@ -65,7 +65,7 @@ inline void rSort(Iterator first, Iterator last) {
 // @param last: iterator to the last position
 //
 template <class Iterator>
-inline void quicksort(Iterator first, Iterator last) {
+inline void quickSort(Iterator first, Iterator last) {
 
   if ( last - first <= 1 ) { return; }
 
@@ -83,14 +83,14 @@ inline void quicksort(Iterator first, Iterator last) {
   boundary = myPartition(first, last, pivot);
 
   // recursive sort the left and right array
-  if ( boundary - first > 1 ) { quicksort(first, boundary); }
-  if ( last - boundary - 1 > 1 ) { quicksort(boundary + 1, last); }
+  if ( boundary - first > 1 ) { quickSort(first, boundary); }
+  if ( last - boundary - 1 > 1 ) { quickSort(boundary + 1, last); }
 
   return;
 }
 
 //
-// implementation of heapsort algorithm
+// implementation of heap sort algorithm
 //
 // Sort the elements in the range [first, last) into ascending order.
 //
@@ -98,9 +98,24 @@ inline void quicksort(Iterator first, Iterator last) {
 // @param last: iterator to the last position
 //
 template <class Iterator>
-inline void heapsort(Iterator first, Iterator last) {
+inline void heapSort(Iterator first, Iterator last) {
 
+  typedef typename std::iterator_traits<Iterator>::value_type T;
 
+  std::priority_queue<T, std::vector<T>, std::greater<T>> my_heap;
+
+  // initialize a priority_queue (heap)
+  for (Iterator i=first; i!=last; ++i) {
+    my_heap.push(*i);
+  }
+
+  // change the value in the original container
+  for (Iterator i=first; i!=last; ++i) {
+    *i = my_heap.top();
+    my_heap.pop();
+  }
+
+//  print_queue(my_heap);
 }
 
 #endif // SORTING_AND_SELECTION_SORTING_H
