@@ -30,7 +30,7 @@
 // @return: iterator to the selected number
 //
 template <class Iterator>
-inline Iterator rSelect_inplace(Iterator first, Iterator last, int unsigned n) {
+inline Iterator rSelect_inplace(Iterator first, Iterator last, long unsigned n) {
 
   if ( n < 1 || n > last - first ) {
     throw std::invalid_argument("Out of range: n!");
@@ -84,7 +84,7 @@ inline Iterator rSelect_inplace(Iterator first, Iterator last, int unsigned n) {
 // @return: iterator to the selected number
 //
 template <class Iterator>
-inline Iterator rSelect(Iterator first, Iterator last, int unsigned n) {
+inline Iterator rSelect(Iterator first, Iterator last, long unsigned n) {
 
   // copy the elements between first and last in the original container into a vector
   std::vector<typename std::iterator_traits<Iterator>::value_type> data(first, last);
