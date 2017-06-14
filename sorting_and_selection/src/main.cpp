@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <list>
+#include <deque>
 #include <algorithm>
 
 #include <time.h>
@@ -33,7 +35,7 @@ int main()
   }
   std::cout << std::endl;
 
-  unsigned long long test_length = numbers.end() - numbers.begin();
+  long test_length = numbers.end() - numbers.begin();
 
   //
   // test the sort algorithm implemented in <algorithm> library
