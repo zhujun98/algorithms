@@ -11,6 +11,8 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <array>
+#include <list>
 #include <iterator>
 
 #include "utilities.h"
@@ -86,6 +88,11 @@ inline Iterator rSelect(Iterator first, Iterator last, int unsigned n) {
 
   // copy the elements between first and last in the original container into a vector
   std::vector<typename std::iterator_traits<Iterator>::value_type> data(first, last);
+
+  // another way to copy a container
+//  const size_t N = last - first;
+//  std::vector<typename std::iterator_traits<Iterator>::value_type> data(N);
+//  std::copy(first, last, data.begin());
 
   return rSelect_inplace(data.begin(), data.end(), n);
 }
