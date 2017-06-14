@@ -14,6 +14,107 @@
 #include "selection.h"
 
 
+//
+// test quickSort() -- with pivot using median of three
+//
+template <class T>
+void test_quicksort(T numbers, const T& sorted_numbers, long unsigned N) {
+
+  clock_t t0 = clock();
+  quickSort(numbers.begin(), numbers.begin() + N);
+  std::cout << "\n-------------------------" << std::endl;
+  std::cout << "Testing my median of three random sort algorithm" << std::endl;
+  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+
+  bool quicksort_ok = true;
+  for ( int i=0; i< N; ++i) {
+//    std::cout << numbers_sorted[i] << " " << numbers[i] << std::endl;
+    if ( sorted_numbers[i] != numbers[i] ) { quicksort_ok = false; }
+  }
+
+  if (quicksort_ok) {
+    std::cout << "correct implementation of quick sort!" << std::endl;
+  } else {
+    std::cout << "!!!incorrect implementation of quick sort" << std::endl;
+  }
+
+}
+
+
+//
+// test rSort()
+//
+template <class T>
+void test_rsort(T numbers, const T& sorted_numbers, long unsigned N) {
+
+  clock_t t0 = clock();
+  rSort(numbers.begin(), numbers.begin() + N);
+  std::cout << "\n-------------------------" << std::endl;
+  std::cout << "Testing my random sort algorithm" << std::endl;
+  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+
+  bool rsort_ok = true;
+  for ( int i=0; i< N; ++i) {
+//    std::cout << numbers_sorted[i] << " " << numbers[i] << std::endl;
+    if ( sorted_numbers[i] != numbers[i] ) { rsort_ok = false; }
+  }
+
+  if (rsort_ok) {
+    std::cout << "correct implementation of random sort!" << std::endl;
+  } else {
+    std::cout << "!!!incorrect implementation of random sort" << std::endl;
+  }
+
+}
+
+
+//
+// test heapSort()
+//
+template <class T>
+void test_heapsort(T numbers, const T& sorted_numbers, long unsigned N) {
+
+  clock_t t0 = clock();
+  heapSort(numbers.begin(), numbers.begin() + N);
+  std::cout << "\n-------------------------" << std::endl;
+  std::cout << "Testing my heap sort algorithm" << std::endl;
+  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+
+  bool heapsort_ok = true;
+  for ( int i=0; i< N; ++i) {
+//    std::cout << numbers_sorted[i] << " " << numbers[i] << std::endl;
+    if ( sorted_numbers[i] != numbers[i] ) { heapsort_ok = false; }
+  }
+
+  if (heapsort_ok) {
+    std::cout << "correct implementation of heap sort!" << std::endl;
+  } else {
+    std::cout << "!!!incorrect implementation of heap sort" << std::endl;
+  }
+}
+
+
+//
+// test rSelect()
+//
+template <class T>
+void test_rselect(T numbers, T& sorted_numbers, long unsigned N, long unsigned n) {
+
+  clock_t t0 = clock();
+  std::vector<int>::iterator selected = rSelect(numbers.begin(), numbers.begin() + N, n);
+  std::cout << "\n-------------------------" << std::endl;
+  std::cout << "Testing my random selection algorithm" << std::endl;
+  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+
+  std::cout << sorted_numbers[n-1] << " " << *selected << std::endl;
+  if ( sorted_numbers[n-1] == *selected ) {
+    std::cout << "correct implementation of random selection!" << std::endl;
+  } else {
+    std::cout << "incorrect implementation of random selection!" << std::endl;
+  }
+}
+
+
 int main()
 {
   std::cout << "hello!" << std::endl;
@@ -35,81 +136,29 @@ int main()
   }
   std::cout << std::endl;
 
-  long test_length = numbers.end() - numbers.begin();
+  // use the sort algorithm implemented in <algorithm> library to get a
+  // sorted vector
+  long unsigned test_length = numbers.end() - numbers.begin();
 
-  //
-  // test the sort algorithm implemented in <algorithm> library
-  //
-  std::vector<int> numbers_cp1 = numbers;
+  std::vector<int> sorted_numbers = numbers;
   clock_t t0 = clock();
-  std::sort(numbers_cp1.begin(), numbers_cp1.begin() + test_length);
-  std::cout << "-------------------------" << std::endl;
+  std::sort(sorted_numbers.begin(), sorted_numbers.begin() + test_length);
+  std::cout << "\n-------------------------" << std::endl;
   std::cout << "Using default sort algorithm:" << std::endl;
   std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
 
-  //
-  // test my quicksort (median of three)
-  //
-  std::vector<int> numbers_cp2 = numbers;
-  t0 = clock();
-  quicksort(numbers_cp2.begin(), numbers_cp2.begin() + test_length);
-  std::cout << "-------------------------" << std::endl;
-  std::cout << "Testing my median of three sorting algorithm" << std::endl;
-  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+  // test my implementations
 
-  bool quicksort_ok = true;
-  for ( int i=0; i< test_length; ++i) {
-//    std::cout << numbers_cp1[i] << " " << numbers_cp2[i] << std::endl;
-    if ( numbers_cp1[i] != numbers_cp2[i] ) { quicksort_ok = false; }
-  }
+  test_quicksort(numbers, sorted_numbers, test_length);
 
-  if (quicksort_ok) {
-    std::cout << "correct implementation of sorting!" << std::endl;
-  } else {
-    std::cout << "incorrect implementation of sorting!" << std::endl;
-  }
+  test_rsort(numbers, sorted_numbers, test_length);
 
-  //
-  // test my rSort
-  //
-  std::vector<int> numbers_cp3 = numbers;
-  t0 = clock();
-  rSort(numbers_cp3.begin(), numbers_cp3.begin() + test_length);
-  std::cout << "-------------------------" << std::endl;
-  std::cout << "Testing my random sorting algorithm" << std::endl;
-  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+  test_heapsort(numbers, sorted_numbers, test_length);
 
-  bool rsort_ok = true;
-  for ( int i=0; i< test_length; ++i) {
-//    std::cout << numbers_cp1[i] << " " << numbers_cp2[i] << std::endl;
-    if ( numbers_cp1[i] != numbers_cp2[i] ) { rsort_ok = false; }
-  }
+  test_rselect(numbers, sorted_numbers, test_length, 10000);
 
-  if (rsort_ok) {
-    std::cout << "correct implementation of sorting!" << std::endl;
-  } else {
-    std::cout << "incorrect implementation of sorting!" << std::endl;
-  }
-
-  // test my selection algorithm
-
-  t0 = clock();
-  long unsigned n = 10000;
-  std::vector<int>::iterator selected = rSelect(numbers.begin(), numbers.begin() + test_length, n);
-  std::cout << "-------------------------" << std::endl;
-  std::cout << "Testing my selection algorithm" << std::endl;
-  std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
-
-  bool selection_ok;
-  std::cout << numbers_cp1[n-1] << " " << *selected << std::endl;
-  if ( numbers_cp1[n-1] == *selected ) {
-    selection_ok = true;
-    std::cout << "correct implementation of selection!" << std::endl;
-  } else {
-    selection_ok = false;
-    std::cout << "incorrect implementation of selection!" << std::endl;
-  }
-
+  // check whether the element sequence in the original container has been changed
+  std::cout << "\n";
   for ( int i=0; i< 10; ++i) {
     std::cout << numbers[i] << ", ";
   }
