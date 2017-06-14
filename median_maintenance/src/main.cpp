@@ -1,6 +1,5 @@
 //
 // Created by jun on 6/14/17.
-// The std::priority_queue is actually a binary-search-tree
 //
 // The goal of this problem is to implement the "Median Maintenance" algorithm
 // (covered in the Week 3 lecture on heap applications). The data file contains
