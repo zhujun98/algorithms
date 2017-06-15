@@ -1,6 +1,16 @@
 //
 // Created by jun on 6/14/17.
 //
+// std::priority_queue is implemented as a heap represented by sorted array
+//
+// Difference between a priority_queue and a heap:
+//   A priority queue only need to support find_min and insert operation. It
+// means it is only required to guarantee that the root node has the highest
+// priority (the maximum by default). However, in a heap, there is also another
+// constraint saying that the parent must have higher priority (e.g. bigger
+// by default) than the child nodes.
+//
+//
 // The goal of this problem is to implement the "Median Maintenance" algorithm
 // (covered in the Week 3 lecture on heap applications). The data file contains
 // a list of the integers from 1 to 10000 in unsorted order; you should treat
