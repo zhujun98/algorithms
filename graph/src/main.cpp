@@ -11,7 +11,7 @@
 #include <random>
 #include <time.h>
 
-#include "ud_graph_adj.h"
+#include "graph_adj.h"
 
 
 //
@@ -24,24 +24,24 @@
 int graphContract(UdGraphAdj graph) {
 
   /* Distribution on which to apply the generator */
-  std::vector<int> nonEmptyVertex = graph.nonEmptyVertex();
+  std::vector<int> nonEmptyVertex = graph.getNonEmptyList();
 
   std::random_device rd;
   std::default_random_engine generator(rd());
   while ( nonEmptyVertex.size() > 2 ) {
     std::uniform_int_distribution<long unsigned> distribution(0, 10000000);
-    unsigned long first = distribution(generator) % graph.nonEmptyVertex().size();
-    unsigned long second = distribution(generator) % (graph.nonEmptyVertex().size() - 1);
+    unsigned long first = distribution(generator) % graph.getNonEmptyList().size();
+    unsigned long second = distribution(generator) % (graph.getNonEmptyList().size() - 1);
     if (second >= first) { ++second; }
 
 //    std::cout << nonEmptyVertex[first] << " " << nonEmptyVertex[second] << std::endl;
     graph.collapse(nonEmptyVertex[first], nonEmptyVertex[second]);
 
-    nonEmptyVertex = graph.nonEmptyVertex();
+    nonEmptyVertex = graph.getNonEmptyList();
 //    graph.display();
   }
 
-  return graph.nEdge();
+  return graph.countEdge();
 }
 
 
@@ -144,7 +144,8 @@ int main() {
 
   std::cout << "Hello" << std::endl;
 
-//  UdGraphAdj graph = simpleGraph();
+  UdGraphAdj graph = simpleGraph();
+  graph.display();
 
 //  graph.collapse(0, 1);
 //  graph.collapse(1, 2);
@@ -152,7 +153,7 @@ int main() {
 //  graph.collapse(4, 5);
 //  graph.collapse(5, 6);
 //  graph.collapse(6, 7);
-//  graph.printGraph();
+//  graph.display();
 
   testKarger(100);
 

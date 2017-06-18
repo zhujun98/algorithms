@@ -1,11 +1,11 @@
 //
 // Created by jun on 6/6/17.
 //
-// implementation of the undirected graph using adjacency list
+// implementation of the directed and undirected graph using adjacency list
 //
 #include <assert.h>
 
-#include "ud_graph_adj.h"
+#include "graph_adj.h"
 
 //
 // construct a new AdjListNode
@@ -26,7 +26,7 @@ AdjListNode* newAdjListNode(int v, int weight=1) {
 }
 
 
-UdGraphAdj::UdGraphAdj(int n) {
+GraphAdj::GraphAdj(int n) {
   n_vertex_ = n;
 
   // initialize a adjacency list with n elements (head nodes)
@@ -36,11 +36,11 @@ UdGraphAdj::UdGraphAdj(int n) {
   }
 }
 
-UdGraphAdj::~UdGraphAdj() {}
+GraphAdj::~GraphAdj() {}
 
-int UdGraphAdj::nVertex() { return n_vertex_; }
+int GraphAdj::getNoVertex() { return n_vertex_; }
 
-int UdGraphAdj::nEdge() {
+int GraphAdj::countEdge() {
   int count = 0;
   for (int i=0; i<n_vertex_; ++i) {
     AdjListNode* current = adj_list_[i].head;
@@ -50,12 +50,10 @@ int UdGraphAdj::nEdge() {
     }
   }
 
-  assert( count % 2 == 0 );
-
-  return count/2;
+  return count;
 }
 
-std::vector<int> UdGraphAdj::nonEmptyVertex() {
+std::vector<int> GraphAdj::getNonEmptyList() {
 
   std::vector<int> nonEmptyVertex;
 
@@ -68,7 +66,7 @@ std::vector<int> UdGraphAdj::nonEmptyVertex() {
   return nonEmptyVertex;
 }
 
-void UdGraphAdj::clearList(int vertex) {
+void GraphAdj::clearList(int vertex) {
 
   AdjListNode* current = adj_list_[vertex].head;
 
@@ -81,7 +79,7 @@ void UdGraphAdj::clearList(int vertex) {
   }
 }
 
-void UdGraphAdj::addEdge(int first, int second, int weight) {
+void GraphAdj::addEdge(int first, int second, int weight) {
 
   assert(first != second);
 
@@ -130,7 +128,7 @@ void UdGraphAdj::addEdge(int first, int second, int weight) {
 //
 // complexity O(n)
 //
-int UdGraphAdj::delEdge(int first, int second) {
+int GraphAdj::delEdge(int first, int second) {
 
   assert(first != second);
 
@@ -168,36 +166,78 @@ int UdGraphAdj::delEdge(int first, int second) {
   return 0;
 }
 
-bool UdGraphAdj::isConnected(int first, int second) {
+bool GraphAdj::connect(int first, int second) {
 
-  bool connected1 = false;
-  bool connected2 = false;
+  assert(first != second);
+
+  if ( isConnected(first, second) ) { return false; }
+
+  addEdge(first, second, 1);
+
+  return true;
+}
+
+int GraphAdj::disconnect(int first, int second) {
+
+  assert(first != second);
+
+  int weight = delEdge(first, second);
+
+  return weight;
+}
+
+bool GraphAdj::isConnected(int first, int second) {
+
+  bool connected = false;
 
   AdjListNode* current = adj_list_[first].head;
 
   while ( current ) {
     if ( current->value == second ) {
-      connected1 = true;
+      connected = true;
     }
     current = current->next;
   }
 
-  current = adj_list_[second].head;
+  return connected;
+}
 
-  while ( current ) {
-    if ( current->value == first ) {
-      connected2 = true;
+void GraphAdj::collapse(int src, int dst) {}
+
+void GraphAdj::display() {
+  std::cout << "------------------------------" << std::endl;
+
+  for (int i=0; i<n_vertex_; ++i) {
+    AdjListNode* pprint = adj_list_[i].head;
+
+    std::cout << "adjacency list of vertex [" << i << "] head";
+    while (pprint) {
+      std::cout << " -> " << pprint->value << " (" << pprint->weight << ")";
+      pprint = pprint->next;
     }
-    current = current->next;
+
+    std::cout << std::endl;
+  }
+}
+
+
+UdGraphAdj::UdGraphAdj(int n) : GraphAdj(n) {}
+
+UdGraphAdj::~UdGraphAdj() {}
+
+int UdGraphAdj::countEdge() {
+  int count = 0;
+  for (int i=0; i<n_vertex_; ++i) {
+    AdjListNode* current = adj_list_[i].head;
+    while ( current ) {
+      count += current->weight;
+      current = current->next;
+    }
   }
 
-  if ( connected1 && connected2 ) {
-    return true;
-  } else if ( connected1 || connected2 ) {
-    throw std::invalid_argument("two vertices are only partially connected");
-  } else {
-    return false;
-  }
+  assert( count % 2 == 0 );
+
+  return count/2;
 }
 
 bool UdGraphAdj::connect(int first, int second) {
@@ -258,18 +298,34 @@ void UdGraphAdj::collapse(int src, int dst) {
 
 }
 
-void UdGraphAdj::display() {
-  std::cout << "------------------------------" << std::endl;
+bool UdGraphAdj::isConnected(int first, int second) {
 
-  for (int i=0; i<n_vertex_; ++i) {
-    AdjListNode* pprint = adj_list_[i].head;
+  bool connected1 = false;
+  bool connected2 = false;
 
-    std::cout << "adjacency list of vertex [" << i << "] head";
-    while (pprint) {
-      std::cout << " -> " << pprint->value << " (" << pprint->weight << ")";
-      pprint = pprint->next;
+  AdjListNode* current = adj_list_[first].head;
+
+  while ( current ) {
+    if ( current->value == second ) {
+      connected1 = true;
     }
+    current = current->next;
+  }
 
-    std::cout << std::endl;
+  current = adj_list_[second].head;
+
+  while ( current ) {
+    if ( current->value == first ) {
+      connected2 = true;
+    }
+    current = current->next;
+  }
+
+  if ( connected1 && connected2 ) {
+    return true;
+  } else if ( connected1 || connected2 ) {
+    throw std::invalid_argument("two vertices are only partially connected");
+  } else {
+    return false;
   }
 }
