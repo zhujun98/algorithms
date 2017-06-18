@@ -68,38 +68,53 @@ std::vector<int> UdGraphAdj::nonEmptyVertex() {
   return nonEmptyVertex;
 }
 
-void UdGraphAdj::addNode(int llst, int nd, int weight) {
+void UdGraphAdj::clearList(int vertex) {
 
-  assert(llst != nd);
+  AdjListNode* current = adj_list_[vertex].head;
 
-  AdjListNode* new_node = newAdjListNode(nd);
+  if ( !adj_list_[vertex].head ) { return; }
+
+  while ( current ) {
+    adj_list_[vertex].head = current->next;
+    delete current;
+    current = adj_list_[vertex].head;
+  }
+}
+
+void UdGraphAdj::addEdge(int first, int second, int weight) {
+
+  assert(first != second);
+
+  AdjListNode* new_node = newAdjListNode(second);
   new_node->weight = weight;
 
-  AdjListNode* current = adj_list_[llst].head;
-  AdjListNode* previous = adj_list_[llst].head;
+  AdjListNode* current = adj_list_[first].head;
+  AdjListNode* previous = adj_list_[first].head;
 
-  if ( !adj_list_[llst].head) {
+  if ( !adj_list_[first].head) {
     // the linked list is empty
-    adj_list_[llst].head = new_node;
-  } else if ( nd == adj_list_[llst].head->value ) {
-    adj_list_[llst].head->weight += weight;
+    adj_list_[first].head = new_node;
+  } else if ( second == adj_list_[first].head->value ) {
+    adj_list_[first].head->weight += weight;
     delete new_node;
     return;
-  } else if ( nd < adj_list_[llst].head->value ) {
+  } else if ( second < adj_list_[first].head->value ) {
     // insert the new node in the head
-    adj_list_[llst].head = new_node;
-    adj_list_[llst].head->next = current;
+    adj_list_[first].head = new_node;
+    adj_list_[first].head->next = current;
   } else {
     // insert the new node in the middle
     current = current->next;
     while ( current ) {
-      if ( current->value == nd ) {
+      if ( current->value == second ) {
         current->weight += weight;
         delete new_node;
+
         return;
-      } else if ( current->value > nd ) {
+      } else if ( current->value > second ) {
         new_node->next = current;
         previous->next = new_node;
+
         return;
       } else {
         current = current->next;
@@ -110,6 +125,47 @@ void UdGraphAdj::addNode(int llst, int nd, int weight) {
     // insert the new node in the tail
     previous->next = new_node;
   }
+}
+
+//
+// complexity O(n)
+//
+int UdGraphAdj::delEdge(int first, int second) {
+
+  assert(first != second);
+
+  int weight;
+
+  if ( !adj_list_[first].head ) { return 0; }
+
+  AdjListNode* current = adj_list_[first].head;
+  AdjListNode* previous = adj_list_[first].head;
+
+  if ( adj_list_[first].head->value == second ) {
+    // if node is the head node
+    adj_list_[first].head = current->next;
+    weight = current->weight;
+    delete current;
+
+    return weight;
+
+  } else {
+    current = current->next;
+    while ( current ) {
+      if ( current->value == second ) {
+        previous->next = current->next;
+        weight = current->weight;
+        delete current;
+
+        return weight;
+      } else {
+        previous = previous->next;
+        current = current->next;
+      }
+    }
+  }
+
+  return 0;
 }
 
 bool UdGraphAdj::isConnected(int first, int second) {
@@ -151,59 +207,18 @@ bool UdGraphAdj::connect(int first, int second) {
   if ( isConnected(first, second) ) { return false; }
 
   // we need to add a node for the lists a and b respectively
-  addNode(first, second, 1);
-  addNode(second, first, 1);
+  addEdge(first, second, 1);
+  addEdge(second, first, 1);
 
   return true;
-}
-
-//
-// complexity O(n)
-//
-int UdGraphAdj::removeNode(int llst, int nd) {
-
-  assert(llst != nd);
-
-  int weight;
-
-  if ( !adj_list_[llst].head ) { return 0; }
-
-  AdjListNode* current = adj_list_[llst].head;
-  AdjListNode* previous = adj_list_[llst].head;
-
-  if ( adj_list_[llst].head->value == nd ) {
-    // if node is the head node
-    adj_list_[llst].head = current->next;
-    weight = current->weight;
-    delete current;
-
-    return weight;
-
-  } else {
-    current = current->next;
-    while ( current ) {
-      if ( current->value == nd ) {
-        previous->next = current->next;
-        weight = current->weight;
-        delete current;
-
-        return weight;
-      } else {
-        previous = previous->next;
-        current = current->next;
-      }
-    }
-  }
-
-  return 0;
 }
 
 int UdGraphAdj::disconnect(int first, int second) {
 
   assert(first != second);
 
-  int weight1 = removeNode(first, second);
-  int weight2 = removeNode(second, first);
+  int weight1 = delEdge(first, second);
+  int weight2 = delEdge(second, first);
 
   assert(weight1 == weight2);
 
@@ -227,86 +242,23 @@ void UdGraphAdj::collapse(int src, int dst) {
   // change the value of nodes with value src to dst
   AdjListNode* current = adj_list_[src].head;
   while ( current ) {
-    int weight = removeNode(current->value, src);
-    addNode(current->value, dst, weight);
+    // change the node with value 'src' in other linked lists to 'dst'
+    // TODO:: this could be fast since the linked list is traversed twice here for code simplicity
+    int weight = delEdge(current->value, src);
+    addEdge(current->value, dst, weight);
+
+    // add node in the linked list 'src' to the linked list 'dst'
+    addEdge(dst, current->value, current->weight);
 
     current = current->next;
   }
 
-  // merge two linked list
-  AdjListNode* current_dst = adj_list_[dst].head;
-  AdjListNode* current_src = adj_list_[src].head;
-  AdjListNode* previous_dst = adj_list_[dst].head;
-  AdjListNode* tmp;
-
-  if ( !current_src ) { return; }
-
-  if ( !current_dst || current_src->value < current_dst->value ) {
-    // insert the head node in linked list a at the head of linked list b
-    //
-    // This is a move operation, so the weight does not need to be changed
-    adj_list_[src].head = current_src->next;
-
-    adj_list_[dst].head = current_src;
-    adj_list_[dst].head->next = current_dst;
-
-    current_dst = adj_list_[dst].head->next;
-    previous_dst = adj_list_[dst].head;
-
-    current_src = adj_list_[src].head;
-  } else if ( current_src->value == current_dst->value ) {
-
-    // if the values of the head nodes are equal
-    current_dst->weight += current_src->weight;
-
-    current_src = current_src->next;
-    current_dst = current_dst->next;
-
-  } else {
-
-    current_dst = current_dst->next;
-
-  }
-
-  if ( !current_src ) { adj_list_[src].head = NULL; }
-
-  while ( current_src ) {
-    if ( !current_dst ) {
-
-      // move all the node in the source to the tail of the destination
-      previous_dst->next = current_src;
-      adj_list_[src].head = NULL;
-
-      break;
-
-    } else {
-      // move one node in the source to the destination
-      if ( current_src->value > current_dst->value ) {
-        current_dst = current_dst->next;
-        previous_dst = previous_dst->next;
-
-      } else {
-        if ( current_src->value < current_dst->value ) {
-          tmp = current_src->next;
-          previous_dst->next = current_src;
-          current_src->next = current_dst;
-          previous_dst = current_src;
-          current_src = tmp;
-        } else { // current_src->value == current_dst->value
-          current_dst->weight += current_src->weight;
-          tmp = current_src;
-          current_src = current_src->next;
-          delete tmp;
-        }
-      }
-    }
-  }
-
-  adj_list_[src].head = NULL;
+  // delete linked list and release memory
+  clearList(src);
 
 }
 
-void UdGraphAdj::printGraph() {
+void UdGraphAdj::display() {
   std::cout << "------------------------------" << std::endl;
 
   for (int i=0; i<n_vertex_; ++i) {

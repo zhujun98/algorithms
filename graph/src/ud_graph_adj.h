@@ -65,14 +65,34 @@ public:
   std::vector<int> nonEmptyVertex();
 
   //
-  // add node to linked list
-  // the nodes in the linked list are sorted in ascending order
+  // clear the linked list (release memory) corresponding to vertex "node"
   //
-  // @param llst: linked list
-  // @param nd: node
+  // @param vertex: vertex value
+  //
+  void clearList(int vertex);
+
+  //
+  // add an edge (first, second)
+  // The nodes in the linked list are sorted in ascending order
+  // Note: the sorting will not increase the complexity since it is
+  //       anyhow necessary to traverse the list to check the existence
+  //       of the identical node.
+  //
+  // @param first: first vertex
+  // @param second: second vertex
   // @param weight: weight of source node
   //
-  void addNode(int llst, int nd, int weight=1);
+  void addEdge(int first, int second, int weight=1);
+
+  //
+  // delete the edge (first, second)
+  //
+  // @param first: the first vertex
+  // @param second: the second vertex
+  //
+  // @return: weight of the removed node
+  //
+  int delEdge(int first, int second);
 
   //
   // check whether two vertices are connected
@@ -95,16 +115,6 @@ public:
   bool connect(int first, int second);
 
   //
-  // remove node from linked list
-  //
-  // @param llst: linked list
-  // @param nd: node
-  //
-  // @return: weight of the removed node
-  //
-  int removeNode(int llst, int nd);
-
-  //
   // disconnect two vertices
   //
   // @param first: the first vertex
@@ -123,9 +133,9 @@ public:
   void collapse(int src, int dst);
 
   //
-  // print the graph
+  // display the graph
   //
-  void printGraph();
+  void display();
 
 };
 

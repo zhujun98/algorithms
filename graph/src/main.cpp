@@ -34,64 +34,65 @@ int graphContract(UdGraphAdj graph) {
     unsigned long second = distribution(generator) % (graph.nonEmptyVertex().size() - 1);
     if (second >= first) { ++second; }
 
+//    std::cout << nonEmptyVertex[first] << " " << nonEmptyVertex[second] << std::endl;
     graph.collapse(nonEmptyVertex[first], nonEmptyVertex[second]);
 
     nonEmptyVertex = graph.nonEmptyVertex();
+//    graph.display();
   }
 
   return graph.nEdge();
 }
 
+
 //
-// test the graph and the implementation of the Karger's mini-cut algorithm
+// build a simple graph for testing
 //
 //  0---1---4---5
 //  | x |   | x |
 //  3---2---7---6
 //
 // the minimum cut is 2.
+UdGraphAdj simpleGraph() {
+  UdGraphAdj graph(8);
+
+  graph.connect(0, 1);
+  graph.connect(1, 2);
+  graph.connect(2, 3);
+  graph.connect(3, 0);
+  graph.connect(0, 2);
+  graph.connect(1, 3);
+  graph.connect(4, 5);
+  graph.connect(5, 6);
+  graph.connect(6, 7);
+  graph.connect(7, 4);
+  graph.connect(4, 6);
+  graph.connect(5, 7);
+  graph.connect(1, 4);
+  graph.connect(2, 7);
+
+  return graph;
+}
+
+
+//
+// test the graph and the implementation of the Karger's mini-cut algorithm
 //
 // @param n: number of random contractions.
 //
-void testGraph(int n) {
+void testKarger(int n) {
+
   int min_cut = 100;
   int cut;
 
-  // appy Karger's algorithm to find the minimum cut in the graph
+  // apply Karger's algorithm to find the minimum cut in the graph
   for (int i=0; i<n; ++i) {
-    UdGraphAdj graph(8);
-
-    graph.connect(0, 1);
-    graph.connect(1, 2);
-    graph.connect(2, 3);
-    graph.connect(3, 0);
-    graph.connect(0, 2);
-    graph.connect(1, 3);
-    graph.connect(4, 5);
-    graph.connect(5, 6);
-    graph.connect(6, 7);
-    graph.connect(7, 4);
-    graph.connect(4, 6);
-    graph.connect(5, 7);
-    graph.connect(1, 4);
-    graph.connect(2, 7);
-
-//    graph.printGraph();
+    UdGraphAdj graph = simpleGraph();
 
     cut = graphContract(graph);
-    std::cout << cut << std::endl;
     if ( cut < min_cut ) { min_cut = cut; }
   }
   std::cout << "the minimum cut is " << min_cut << std::endl;
-
-//  graph.collapse(0, 1);
-//  graph.collapse(1, 2);
-//  graph.collapse(3, 2);
-//  graph.collapse(4, 5);
-//  graph.collapse(5, 6);
-//  graph.collapse(6, 7);
-//  graph.printGraph();
-
 }
 
 
@@ -143,9 +144,19 @@ int main() {
 
   std::cout << "Hello" << std::endl;
 
-//  testGraph(100);
+//  UdGraphAdj graph = simpleGraph();
 
-  runCourseraQuiz(100);
+//  graph.collapse(0, 1);
+//  graph.collapse(1, 2);
+//  graph.collapse(3, 2);
+//  graph.collapse(4, 5);
+//  graph.collapse(5, 6);
+//  graph.collapse(6, 7);
+//  graph.printGraph();
+
+  testKarger(100);
+
+  runCourseraQuiz(1000);
 
   return 0;
 }
