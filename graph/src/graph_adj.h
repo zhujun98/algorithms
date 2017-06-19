@@ -97,11 +97,11 @@ public:
   std::vector<int> getNonEmptyList() const;
 
   //
-  // get the linked list belong to a vertex
+  // get the head node of a linked list belong to a vertex
   //
   // @param vertex: vertex value
   //
-  // @return: linked list
+  // @return: head node of the linked list
   //
   AdjListNode* getList(int vertex) const;
 
