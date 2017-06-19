@@ -15,6 +15,7 @@
 #include <time.h>
 
 #include "graph_adj.h"
+#include "graph_utilities.h"
 
 //
 // contract an undirected graph until only two non-empty linked lists remain

@@ -7,6 +7,6 @@ add_definitions(-std=c++11)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-set(sources src/main.cpp src/graph_adj.cpp src/karger.h src/korasaju.h)
+set(sources src/main.cpp src/graph_adj.cpp src/graph_utilities.h src/karger.h src/korasaju.h)
 
 add_executable(run ${sources})

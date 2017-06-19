@@ -108,7 +108,6 @@ int main() {
   std::cout << "Hello" << std::endl;
 
   // test undirected graph and related implementations
-  /*
   UdGraphAdj ud_graph = simpleUdGraph();
   ud_graph.display();
 
@@ -121,7 +120,6 @@ int main() {
   // coursera course
   UdGraphAdj graph_course = readKargerData();
   karger(graph_course, 1000);
-  */
 
   // test directed graph and related implementations
 
