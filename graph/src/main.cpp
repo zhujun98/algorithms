@@ -5,7 +5,6 @@
 
 #include "graph_adj.h"
 #include "karger.h"
-#include "korasaju.h"
 
 
 //
@@ -118,8 +117,8 @@ int main() {
   karger(ud_graph, 100);
 
   // coursera course
-  UdGraphAdj graph_course = readKargerData();
-  karger(graph_course, 1000);
+//  UdGraphAdj graph_course = readKargerData();
+//  karger(graph_course, 1000);
 
   // test directed graph and related implementations
 
@@ -128,6 +127,14 @@ int main() {
 
   GraphAdj graph_reversed = reverseGraph(graph);
   graph_reversed.display();
+
+  std::vector<int> search_result;
+
+  search_result = graph.DFS(5);
+
+  for (int i=0; i<search_result.size(); ++i) {
+    std::cout << search_result[i] << std::endl;
+  }
 
   return 0;
 }

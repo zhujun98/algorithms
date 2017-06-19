@@ -12,22 +12,25 @@
 #include <list>
 #include <vector>
 
-//
-// adjacency list node
-//
-struct AdjListNode {
-  int value;  // value of the node
-  int weight;  // weight of the node
-  AdjListNode* next;  // pointer to the next node
-};
+namespace graph {
+  //
+  // node in a linked list
+  //
+  struct AdjListNode {
+    int value;  // value of the node
+    int weight;  // weight of the node
+    AdjListNode* next;  // pointer to the next node
+  };
 
+  //
+  // head of a linked list
+  //
+  struct AdjListHead {
+    bool visited;  // flag indicate whether a vertex has been visited
+    AdjListNode* head;  // head of linked list
+  };
 
-//
-// adjacency list, only the head node is required here
-//
-struct AdjList {
-  AdjListNode* head;  // an array of heads of linked lists
-};
+}
 
 
 class GraphAdj {
@@ -35,14 +38,16 @@ protected:
 
   int n_vertex_;  // number of vertices
 
-  AdjList* adj_list_;  // an array of adjacency list
+  // a vector of linked list head nodes plus some other information
+  std::vector<graph::AdjListHead> adj_list_;
 
   //
   // add an edge (first, second)
   // The nodes in the linked list are sorted in ascending order
   // Note: the sorting will not increase the complexity since it is
   //       anyhow necessary to traverse the list to check the existence
-  //       of the identical node.
+  //       of the identical node. For the identical node, we only
+  //       increase the weight.
   //
   // @param first: first vertex
   // @param second: second vertex
@@ -61,7 +66,7 @@ protected:
   int delEdge(int first, int second);
 
   //
-  // clear the linked list (release memory) corresponding to vertex "node"
+  // clear the linked list and release memory
   //
   // @param vertex: vertex value
   //
@@ -84,7 +89,7 @@ public:
   //
   // get No. of vertices in the graph
   //
-  int getNoVertex() const;
+  int size() const;
 
   //
   // get No. of edges in the graph
@@ -97,13 +102,13 @@ public:
   std::vector<int> getNonEmptyList() const;
 
   //
-  // get the head node of a linked list belong to a vertex
+  // get the head of the linked list
   //
-  // @param vertex: vertex value
+  // @param vertex: value of the vertex
   //
-  // @return: head node of the linked list
+  // @return: head of the linked list
   //
-  AdjListNode* getList(int vertex) const;
+  graph::AdjListHead getList(int vertex) const;
 
   //
   // check whether two vertices are connected
@@ -125,7 +130,7 @@ public:
   //
   virtual bool connect(int first, int second);
 
-
+  //
   // disconnect two vertices
   //
   // @param first: the first vertex
@@ -142,6 +147,15 @@ public:
   // @param dst: value of the destination vertex
   //
   virtual void collapse(int src, int dst);
+
+  //
+  // Apply depth-first-search (DFS) from a vertex
+  //
+  // @param vertex: starting vertex
+  //
+  // @return: a vector of sink vertices, ordered by finding time
+  //
+  virtual std::vector<int> DFS(int vertex);
 
   //
   // display the graph
