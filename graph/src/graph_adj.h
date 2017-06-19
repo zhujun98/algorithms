@@ -84,17 +84,26 @@ public:
   //
   // get No. of vertices in the graph
   //
-  int getNoVertex();
+  int getNoVertex() const;
 
   //
   // get No. of edges in the graph
   //
-  virtual int countEdge();
+  virtual int countEdge() const;
 
   //
   // get a vector of vertices with non-empty linked lists
   //
-  std::vector<int> getNonEmptyList();
+  std::vector<int> getNonEmptyList() const;
+
+  //
+  // get the linked list belong to a vertex
+  //
+  // @param vertex: vertex value
+  //
+  // @return: linked list
+  //
+  AdjListNode* getList(int vertex) const;
 
   //
   // check whether two vertices are connected
@@ -104,7 +113,7 @@ public:
   //
   // @return: true for connected and false for unconnected. Throw an error
   //          if the two vertices are only partially connected.
-  virtual bool isConnected(int first, int second);
+  virtual bool isConnected(int first, int second) const;
 
   //
   // connect two vertices
@@ -157,7 +166,7 @@ public:
   //
   // get No. of edges in the graph
   //
-  int countEdge();
+  int countEdge() const;
 
   //
   // check whether two vertices are connected
@@ -167,7 +176,7 @@ public:
   //
   // @return: true for connected and false for unconnected. Throw an error
   //          if the two vertices are only partially connected.
-  bool isConnected(int first, int second);
+  bool isConnected(int first, int second) const;
 
   //
   // connect two vertices
@@ -195,7 +204,25 @@ public:
   // @param src: value of the source vertex
   // @param dst: value of the destination vertex
   //
-  virtual void collapse(int src, int dst);
+  void collapse(int src, int dst);
 };
+
+
+template <class g>
+inline g copyGraph(const g& graph) {
+  int g_size = graph.getNoVertex();
+  g copy(g_size);
+
+  for(int i=0; i<g_size; ++i) {
+    AdjListNode* current = graph.getList(i);
+    while ( current ) {
+      copy.connect(i, current->value);
+      current = current->next;
+    }
+  }
+
+  return copy;
+}
+
 
 #endif //GRAPH_GRAPH_ADJ_H

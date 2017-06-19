@@ -38,9 +38,9 @@ GraphAdj::GraphAdj(int n) {
 
 GraphAdj::~GraphAdj() {}
 
-int GraphAdj::getNoVertex() { return n_vertex_; }
+int GraphAdj::getNoVertex() const { return n_vertex_; }
 
-int GraphAdj::countEdge() {
+int GraphAdj::countEdge() const {
   int count = 0;
   for (int i=0; i<n_vertex_; ++i) {
     AdjListNode* current = adj_list_[i].head;
@@ -53,7 +53,7 @@ int GraphAdj::countEdge() {
   return count;
 }
 
-std::vector<int> GraphAdj::getNonEmptyList() {
+std::vector<int> GraphAdj::getNonEmptyList() const {
 
   std::vector<int> nonEmptyVertex;
 
@@ -65,6 +65,11 @@ std::vector<int> GraphAdj::getNonEmptyList() {
 
   return nonEmptyVertex;
 }
+
+AdjListNode* GraphAdj::getList(int vertex) const {
+  return adj_list_[vertex].head;
+}
+
 
 void GraphAdj::clearList(int vertex) {
 
@@ -186,7 +191,7 @@ int GraphAdj::disconnect(int first, int second) {
   return weight;
 }
 
-bool GraphAdj::isConnected(int first, int second) {
+bool GraphAdj::isConnected(int first, int second) const {
 
   bool connected = false;
 
@@ -225,7 +230,7 @@ UdGraphAdj::UdGraphAdj(int n) : GraphAdj(n) {}
 
 UdGraphAdj::~UdGraphAdj() {}
 
-int UdGraphAdj::countEdge() {
+int UdGraphAdj::countEdge() const {
   int count = 0;
   for (int i=0; i<n_vertex_; ++i) {
     AdjListNode* current = adj_list_[i].head;
@@ -298,7 +303,7 @@ void UdGraphAdj::collapse(int src, int dst) {
 
 }
 
-bool UdGraphAdj::isConnected(int first, int second) {
+bool UdGraphAdj::isConnected(int first, int second) const {
 
   bool connected1 = false;
   bool connected2 = false;
