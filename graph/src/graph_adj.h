@@ -208,6 +208,13 @@ public:
 };
 
 
+//
+// copy a graph
+//
+// @param graph: original graph (could be directed or undirected)
+//
+// @param return: copied graph
+//
 template <class g>
 inline g copyGraph(const g& graph) {
   int g_size = graph.getNoVertex();
@@ -224,5 +231,26 @@ inline g copyGraph(const g& graph) {
   return copy;
 }
 
+//
+// reverse a directed graph
+//
+// @param graph: original graph
+//
+// @param return: reversed graph
+//
+inline GraphAdj reverseGraph(const GraphAdj& graph) {
+  int g_size = graph.getNoVertex();
+  GraphAdj reversed(g_size);
+
+  for (int i=0; i<g_size; ++i) {
+    AdjListNode* current = graph.getList(i);
+    while ( current ) {
+      reversed.connect(current->value, i);
+      current = current->next;
+    }
+  }
+
+  return reversed;
+}
 
 #endif //GRAPH_GRAPH_ADJ_H

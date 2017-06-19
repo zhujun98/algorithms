@@ -128,5 +128,8 @@ int main() {
   GraphAdj graph = simpleGraph();
   graph.display();
 
+  GraphAdj graph_reversed = reverseGraph(graph);
+  graph_reversed.display();
+
   return 0;
 }
