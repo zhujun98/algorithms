@@ -9,6 +9,8 @@
 #include <queue>
 
 #include "graph_adj.h"
+#include "graph_utilities.h"
+
 
 namespace graph {
   //
@@ -31,31 +33,30 @@ namespace graph {
 }
 
 
-GraphAdj::GraphAdj(int n) {
-  n_vertex_ = n;
-
-  graph::AdjListHead adj_list;
+GraphAdj::GraphAdj(unsigned int n) {
+  graph::GraphAdjVertex adj_list;
   // initialize a adjacency list with n elements (head nodes)
   for (int i = 0; i < n; ++i) {
+    adj_list.value = 0;
     adj_list.visited = false;
     adj_list.head = NULL;
 
-    adj_list_.push_back(adj_list);
+    vertices_.push_back(adj_list);
   }
 }
 
 GraphAdj::~GraphAdj() {
-  for (int i=0; i<n_vertex_;++i) {
+  for (int i=0; i<vertices_.size();++i) {
     clearList(i);
   }
 }
 
-int GraphAdj::size() const { return n_vertex_; }
+std::size_t GraphAdj::size() const { return vertices_.size(); }
 
 int GraphAdj::countEdge() const {
   int count = 0;
-  for (int i=0; i<n_vertex_; ++i) {
-    graph::AdjListNode* current = adj_list_[i].head;
+  for (int i=0; i<vertices_.size(); ++i) {
+    graph::AdjListNode* current = vertices_[i].head;
     while ( current ) {
       count += current->weight;
       current = current->next;
@@ -65,34 +66,34 @@ int GraphAdj::countEdge() const {
   return count;
 }
 
-std::vector<int> GraphAdj::getNonEmptyList() const {
+std::vector<int> GraphAdj::getConnectedVertices() const {
 
-  std::vector<int> nonEmptyVertex;
+  std::vector<int> connectedVertices;
 
-  for (int i=0; i<n_vertex_; ++i) {
-    if ( adj_list_[i].head ) {
-      nonEmptyVertex.push_back(i);
+  for (int i=0; i<vertices_.size(); ++i) {
+    if ( vertices_[i].head ) {
+      connectedVertices.push_back(i);
     }
   }
 
-  return nonEmptyVertex;
+  return connectedVertices;
 }
 
-graph::AdjListHead GraphAdj::getList(int vertex) const {
-  return adj_list_[vertex];
+graph::GraphAdjVertex GraphAdj::getVertex(int value) const {
+  return vertices_[value];
 }
 
 
 void GraphAdj::clearList(int vertex) {
 
-  graph::AdjListNode* current = adj_list_[vertex].head;
+  graph::AdjListNode* current = vertices_[vertex].head;
 
-  if ( !adj_list_[vertex].head ) { return; }
+  if ( !vertices_[vertex].head ) { return; }
 
   while ( current ) {
-    adj_list_[vertex].head = current->next;
+    vertices_[vertex].head = current->next;
     delete current;
-    current = adj_list_[vertex].head;
+    current = vertices_[vertex].head;
   }
 }
 
@@ -103,20 +104,20 @@ void GraphAdj::addEdge(int first, int second, int weight) {
   graph::AdjListNode* new_node = graph::newAdjListNode(second);
   new_node->weight = weight;
 
-  graph::AdjListNode* current = adj_list_[first].head;
-  graph::AdjListNode* previous = adj_list_[first].head;
+  graph::AdjListNode* current = vertices_[first].head;
+  graph::AdjListNode* previous = vertices_[first].head;
 
-  if ( !adj_list_[first].head) {
+  if ( !vertices_[first].head) {
     // the linked list is empty
-    adj_list_[first].head = new_node;
-  } else if ( second == adj_list_[first].head->value ) {
-    adj_list_[first].head->weight += weight;
+    vertices_[first].head = new_node;
+  } else if ( second == vertices_[first].head->value ) {
+    vertices_[first].head->weight += weight;
     delete new_node;
     return;
-  } else if ( second < adj_list_[first].head->value ) {
+  } else if ( second < vertices_[first].head->value ) {
     // insert the new node in the head
-    adj_list_[first].head = new_node;
-    adj_list_[first].head->next = current;
+    vertices_[first].head = new_node;
+    vertices_[first].head->next = current;
   } else {
     // insert the new node in the middle
     current = current->next;
@@ -151,14 +152,14 @@ int GraphAdj::delEdge(int first, int second) {
 
   int weight;
 
-  if ( !adj_list_[first].head ) { return 0; }
+  if ( !vertices_[first].head ) { return 0; }
 
-  graph::AdjListNode* current = adj_list_[first].head;
-  graph::AdjListNode* previous = adj_list_[first].head;
+  graph::AdjListNode* current = vertices_[first].head;
+  graph::AdjListNode* previous = vertices_[first].head;
 
-  if ( adj_list_[first].head->value == second ) {
+  if ( vertices_[first].head->value == second ) {
     // if node is the head node
-    adj_list_[first].head = current->next;
+    vertices_[first].head = current->next;
     weight = current->weight;
     delete current;
 
@@ -207,7 +208,7 @@ bool GraphAdj::isConnected(int first, int second) const {
 
   bool connected = false;
 
-  graph::AdjListNode* current = adj_list_[first].head;
+  graph::AdjListNode* current = vertices_[first].head;
 
   while ( current ) {
     if ( current->value == second ) {
@@ -221,13 +222,14 @@ bool GraphAdj::isConnected(int first, int second) const {
 
 void GraphAdj::collapse(int src, int dst) {}
 
-void GraphAdj::display() {
+void GraphAdj::display() const {
   std::cout << "------------------------------" << std::endl;
 
-  for (int i=0; i<n_vertex_; ++i) {
-    graph::AdjListNode* pprint = adj_list_[i].head;
+  for (int i=0; i<vertices_.size(); ++i) {
+    graph::AdjListNode* pprint = vertices_[i].head;
 
-    std::cout << "adjacency list of vertex [" << i << "] head";
+    std::cout << "Vertex [" << i << "] (visited = "
+              << vertices_[i].visited << " )";
     while (pprint) {
       std::cout << " -> " << pprint->value << " (" << pprint->weight << ")";
       pprint = pprint->next;
@@ -237,21 +239,42 @@ void GraphAdj::display() {
   }
 }
 
+std::vector<int> GraphAdj::BFS(int vertex) {
+
+  std::vector<int> visited;
+  std::queue<int> tracker;
+}
+//  tracker.push(vertex);
+//  visited.push_back(vertex);
+//  graph::GraphAdjVertex* current_head = &vertices_[vertex];
+//  current_head->visited = true;
+//  // search the vertex reachable from the current vertex
+//  while ( !tracker.empty() ) {
+//    graph::AdjListNode* current_node = current_head->head;
+//    // find all the next reachable vertices which have not been visited
+//    while ( current_node ) {
+//
+//    }
+//  }
+
 std::vector<int> GraphAdj::DFS(int vertex) {
 
   std::vector<int> sink;
   std::stack<int> tracker;
 
   tracker.push(vertex);
-  graph::AdjListHead* current_head = &adj_list_[vertex];
-  current_head->visited = true;
   // search the vertex reachable from the current vertex
   while ( !tracker.empty() ) {
+    // retreat to the last vertex
+    int current_vertex = tracker.top();
+    graph::GraphAdjVertex* current_head = &vertices_[current_vertex];
+    current_head->visited = true;
+
     bool retreat = true;  // a flag indicating whether to retreat to the last vertex
     graph::AdjListNode* current_node = current_head->head;
     // find the next reachable vertex which has not been visited
     while ( current_node ) {
-      graph::AdjListHead* next_head = &adj_list_[current_node->value];
+      graph::GraphAdjVertex* next_head = &vertices_[current_node->value];
       if ( !next_head->visited ) {
         // move to the next vertex
         current_head = next_head;
@@ -265,17 +288,12 @@ std::vector<int> GraphAdj::DFS(int vertex) {
       }
       current_node = current_node->next;
     }
-
     // find a sink vertex
     if ( retreat ) {
-      int current_vertex = tracker.top();
       // store the sink vertex
       sink.push_back(current_vertex);
       // remove the sink vertex from stack
       tracker.pop();
-      // retreat to the last vertex
-      current_vertex = tracker.top();
-      current_head = &adj_list_[current_vertex];
     }
   }
 
@@ -283,14 +301,14 @@ std::vector<int> GraphAdj::DFS(int vertex) {
 }
 
 
-UdGraphAdj::UdGraphAdj(int n) : GraphAdj(n) {}
+UdGraphAdj::UdGraphAdj(unsigned int n) : GraphAdj(n) {}
 
 UdGraphAdj::~UdGraphAdj() {}
 
 int UdGraphAdj::countEdge() const {
   int count = 0;
-  for (int i=0; i<n_vertex_; ++i) {
-    graph::AdjListNode* current = adj_list_[i].head;
+  for (int i=0; i<vertices_.size(); ++i) {
+    graph::AdjListNode* current = vertices_[i].head;
     while ( current ) {
       count += current->weight;
       current = current->next;
@@ -342,7 +360,7 @@ void UdGraphAdj::collapse(int src, int dst) {
   // between the source and destination vertices!
 
   // change the value of nodes with value src to dst
-  graph::AdjListNode* current = adj_list_[src].head;
+  graph::AdjListNode* current = vertices_[src].head;
   while ( current ) {
     // change the node with value 'src' in other linked lists to 'dst'
     // TODO:: this could be fast since the linked list is traversed twice here for code simplicity
@@ -365,7 +383,7 @@ bool UdGraphAdj::isConnected(int first, int second) const {
   bool connected1 = false;
   bool connected2 = false;
 
-  graph::AdjListNode* current = adj_list_[first].head;
+  graph::AdjListNode* current = vertices_[first].head;
 
   while ( current ) {
     if ( current->value == second ) {
@@ -374,7 +392,7 @@ bool UdGraphAdj::isConnected(int first, int second) const {
     current = current->next;
   }
 
-  current = adj_list_[second].head;
+  current = vertices_[second].head;
 
   while ( current ) {
     if ( current->value == first ) {

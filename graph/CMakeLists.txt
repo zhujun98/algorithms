@@ -11,6 +11,6 @@ set(sources
         src/main.cpp
         src/graph_adj.cpp
         src/graph_utilities.h
-        src/karger.h)
+        )
 
 add_executable(run ${sources})

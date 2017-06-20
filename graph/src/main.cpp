@@ -2,9 +2,11 @@
 // Created by jun on 6/19/17.
 //
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "graph_adj.h"
-#include "karger.h"
+#include "graph_utilities.h"
 
 
 //
@@ -42,11 +44,21 @@ UdGraphAdj simpleUdGraph() {
 //
 // build a simple directed graph for testing
 //
+// The annotation "0 *- 3" means from 0 to 3.
+//
+// 0  *-  3 *- 1  *-  4  *-  2  *-  5
+//  \    *      \    *        \    *
+//   *  /        *  /          *  /
+//     6           7             8
 // @param return: a directed graph
 //
 GraphAdj simpleGraph() {
-  GraphAdj graph(10);
+  GraphAdj graph(9);
 
+  graph.connect(0, 3);
+  graph.connect(3, 6);
+  graph.connect(6, 0);
+  graph.connect(3, 1);
   graph.connect(1, 4);
   graph.connect(4, 7);
   graph.connect(7, 1);
@@ -54,15 +66,10 @@ GraphAdj simpleGraph() {
   graph.connect(2, 5);
   graph.connect(5, 8);
   graph.connect(8, 2);
-  graph.connect(5, 3);
-  graph.connect(3, 6);
-  graph.connect(6, 9);
-  graph.connect(9, 3);
 
   return graph;
 }
 
-//
 //
 // Read the data and build an undirected graph in the quiz in the
 // Stanford algorithm course in Coursera:
@@ -70,9 +77,7 @@ GraphAdj simpleGraph() {
 // Find the minimum cut in a graph stored in the file kargerMinCut.txt
 // using Karger's random contraction algorithm.
 //
-// @return: undirected graph build by the read-in data
-//
-UdGraphAdj readKargerData() {
+void runKargerAssignment() {
   UdGraphAdj graph(200);
 
   std::string line;
@@ -97,8 +102,65 @@ UdGraphAdj readKargerData() {
     }
   }
 
-  return graph;
+  graph::karger(graph, 1000);
 
+}
+
+
+//
+// The file contains the edges of a directed graph. Vertices are labeled
+// as positive integers from 1 to 875714. Every row indicates an edge, the
+// vertex label in first column is the tail and the vertex label in second
+// column is the head (the edge points from tail to head).
+//
+// Output Format: You should output the sizes of the 5 largest strongly
+// connected components in the given graph, in decreasing order of sizes,
+// separated by commas.
+//
+// Answer: 434821,968,459,313,211
+//
+void runSccAssignment() {
+  GraphAdj graph(875714);
+
+  std::string line;
+  std::ifstream fin("../data/SCC.txt", std::ios::in);
+  // read the file line by line and put the line into a string
+  while ( std::getline(fin, line) ) {
+    std::istringstream iss(line);
+    std::string number;
+
+    int count = 0;
+    int first = -1;
+    int second = -1;
+    while ( iss >> number ) {
+
+      if ( count == 0 ) {
+        first = std::stoi(number);
+      } else if ( count == 1 ) {
+        second = std::stoi(number);
+      } else {
+        continue;
+      };
+
+      ++count;
+    }
+
+    if ( first == second ) {
+      std::cout << "Find a line with two identical numbers: "
+                << first << " " << second << std::endl;
+    } else {
+      graph.connect(first - 1, second - 1);
+    }
+    graph.connect(1, 2);
+  }
+
+  std::cout << "Finished reading data!" << std::endl;
+
+  std::cout << "Searching strongly connected components...!" << std::endl;
+  std::vector<std::vector<int>> scc = graph::kosaraju(graph);
+
+  // print scc
+  graph::printSCC(scc);
 }
 
 
@@ -110,31 +172,21 @@ int main() {
   UdGraphAdj ud_graph = simpleUdGraph();
   ud_graph.display();
 
-  ud_graph.collapse(0, 1);
-  ud_graph.collapse(4, 2);
-  ud_graph.display();
-
-  karger(ud_graph, 100);
-
-  // coursera course
-//  UdGraphAdj graph_course = readKargerData();
-//  karger(graph_course, 1000);
+  graph::karger(ud_graph, 100);
 
   // test directed graph and related implementations
 
   GraphAdj graph = simpleGraph();
   graph.display();
 
-  GraphAdj graph_reversed = reverseGraph(graph);
-  graph_reversed.display();
+  std::vector<std::vector<int>> scc = graph::kosaraju(graph);
 
-  std::vector<int> search_result;
+  // print scc
+  graph::printSCC(scc);
 
-  search_result = graph.DFS(5);
+  runKargerAssignment();
 
-  for (int i=0; i<search_result.size(); ++i) {
-    std::cout << search_result[i] << std::endl;
-  }
+  runSccAssignment();
 
   return 0;
 }

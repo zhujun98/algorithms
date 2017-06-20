@@ -18,16 +18,17 @@ namespace graph {
   //
   struct AdjListNode {
     int value;  // value of the node
-    int weight;  // weight of the node
+    int weight;  // weight of the connection
     AdjListNode* next;  // pointer to the next node
   };
 
   //
-  // head of a linked list
+  // vertex of the graph, stored in an array-like container (vector here)
   //
-  struct AdjListHead {
+  struct GraphAdjVertex {
+    int value;
     bool visited;  // flag indicate whether a vertex has been visited
-    AdjListNode* head;  // head of linked list
+    AdjListNode* head;  // head node of the linked list
   };
 
 }
@@ -36,10 +37,7 @@ namespace graph {
 class GraphAdj {
 protected:
 
-  int n_vertex_;  // number of vertices
-
-  // a vector of linked list head nodes plus some other information
-  std::vector<graph::AdjListHead> adj_list_;
+  std::vector<graph::GraphAdjVertex> vertices_;
 
   //
   // add an edge (first, second)
@@ -66,9 +64,9 @@ protected:
   int delEdge(int first, int second);
 
   //
-  // clear the linked list and release memory
+  // clear (release memory) the linked list belonged to a vertex
   //
-  // @param vertex: vertex value
+  // @param vertex: value of the vertex
   //
   void clearList(int vertex);
 
@@ -79,7 +77,7 @@ public:
   //
   // @param n: total number of vertices
   //
-  GraphAdj(int n);
+  GraphAdj(unsigned int n);
 
   //
   // destructor
@@ -89,7 +87,7 @@ public:
   //
   // get No. of vertices in the graph
   //
-  int size() const;
+  std::size_t size() const;
 
   //
   // get No. of edges in the graph
@@ -97,18 +95,18 @@ public:
   virtual int countEdge() const;
 
   //
-  // get a vector of vertices with non-empty linked lists
+  // get a vector of vertices with at least one edge
   //
-  std::vector<int> getNonEmptyList() const;
+  std::vector<int> getConnectedVertices() const;
 
   //
-  // get the head of the linked list
+  // get a vertex
   //
-  // @param vertex: value of the vertex
+  // @param value: value of the vertex
   //
-  // @return: head of the linked list
+  // @return: vertex
   //
-  graph::AdjListHead getList(int vertex) const;
+  graph::GraphAdjVertex getVertex(int value) const;
 
   //
   // check whether two vertices are connected
@@ -149,18 +147,36 @@ public:
   virtual void collapse(int src, int dst);
 
   //
+  // Apply breath-first-search (BFS) from a vertex
+  //
+  // @param vertex: starting vertex
+  //
+  // @return: a vector of visited vertices, ordered by finding time
+  //
+  std::vector<int> BFS(int vertex);
+
+  //
+  // Find the minimum distance between two vertices using BFS
+  //
+  // @param first: the first vertex
+  // @param second: the second vertex
+  //
+  // @param return: the distance, -1 for not connected
+  int minDistanceBFS(int first, int second);
+
+  //
   // Apply depth-first-search (DFS) from a vertex
   //
   // @param vertex: starting vertex
   //
   // @return: a vector of sink vertices, ordered by finding time
   //
-  virtual std::vector<int> DFS(int vertex);
+  std::vector<int> DFS(int vertex);
 
   //
   // display the graph
   //
-  void display();
+  void display() const;
 
 };
 
@@ -170,7 +186,7 @@ public:
   //
   // constructor
   //
-  UdGraphAdj(int n);
+  UdGraphAdj(unsigned int);
 
   //
   // destructor
