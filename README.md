@@ -26,8 +26,10 @@ See [here](./sorting_and_selection)
 
 ## graph
 
-* adjacency list representation of undirected graph
+* adjacency list representation of directed and undirected graph
+* Depth first search (DFS)
 * Karger's random algorithm
+* Kosaraju's algorithm
 
 See [here](./graph)
 
