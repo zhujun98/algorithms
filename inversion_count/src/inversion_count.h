@@ -1,8 +1,13 @@
 //
 // Created by jun on 5/25/17.
+//
 // Implementations of counting inversions in a 1D array.
 //
-
+// functions:
+//   - inversionCountBruteForce();
+//   - splitInversion();
+//   - quickInversion();
+//
 #ifndef INVERSION_COUNT_INVERSION_COUNT_H
 #define INVERSION_COUNT_INVERSION_COUNT_H
 
@@ -16,14 +21,11 @@
 // @param a: input 1D array
 //
 template<typename T>
-inline long inversionCountBruteForce(const T& a)
-{
+inline long inversionCountBruteForce(const T& a) {
   long count = 0;
 
-  for (int i=0; i<a.size()-1; ++i)
-  {
-    for (int j=i+1; j<a.size(); ++j)
-    {
+  for (int i=0; i<a.size()-1; ++i) {
+    for (int j=i+1; j<a.size(); ++j) {
       if (a[i] > a[j]) { ++count; }
     }
   }
@@ -31,40 +33,38 @@ inline long inversionCountBruteForce(const T& a)
   return count;
 }
 
+
 //
-// computer the No. of splitting inversions in two arrays
+// computer the No. of split inversions in two arrays
 //
-// @param b: left 1D array
-// @param c: right 1D array
+// @param left: left 1D array
+// @param right: right 1D array
+//
+// @return: number of split inversions
 //
 template <typename T>
-inline long splitInversion(const T& b, const T& c)
-{
+inline long splitInversion(const T& left, const T& right) {
   long count = 0;
 
-  int l_b = b.size();
-  int l_c = c.size();
+  int left_size = left.size();
+  int right_size = right.size();
 
-  if ( l_b < 1 || l_c < 1 ) { return 0; }
+  if ( left_size < 1 || right_size < 1 ) { return 0; }
 
   int j = 0;
   int k = 0;
-  for (int i=0; i<l_b+l_c; ++i)
-  {
-    if (b[j] > c[k])
-    {
+  for (int i=0; i<left_size + right_size; ++i) {
+    if (left[j] > right[k]) {
       ++k;
       // If an element j in the left array is bigger than the element k
       // in the right array, it means that the element j and the rest
       // elements after it in the left array are all inversions to the
       // element k in the right array.
-      count += l_b - j;
-      if (k == l_c) { break; }
-    }
-    else if (b[j] < c[k])
-    {
+      count += left_size - j;
+      if (k == right_size) { break; }
+    } else if (left[j] < right[k]) {
       ++j;
-      if (j == l_b) { break; }
+      if (j == left_size) { break; }
     }
 
   }
@@ -73,30 +73,32 @@ inline long splitInversion(const T& b, const T& c)
 }
 
 //
-// compute the number of inversions by splitting algorithm
+// compute the number of inversions by split algorithm
 //
 // @param a: input 1D array
 //
+// @return: number of inversions
+//
 template <typename T>
-inline long quickInversion(const T& a)
-{
+inline long quickInversion(const T& a) {
   long count = 0;
 
   if (a.size() < 2) { return 0; }
 
   int split = a.size()/2;
 
-  // divide the original vector by left vector and right vector
-  T b (a.begin(), a.begin() + split);
-  T c (a.begin() + split, a.end());
+  // divide the original vector into the left and right arrays
+  T left (a.begin(), a.begin() + split);
+  T right (a.begin() + split, a.end());
 
-  // recursively calculate the number of inversions in the left and right vectors
-  count += quickInversion(b);
-  count += quickInversion(c);
+  // recursively calculate the number of inversions in the left and right arrays
+  count += quickInversion(left);
+  count += quickInversion(right);
 
-  std::sort(b.begin(), b.end());
-  std::sort(c.begin(), c.end());
-  count += splitInversion(b, c);
+  // Add the number of split inversions between the left and right arrays
+  std::sort(left.begin(), left.end());
+  std::sort(right.begin(), right.end());
+  count += splitInversion(left, right);
 
   return count;
 }
