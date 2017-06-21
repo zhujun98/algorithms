@@ -82,10 +82,10 @@ void runKargerAssignment() {
 
   std::string line;
   // create an input file stream
-  std::ifstream fin("../data/kargerMinCut.txt", std::ios::in);
+  std::ifstream ifs("../data/kargerMinCut.txt", std::ifstream::in);
 
   // read the file line by line and put the line into a string
-  while ( std::getline(fin, line) ) {
+  while ( std::getline(ifs, line) ) {
     std::istringstream iss(line);
     std::string number;
 
@@ -101,6 +101,7 @@ void runKargerAssignment() {
       }
     }
   }
+  ifs.close();
 
   graph::karger(graph, 1000);
 
@@ -123,9 +124,9 @@ void runSccAssignment() {
   GraphAdj graph(875714);
 
   std::string line;
-  std::ifstream fin("../data/SCC.txt", std::ios::in);
+  std::ifstream ifs("../data/SCC.txt", std::ifstream::in);
   // read the file line by line and put the line into a string
-  while ( std::getline(fin, line) ) {
+  while ( std::getline(ifs, line) ) {
     std::istringstream iss(line);
     std::string number;
 
@@ -153,6 +154,7 @@ void runSccAssignment() {
     }
     graph.connect(1, 2);
   }
+  ifs.close();
 
   std::cout << "Finished reading data!" << std::endl;
 
