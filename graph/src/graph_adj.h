@@ -3,6 +3,12 @@
 //
 // implementation of the directed and undirected graph using adjacency list
 //
+// base class:
+// - GraphAdj()
+//  derived class:
+//    - UdGraphAdj()
+//
+//
 
 #ifndef GRAPH_GRAPH_ADJ_H
 #define GRAPH_GRAPH_ADJ_H
@@ -30,6 +36,16 @@ namespace graph {
     bool visited;  // flag indicate whether a vertex has been visited
     AdjListNode* head;  // head node of the linked list
   };
+
+  //
+  // construct a new AdjListNode
+  //
+  // @param v: value of the node
+  // @param weight: weight of the node
+  //
+  // @return: pointer of the new node
+  //
+  AdjListNode* newAdjListNode(int v, int weight=1);
 
 }
 
@@ -116,6 +132,7 @@ public:
   //
   // @return: true for connected and false for unconnected. Throw an error
   //          if the two vertices are only partially connected.
+  //
   virtual bool isConnected(int first, int second) const;
 
   //
@@ -154,15 +171,6 @@ public:
   // @return: a vector of visited vertices, ordered by finding time
   //
   std::vector<int> BFS(int vertex);
-
-  //
-  // Find the minimum distance between two vertices using BFS
-  //
-  // @param first: the first vertex
-  // @param second: the second vertex
-  //
-  // @param return: the distance, -1 for not connected
-  int minDistanceBFS(int first, int second);
 
   //
   // Apply depth-first-search (DFS) from a vertex
@@ -206,6 +214,7 @@ public:
   //
   // @return: true for connected and false for unconnected. Throw an error
   //          if the two vertices are only partially connected.
+  //
   bool isConnected(int first, int second) const;
 
   //

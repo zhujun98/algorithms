@@ -13,15 +13,8 @@
 
 
 namespace graph {
-  //
-  // construct a new AdjListNode
-  //
-  // @param v: value of the node
-  // @param weight: weight of the node
-  //
-  // @return: pointer of the new node
-  //
-  AdjListNode* newAdjListNode(int v, int weight=1) {
+
+  AdjListNode* newAdjListNode(int v, int weight) {
 
     AdjListNode* new_node =new graph::AdjListNode;
     new_node->value = v;
@@ -30,6 +23,7 @@ namespace graph {
 
     return new_node;
   }
+
 }
 
 
@@ -243,19 +237,31 @@ std::vector<int> GraphAdj::BFS(int vertex) {
 
   std::vector<int> visited;
   std::queue<int> tracker;
+
+  tracker.push(vertex);
+  visited.push_back(vertex);
+  vertices_[vertex].visited = true;
+  while (!tracker.empty()) {
+    int current_vertex = tracker.front();
+    tracker.pop();
+
+    graph::GraphAdjVertex *current_head = &vertices_[current_vertex];
+
+    graph::AdjListNode* current_node = current_head->head;
+    // find all children vertices which have not been visited yet
+    while (current_node) {
+      if ( !vertices_[current_node->value].visited ) {
+        // move to the next node
+        tracker.push(current_node->value);
+        visited.push_back(current_node->value);
+        vertices_[current_node->value].visited = true;
+      }
+      current_node = current_node->next;
+    }
+  }
+
+  return visited;
 }
-//  tracker.push(vertex);
-//  visited.push_back(vertex);
-//  graph::GraphAdjVertex* current_head = &vertices_[vertex];
-//  current_head->visited = true;
-//  // search the vertex reachable from the current vertex
-//  while ( !tracker.empty() ) {
-//    graph::AdjListNode* current_node = current_head->head;
-//    // find all the next reachable vertices which have not been visited
-//    while ( current_node ) {
-//
-//    }
-//  }
 
 std::vector<int> GraphAdj::DFS(int vertex) {
 

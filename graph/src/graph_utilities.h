@@ -1,6 +1,13 @@
 //
 // Created by jun on 6/19/17.
 //
+// Functions:
+// - copyGraph()
+// - graphContract()
+// - reverseGraph()
+// - karger()
+// - kosaraju()
+//
 
 #ifndef GRAPH_GRAPH_UTILITIES_H
 #define GRAPH_GRAPH_UTILITIES_H
@@ -37,6 +44,28 @@ namespace graph {
     }
 
     return g_copy;
+  }
+
+  //
+  // reverse a directed graph
+  //
+  // @param graph: original graph
+  //
+  // @param return: reversed graph
+  //
+  inline GraphAdj reverseGraph(const GraphAdj& graph) {
+    std::size_t g_size = graph.size();
+    GraphAdj reversed(g_size);
+
+    for (std::size_t i=0; i<g_size; ++i) {
+      graph::AdjListNode* current = graph.getVertex(i).head;
+      while ( current ) {
+        reversed.connect(current->value, i);
+        current = current->next;
+      }
+    }
+
+    return reversed;
   }
 
   //
@@ -93,30 +122,12 @@ namespace graph {
   }
 
   //
-  // reverse a directed graph
+  // print the strongly connected components
   //
-  // @param graph: original graph
+  // @param scc: strongly connected components implemented by two nested containers
   //
-  // @param return: reversed graph
-  //
-  inline GraphAdj reverseGraph(const GraphAdj& graph) {
-    std::size_t g_size = graph.size();
-    GraphAdj reversed(g_size);
-
-    for (std::size_t i=0; i<g_size; ++i) {
-      graph::AdjListNode* current = graph.getVertex(i).head;
-      while ( current ) {
-        reversed.connect(current->value, i);
-        current = current->next;
-      }
-    }
-
-    return reversed;
-  }
-
-
-  template <class V>
-  inline void printSCC(V scc) {
+  template <class VV>
+  inline void printSCC(VV scc) {
     std::vector<std::size_t> scc_length;
 
     std::cout << "\nStrongly connected components with more than one element: " << std::endl;
@@ -145,6 +156,10 @@ namespace graph {
 
   //
   // Apply the Kosaraju's algorithm to find the strongly connected components (SCC)
+  //
+  // @param graph: a directed graph
+  //
+  // @return: strongly connected components
   //
   inline std::vector<std::vector<int>> kosaraju(GraphAdj& graph) {
     // First step, get the reversed graph

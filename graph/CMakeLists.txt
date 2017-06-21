@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 set(sources
         src/main.cpp
         src/graph_adj.cpp
+        src/graph_adj.h
         src/graph_utilities.h
         )
 

@@ -179,6 +179,12 @@ int main() {
   GraphAdj graph = simpleGraph();
   graph.display();
 
+  std::vector<int> visited;
+  visited = graph.BFS(5);
+  for (int i=0; i<visited.size(); ++i) {
+    std::cout << visited[i] << std::endl;
+  }
+
   std::vector<std::vector<int>> scc = graph::kosaraju(graph);
 
   // print scc
