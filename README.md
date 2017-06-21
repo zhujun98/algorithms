@@ -28,6 +28,7 @@ See [here](./sorting_and_selection)
 
 * adjacency list representation of directed and undirected graph
 * Depth first search (DFS)
+* Breath first search (BFS)
 * Karger's random algorithm
 * Kosaraju's algorithm
 
