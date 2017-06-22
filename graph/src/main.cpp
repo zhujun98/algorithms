@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 #include "graph_adj.h"
 #include "graph_utilities.h"
@@ -71,19 +72,34 @@ GraphAdj simpleGraph() {
 }
 
 //
-// Read the data and build an undirected graph in the quiz in the
-// Stanford algorithm course in Coursera:
+// The file contains the adjacency list representation of a simple undirected
+// graph. There are 200 vertices labeled 1 to 200. The first column in the file
+// represents the vertex label, and the particular row (other entries except
+// the first column) tells all the vertices that the vertex is adjacent to.
+// So for example, the 6th row looks like : "6	155	56	52	120	......". This
+// just means that the vertex with label 6 is adjacent to (i.e., shares an
+// edge with) the vertices with labels 155, 56, 52, 120,......,etc
 //
-// Find the minimum cut in a graph stored in the file kargerMinCut.txt
-// using Karger's random contraction algorithm.
+// Your task is to code up and run the Karger's randomized contraction algorithm
+// for the min cut problem and use it on the above graph to compute the min cut.
 //
-void runKargerAssignment() {
+// @param repeated_times: how many times the random contraction will be performed
+//
+void runKargerAssignment(unsigned int repeated_times) {
+
+  std::cout << "\n" << std::string(80, '-') << "\n"
+            << "This is the minimum cut assignment in the Stanford's Algorithm course at Coursera"
+            << "\n" << std::string(80, '-') << "\n"
+            << std::endl;
+
   UdGraphAdj graph(200);
 
   std::string line;
   // create an input file stream
   std::ifstream ifs("../data/kargerMinCut.txt", std::ifstream::in);
 
+  std::cout << "Run the random contract for " << repeated_times
+            << " times..." << std::endl;
   // read the file line by line and put the line into a string
   while ( std::getline(ifs, line) ) {
     std::istringstream iss(line);
@@ -103,7 +119,8 @@ void runKargerAssignment() {
   }
   ifs.close();
 
-  graph::karger(graph, 1000);
+  std::cout << "The minimum cut is: "
+            << graph::karger(graph, repeated_times) << std::endl;
 
 }
 
@@ -121,6 +138,12 @@ void runKargerAssignment() {
 // Answer: 434821,968,459,313,211
 //
 void runSccAssignment() {
+
+  std::cout << "\n" << std::string(80, '-') << "\n"
+            << "This is the SCC assignment in the Stanford's Algorithm course at Coursera"
+            << "\n" << std::string(80, '-') << "\n"
+            << std::endl;
+
   GraphAdj graph(875714);
 
   std::string line;
@@ -161,8 +184,23 @@ void runSccAssignment() {
   std::cout << "Searching strongly connected components...!" << std::endl;
   std::vector<std::vector<int>> scc = graph::kosaraju(graph);
 
-  // print scc
-  graph::printSCC(scc);
+  // print the result
+  std::vector<std::size_t> scc_length;
+
+  for (std::size_t i=0; i<scc.size(); ++i) {
+    scc_length.push_back(scc[i].size());
+  }
+
+  std::sort(scc_length.begin(), scc_length.end(), std::greater<int>());
+
+  int count = 0;
+  std::cout << "The lengths of the five longest SCCs are: " << std::endl;
+  while ( count < 5 && count < scc_length.size() ) {
+    std::cout << scc_length[count] << ",";
+    ++count;
+  }
+  std::cout << std::endl;
+
 }
 
 
@@ -174,7 +212,7 @@ int main() {
   UdGraphAdj ud_graph = simpleUdGraph();
   ud_graph.display();
 
-  graph::karger(ud_graph, 100);
+  std::cout << "The minimum cut is: " << graph::karger(ud_graph, 100) << std::endl;
 
   // test directed graph and related implementations
 
@@ -192,7 +230,7 @@ int main() {
   // print scc
   graph::printSCC(scc);
 
-  runKargerAssignment();
+  runKargerAssignment(1000);
 
   runSccAssignment();
 

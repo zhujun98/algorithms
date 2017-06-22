@@ -24,7 +24,8 @@ namespace graph {
   //
   struct AdjListNode {
     int value;  // value of the node
-    int weight;  // weight of the connection
+    int weight;  // weight of the connection with this node
+    double distance;  // distance to this node
     AdjListNode* next;  // pointer to the next node
   };
 
@@ -32,7 +33,6 @@ namespace graph {
   // vertex of the graph, stored in an array-like container (vector here)
   //
   struct GraphAdjVertex {
-    int value;
     bool visited;  // flag indicate whether a vertex has been visited
     AdjListNode* head;  // head node of the linked list
   };
@@ -40,12 +40,13 @@ namespace graph {
   //
   // construct a new AdjListNode
   //
-  // @param v: value of the node
-  // @param weight: weight of the node
+  // @param value: value of the node
+  // @param weight: weight of the connection with this node
+  // @param distance: distance to this node
   //
   // @return: pointer of the new node
   //
-  AdjListNode* newAdjListNode(int v, int weight=1);
+  AdjListNode* newAdjListNode(int value, int weight=1, double distance=1.0);
 
 }
 
@@ -56,8 +57,8 @@ protected:
   std::vector<graph::GraphAdjVertex> vertices_;
 
   //
-  // add an edge (first, second)
-  // The nodes in the linked list are sorted in ascending order
+  // add an edge between first and second. First is the tail in a linked
+  // list. The nodes in the linked list are sorted in ascending order
   // Note: the sorting will not increase the complexity since it is
   //       anyhow necessary to traverse the list to check the existence
   //       of the identical node. For the identical node, we only
@@ -65,9 +66,10 @@ protected:
   //
   // @param first: first vertex
   // @param second: second vertex
-  // @param weight: weight of source node
+  // @param weight: weight of edge
+  // @param distance: distance of the edge
   //
-  void addEdge(int first, int second, int weight=1);
+  void addEdge(int first, int second, int weight, double distance);
 
   //
   // delete the edge (first, second)
@@ -140,10 +142,12 @@ public:
   //
   // @param first: the first vertex
   // @param second: the second vertex
+  // @param weight: weight of edge
+  // @param distance: distance of the edge
   //
   // @return: true for success and false for already connected vertices
   //
-  virtual bool connect(int first, int second);
+  virtual bool connect(int first, int second, int weight=1, double distance=1.0);
 
   //
   // disconnect two vertices
@@ -222,10 +226,12 @@ public:
   //
   // @param first: the first vertex
   // @param second: the second vertex
+  // @param weight: weight of edge
+  // @param distance: distance of the edge
   //
   // @return: true for success and false for already connected vertices
   //
-  bool connect(int first, int second);
+  bool connect(int first, int second, int weight=1, double distance=1);
 
 
   // disconnect two vertices

@@ -102,13 +102,15 @@ namespace graph {
   }
 
   //
-  // test the graph and the implementation of the Karger's mini-cut algorithm
+  // implementation of the Karger's mini-cut algorithm on an undirected graph
   //
-  // @param n: number of random contractions.
+  // @param n: number of random contractions
   //
-  inline void karger(const UdGraphAdj& graph, unsigned int n) {
+  // @return: number of min cut
+  //
+  inline int karger(const UdGraphAdj& graph, unsigned int n) {
 
-    int min_cut = 100;
+    int min_cut = graph.countEdge();
     int cut;
 
     // apply Karger's algorithm to find the minimum cut in the graph
@@ -118,7 +120,8 @@ namespace graph {
       cut = graphContract(copy);
       if ( cut < min_cut ) { min_cut = cut; }
     }
-    std::cout << "\nthe minimum cut is " << min_cut << std::endl;
+
+    return min_cut;
   }
 
   //
@@ -130,27 +133,15 @@ namespace graph {
   inline void printSCC(VV scc) {
     std::vector<std::size_t> scc_length;
 
-    std::cout << "\nStrongly connected components with more than one element: " << std::endl;
     for (std::size_t i=0; i<scc.size(); ++i) {
-      if ( scc[i].size() > 1 ) {
-        scc_length.push_back(scc[i].size());
+      scc_length.push_back(scc[i].size());
 
-        for (std::size_t j = 0; j < scc[i].size(); ++j) {
-          std::cout << scc[i][j] << " ";
-        }
-        std::cout << std::endl;
+      for (std::size_t j = 0; j < scc[i].size(); ++j) {
+        std::cout << scc[i][j] << " ";
       }
+      std::cout << std::endl;
     }
 
-    std::sort(scc_length.begin(), scc_length.end(), std::greater<int>());
-
-    int count = 0;
-    std::cout << "\nThe lengths of the five longest SCCs (if any) are: " << std::endl;
-    while ( count < 5 && count < scc_length.size() ) {
-      std::cout << scc_length[count] << ",";
-      ++count;
-    }
-    std::cout << std::endl;
   }
 
 

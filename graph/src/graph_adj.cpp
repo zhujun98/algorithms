@@ -14,11 +14,12 @@
 
 namespace graph {
 
-  AdjListNode* newAdjListNode(int v, int weight) {
+  AdjListNode* newAdjListNode(int v, int weight, double distance) {
 
     AdjListNode* new_node =new graph::AdjListNode;
     new_node->value = v;
     new_node->weight = weight;
+    new_node->distance = distance;
     new_node->next = NULL;
 
     return new_node;
@@ -31,7 +32,6 @@ GraphAdj::GraphAdj(unsigned int n) {
   graph::GraphAdjVertex adj_list;
   // initialize a adjacency list with n elements (head nodes)
   for (int i = 0; i < n; ++i) {
-    adj_list.value = 0;
     adj_list.visited = false;
     adj_list.head = NULL;
 
@@ -91,12 +91,11 @@ void GraphAdj::clearList(int vertex) {
   }
 }
 
-void GraphAdj::addEdge(int first, int second, int weight) {
+void GraphAdj::addEdge(int first, int second, int weight, double distance) {
 
   assert(first != second);
 
-  graph::AdjListNode* new_node = graph::newAdjListNode(second);
-  new_node->weight = weight;
+  graph::AdjListNode* new_node = graph::newAdjListNode(second, weight, distance);
 
   graph::AdjListNode* current = vertices_[first].head;
   graph::AdjListNode* previous = vertices_[first].head;
@@ -178,13 +177,13 @@ int GraphAdj::delEdge(int first, int second) {
   return 0;
 }
 
-bool GraphAdj::connect(int first, int second) {
+bool GraphAdj::connect(int first, int second, int weight, double distance) {
 
   assert(first != second);
 
   if ( isConnected(first, second) ) { return false; }
 
-  addEdge(first, second, 1);
+  addEdge(first, second, weight, distance);
 
   return true;
 }
@@ -326,15 +325,15 @@ int UdGraphAdj::countEdge() const {
   return count/2;
 }
 
-bool UdGraphAdj::connect(int first, int second) {
+bool UdGraphAdj::connect(int first, int second, int weight, double distance) {
 
   assert(first != second);
 
   if ( isConnected(first, second) ) { return false; }
 
   // we need to add a node for the lists a and b respectively
-  addEdge(first, second, 1);
-  addEdge(second, first, 1);
+  addEdge(first, second, weight, distance);
+  addEdge(second, first, weight, distance);
 
   return true;
 }
@@ -371,10 +370,10 @@ void UdGraphAdj::collapse(int src, int dst) {
     // change the node with value 'src' in other linked lists to 'dst'
     // TODO:: this could be fast since the linked list is traversed twice here for code simplicity
     int weight = delEdge(current->value, src);
-    addEdge(current->value, dst, weight);
+    addEdge(current->value, dst, weight, 1);
 
     // add node in the linked list 'src' to the linked list 'dst'
-    addEdge(dst, current->value, current->weight);
+    addEdge(dst, current->value, current->weight, 1);
 
     current = current->next;
   }
