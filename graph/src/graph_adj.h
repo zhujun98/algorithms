@@ -13,7 +13,6 @@
 #ifndef GRAPH_GRAPH_ADJ_H
 #define GRAPH_GRAPH_ADJ_H
 
-
 #include <iostream>
 #include <list>
 #include <vector>

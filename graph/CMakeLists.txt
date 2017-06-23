@@ -12,6 +12,8 @@ set(sources
         src/graph_adj.cpp
         src/graph_adj.h
         src/graph_utilities.h
-        )
+        src/graph_algorithms.h
+        src/my_unit_test.h
+        src/assignments.h)
 
 add_executable(run ${sources})

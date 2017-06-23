@@ -3,6 +3,7 @@
 //
 // implementation of the directed and undirected graph using adjacency list
 //
+
 #include <iostream>
 #include <assert.h>
 #include <stack>
@@ -224,7 +225,8 @@ void GraphAdj::display() const {
     std::cout << "Vertex [" << i << "] (visited = "
               << vertices_[i].visited << " )";
     while (pprint) {
-      std::cout << " -> " << pprint->value << " (" << pprint->weight << ")";
+      std::cout << " -> " << pprint->value
+                << " (" << pprint->weight << ',' << pprint->distance << ")";
       pprint = pprint->next;
     }
 

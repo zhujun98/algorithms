@@ -5,18 +5,15 @@
 // - copyGraph()
 // - graphContract()
 // - reverseGraph()
-// - karger()
-// - kosaraju()
+// - printSCC()
 //
 
 #ifndef GRAPH_GRAPH_UTILITIES_H
 #define GRAPH_GRAPH_UTILITIES_H
 
 #include <iostream>
-#include <stack>
+#include <random>
 #include <vector>
-#include <algorithm>
-#include <functional>
 
 #include "graph_adj.h"
 
@@ -102,98 +99,31 @@ namespace graph {
   }
 
   //
-  // implementation of the Karger's mini-cut algorithm on an undirected graph
-  //
-  // @param n: number of random contractions
-  //
-  // @return: number of min cut
-  //
-  inline int karger(const UdGraphAdj& graph, unsigned int n) {
-
-    int min_cut = graph.countEdge();
-    int cut;
-
-    // apply Karger's algorithm to find the minimum cut in the graph
-    for (int i=0; i<n; ++i) {
-      UdGraphAdj copy = copyGraph(graph);
-
-      cut = graphContract(copy);
-      if ( cut < min_cut ) { min_cut = cut; }
-    }
-
-    return min_cut;
-  }
-
-  //
   // print the strongly connected components
   //
   // @param scc: strongly connected components implemented by two nested containers
   //
   template <class VV>
   inline void printSCC(VV scc) {
-    std::vector<std::size_t> scc_length;
-
-    for (std::size_t i=0; i<scc.size(); ++i) {
-      scc_length.push_back(scc[i].size());
-
-      for (std::size_t j = 0; j < scc[i].size(); ++j) {
-        std::cout << scc[i][j] << " ";
+    for (auto i=scc.begin(); i != scc.end(); ++i) {
+      for (auto j = (*i).begin(); j != (*i).end(); ++j) {
+        std::cout << *j << " ";
       }
       std::cout << std::endl;
     }
-
   }
 
-
   //
-  // Apply the Kosaraju's algorithm to find the strongly connected components (SCC)
+  // print the elements in a 1D container
   //
-  // @param graph: a directed graph
+  // @param container: a 1D container
   //
-  // @return: strongly connected components
-  //
-  inline std::vector<std::vector<int>> kosaraju(GraphAdj& graph) {
-    // First step, get the reversed graph
-    //
-    // In order to save space, the original graph is not copied.
-    // Therefore, the original graph will be contaminated in the first pass
-    GraphAdj graph_reversed = reverseGraph(graph);
-
-    //
-    // First pass, recursively run DFS on the original graph.
-    // The finish time of each vertex will be store in a stack!!!
-    //
-    std::stack<int> finish_time;
-    for (std::size_t i = 0; i < graph.size(); ++i) {
-      if (!graph.getVertex(i).visited) {
-        std::vector<int> tmp = graph.DFS(i);
-        for (std::size_t j = 0; j < tmp.size(); ++j) {
-          finish_time.push(tmp[j]);
-        }
-      }
+  template <class VV>
+  inline void printContainer(VV container) {
+    for (auto i=container.begin(); i != container.end(); ++i) {
+        std::cout << *i << " ";
+      std::cout << std::endl;
     }
-
-    // For debug
-//    while ( !finish_time.empty() ) {
-//      std::cout << finish_time.top() << " ";
-//      finish_time.pop();
-//    }
-//    std::cout << std::endl;
-
-    //
-    // Second pass, recursively run DFS using each vertex stored in
-    // the stack. The last finished vertex will be track first!
-    //
-    std::vector<std::vector<int>> scc;
-    while (!finish_time.empty()) {
-      if (!graph_reversed.getVertex(finish_time.top()).visited) {
-        std::vector<int> tmp = graph_reversed.DFS(finish_time.top());
-        scc.push_back(tmp);
-      }
-      finish_time.pop();
-    }
-
-    return scc;
   }
 
 }  // namespace graph
