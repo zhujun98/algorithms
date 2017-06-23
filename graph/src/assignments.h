@@ -72,6 +72,7 @@ namespace assignment {
         };
       }
     }
+    ifs.close();
 
     std::cout << "Finished reading data!" << std::endl;
 
