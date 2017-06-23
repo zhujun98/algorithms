@@ -35,4 +35,10 @@ See [here](./sorting_and_selection)
 
 See [here](./graph)
 
+## hash table
+
+* a relatively large 2-sum problem
+
+See [here](./hash_table)
+
 ## binary search tree
