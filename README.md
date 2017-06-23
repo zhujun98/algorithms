@@ -31,6 +31,7 @@ See [here](./sorting_and_selection)
 * Breath first search (BFS)
 * Karger's random algorithm
 * Kosaraju's algorithm
+* Dijkstra's algorithm
 
 See [here](./graph)
 
