@@ -10,16 +10,11 @@ Keep tracking the median of a streamed integer with a complexity of O(log(i)), w
 
 See [here](./inversion_count)
 
-## sorting
+## sorting and selection
 
 * rSort() -- random sort -- O(nlog(n))
 * quickSort() -- random sort using median-of-three as pivot -- O(nlog(n))
 * heapSort() -- O(nlog(n))
-
-See [here](./sorting_and_selection)
-
-## selection
-
 * rSelect() -- random selection, both in place and out of place -- O(n)
 
 See [here](./sorting_and_selection)
