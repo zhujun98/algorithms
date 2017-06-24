@@ -31,6 +31,7 @@ namespace assignment {
   // your own hash table for it. For example, you could compare performance
   // under the chaining and open addressing approaches to resolving collisions.
   //
+  // Answer: 427
   // The running time on my i7-7500U is about 32 minutes:(
   //
   void run2SumAssignment() {
