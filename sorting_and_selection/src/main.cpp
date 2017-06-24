@@ -104,15 +104,11 @@ int main()
 
   // test my implementations
 
-  test_quicksort();
-
-  test_rsort();
-
-  test_heapsort();
-
-  test_rselect();
-
-  test_m3select();
+  testQuickSort();
+  testRSort();
+  testHeapSort();
+  testRSelect();
+  testM3Select();
 
   // compare speed of different sorting algorithm
 

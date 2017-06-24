@@ -8,7 +8,7 @@
 // - myIterSwap()
 // - medianOfThree()
 // - myPartition()
-// - print_queue()
+// - printQueue()
 // - printContainer()
 //
 
@@ -147,7 +147,7 @@ inline Iterator myPartition(Iterator first, Iterator last, Iterator pivot) {
 //
 // @param q: input queue
 //
-template<typename T> void print_queue(T& q) {
+template<typename T> void printQueue(T& q) {
   while(!q.empty()) {
     std::cout << q.top() << " ";
     q.pop();

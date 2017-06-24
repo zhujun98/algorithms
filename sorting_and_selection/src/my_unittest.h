@@ -2,11 +2,11 @@
 // Created by jun on 6/24/17.
 //
 // Functions:
-// - test_quicksort()
-// - test_rsort()
-// - test_heapsort()
-// - test_rselect()
-// - test_m3select()
+// - testQuickSort()
+// - testRSort()
+// - testHeapsort()
+// - testRSelect()
+// - testM3Select()
 //
 
 #ifndef SORTING_AND_SELECTION_MY_UNITTEST_H
@@ -23,7 +23,7 @@
 //
 // test quickSort()
 //
-void test_quicksort() {
+void testQuickSort() {
   std::cout << "\nTesting my median-of-three random sort implementation..." << std::endl;
 
   std::vector<int> numbers  = {0, 9, 8, 2, 1, 3, 5, 7, 6, 4};
@@ -47,7 +47,7 @@ void test_quicksort() {
 //
 // test rSort()
 //
-void test_rsort() {
+void testRSort() {
   std::cout << "\nTesting my random sort implementation..." << std::endl;
 
   std::vector<int> numbers  = {0, 9, 8, 2, 1, 3, 5, 7, 6, 4};
@@ -70,7 +70,7 @@ void test_rsort() {
 //
 // test heapSort()
 //
-void test_heapsort() {
+void testHeapSort() {
 
   std::cout << "\nTesting my heap sort implementation..." << std::endl;
 
@@ -94,7 +94,7 @@ void test_heapsort() {
 //
 // test rSelect()
 //
-void test_rselect() {
+void testRSelect() {
   std::cout << "\nTesting my random selection implementation..." << std::endl;
 
   std::vector<int> original_numbers  = {0, 9, 8, 2, 1, 3, 5, 7, 6, 4};
@@ -127,9 +127,9 @@ void test_rselect() {
 
 
 //
-// test m3Select()
+// test M3Select()
 //
-void test_m3select() {
+void testM3Select() {
   std::cout << "\nTesting my median-of-three selection implementation..."
             << std::endl;
 
