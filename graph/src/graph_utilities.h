@@ -104,7 +104,7 @@ namespace graph {
   // @param scc: strongly connected components implemented by two nested containers
   //
   template <class VV>
-  inline void printSCC(VV scc) {
+  inline void printSCC(const VV& scc) {
     for (auto i=scc.begin(); i != scc.end(); ++i) {
       for (auto j = (*i).begin(); j != (*i).end(); ++j) {
         std::cout << *j << " ";
@@ -119,7 +119,7 @@ namespace graph {
   // @param container: a 1D container
   //
   template <class VV>
-  inline void printContainer(VV container) {
+  inline void printContainer(const VV& container) {
     for (auto i=container.begin(); i != container.end(); ++i) {
         std::cout << *i << " ";
     }

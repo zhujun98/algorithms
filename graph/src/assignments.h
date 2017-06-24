@@ -45,6 +45,8 @@ namespace assignment {
   // 1000 away from vertex 1 and 115 is 2000 distance away, then your
   // answer should be 1000,1000,1000,1000,1000,2000,1000,1000,1000,1000.
   //
+  // Answer: 2599,2610,2947,2052,2367,2399,2029,2442,2505,3068
+  //
   inline void runDijkstraAssignment() {
     std::cout << "\n" << std::string(80, '-') << "\n"
               << "This is the Dijkstra assignment in the Stanford's Algorithm course at Coursera"
