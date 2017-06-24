@@ -23,6 +23,8 @@
 // OPTIONAL EXERCISE: Compare the performance achieved by heap-based and
 // binary-search-tree based implementations of the algorithm.
 //
+// Answer: 1213
+//
 #include <iostream>
 #include <fstream>
 #include <queue>
@@ -51,14 +53,14 @@ int main() {
   // min-heap
   std::priority_queue<int, std::vector<int>, std::greater<int>> upper_queue;
 
-  std::ifstream in("../data/Median.txt", std::ios::in);
+  std::ifstream ifs("../data/Median.txt", std::fstream::in);
 
   int number;
   int median = 0;
   int sum_of_median = 0;
 
   clock_t t0 = clock();
-  while ( in >> number ) {
+  while ( ifs >> number ) {
 
     // the first number goes into lower_queue
     if ( lower_queue.size() == 0 ) {
@@ -93,6 +95,7 @@ int main() {
 
     sum_of_median += median;
   }
+  ifs.close();
 
   std::cout << "Sum of median mode 10000 is: " << sum_of_median % 10000 << std::endl;
   std::cout << "Elapse time: " << 1.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
