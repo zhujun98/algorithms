@@ -3,14 +3,14 @@
 //
 
 #include "assignments.h"
-#include "my_unittest.h"
+#include "unittest_graph.h"
 
 
 int main() {
 
-  my_test::test_karger();
-  my_test::test_kosaraju();
-  my_test::test_dijkstra();
+  my_test::testKarger();
+  my_test::testKosaraju();
+  my_test::testDijkstra();
 
   assignment::runKargerAssignment();
   assignment::runSccAssignment();

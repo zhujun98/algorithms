@@ -6,6 +6,7 @@
 // - graphContract()
 // - reverseGraph()
 // - printSCC()
+// - printContainer()
 //
 
 #ifndef GRAPH_GRAPH_UTILITIES_H

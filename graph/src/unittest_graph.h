@@ -5,9 +5,9 @@
 // - simpleUdGraph()
 // - simpleGraph()
 // - distanceGraph()
-// - test_karger()
-// - test_kosaraju()
-// - test_dijkstra()
+// - testKarger()
+// - testKosaraju()
+// - testDijkstra()
 //
 
 #ifndef GRAPH_MYUNITTEST_H
@@ -110,7 +110,7 @@ namespace my_test {
   //
   // test the implementation of Kosaraju's algorithm
   //
-  void test_kosaraju() {
+  void testKosaraju() {
 
     std::cout << "\nTesting Kosaraju's algorithm..." << std::endl;
     GraphAdj graph = simpleGraph();
@@ -134,7 +134,7 @@ namespace my_test {
   //
   // test the implementation of Karger's algorithm
   //
-  void test_karger() {
+  void testKarger() {
 
     std::cout << "\nTesting Karger's algorithm..." << std::endl;
 
@@ -154,7 +154,7 @@ namespace my_test {
   //
   // test the implementation of Dijkastra's algorithm
   //
-  void test_dijkstra() {
+  void testDijkstra() {
 
     std::cout << "\nTesting Dijkstra's algorithm..." << std::endl;
 
