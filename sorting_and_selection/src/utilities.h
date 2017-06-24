@@ -3,13 +3,21 @@
 //
 // various helping functions
 //
+// Functions:
+// - mySwap()
+// - myIterSwap()
+// - medianOfThree()
+// - myPartition()
+// - print_queue()
+// - printContainer()
+//
 
 #ifndef SORTING_AND_SELECTION_UTILITIES_H
 #define SORTING_AND_SELECTION_UTILITIES_H
 
 
 #include <iostream>
-#include <random>
+
 
 //
 // swap two values
@@ -147,17 +155,18 @@ template<typename T> void print_queue(T& q) {
   std::cout << '\n';
 }
 
+
 //
-// Re-arrange the elements in the range [first, last) to form a heap
+// print the elements in a 1D container
 //
-//templte <class Iterator, class T>
-//inline T* make_heap(Iterator first, Iterator last) {
+// @param container: a 1D container
 //
-//  unsigned int heap_size = last - first;
-//
-//  std::iterator_traits::value_type my_heap[heap_size];
-//
-//  return my_heap;
-//}
+template <class VV>
+inline void printContainer(VV container) {
+  for (auto i=container.begin(); i != container.end(); ++i) {
+    std::cout << *i << " ";
+  }
+  std::cout << std::endl;
+}
 
 #endif // SORTING_AND_SELECTION_UTILITIES_H

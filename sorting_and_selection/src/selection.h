@@ -3,6 +3,10 @@
 //
 // Implementations of selecting algorithms
 //
+// Functions:
+// - rSelect_inplace()
+// - rSelect()
+//
 
 #ifndef SORTING_AND_SELECTION_SELECTION_H
 #define SORTING_AND_SELECTION_SELECTION_H
@@ -11,8 +15,6 @@
 #include <iostream>
 #include <random>
 #include <vector>
-#include <array>
-#include <list>
 #include <iterator>
 
 #include "utilities.h"
@@ -37,7 +39,7 @@ inline Iterator rSelect_inplace(Iterator first, Iterator last, long unsigned n) 
   }
 
   // if the array has only 1 element
-  if ( n == 1 && last - first == 1 ) { return first; }
+  if ( last - first == 1 ) { return first; }
 
   Iterator pivot, boundary;
 

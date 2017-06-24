@@ -3,6 +3,10 @@
 //
 // Implementations of sorting algorithms
 //
+// Functions:
+// - rSort()
+// - quickSort()
+// - heapSort()
 //
 
 #ifndef SORTING_AND_SELECTION_SORTING_H
@@ -11,6 +15,7 @@
 #include <iostream>
 #include <queue>
 #include <functional>
+
 #include "utilities.h"
 
 
