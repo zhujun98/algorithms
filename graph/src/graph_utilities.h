@@ -122,8 +122,9 @@ namespace graph {
   inline void printContainer(VV container) {
     for (auto i=container.begin(); i != container.end(); ++i) {
         std::cout << *i << " ";
-      std::cout << std::endl;
     }
+
+    std::cout << std::endl;
   }
 
 }  // namespace graph
