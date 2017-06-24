@@ -31,7 +31,7 @@ inline void rSort(Iterator first, Iterator last) {
 
   if ( last - first <= 1 ) { return; }
 
-  // there are two elements
+  // the function works without this condition, but will be slower!
   if ( last - first == 2 ) {
     myPartition(first, last, first);
     return;
@@ -74,7 +74,6 @@ inline void quickSort(Iterator first, Iterator last) {
 
   if ( last - first <= 1 ) { return; }
 
-  // there are two elements
   if ( last - first == 2 ) {
     myPartition(first, last, first);
     return;

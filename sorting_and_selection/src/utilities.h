@@ -56,7 +56,7 @@ inline void myIterSwap(Iterator a, Iterator b) {
 // @param last: iterator to the last position
 //
 template <class Iterator>
-inline Iterator medianOfThree(const Iterator first, const Iterator middle, const Iterator last) {
+inline Iterator medianOfThree(Iterator first, Iterator middle, Iterator last) {
   if ( *last > *first ) {
     if ( *first > *middle ) {
       return first;
@@ -162,7 +162,7 @@ template<typename T> void print_queue(T& q) {
 // @param container: a 1D container
 //
 template <class VV>
-inline void printContainer(VV container) {
+inline void printContainer(const VV& container) {
   for (auto i=container.begin(); i != container.end(); ++i) {
     std::cout << *i << " ";
   }
