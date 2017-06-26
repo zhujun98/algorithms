@@ -2,6 +2,7 @@
 // Created by jun on 6/24/17.
 //
 // Functions:
+// - compareResult()
 // - testQuickSort()
 // - testRSort()
 // - testHeapsort()
@@ -22,9 +23,25 @@
 
 
 //
+// check the sorting result and output information
+//
+template <class T>
+void inline compareResult(T output, T expected) {
+  if ( output == expected ) {
+    std::cout << "Passed!" << std::endl;
+  } else {
+    std::cout << "Failed!!!" << std::endl;
+    std::cout << "The output is: " << std::endl;
+    printContainer(output);
+    std::cout << "The correct result is: " << std::endl;
+    printContainer(expected);
+  }
+}
+
+//
 // test quickSort()
 //
-void testQuickSort() {
+inline void testQuickSort() {
   std::cout << "\nTesting my median-of-three random sort implementation..." << std::endl;
 
   std::vector<int> numbers  = {0, 9, 8, 2, 1, 3, 5, 7, 6, 4};
@@ -32,23 +49,14 @@ void testQuickSort() {
 
   quickSort(numbers.begin(), numbers.end());
 
-  if ( numbers == expected ) {
-    std::cout << "Passed!" << std::endl;
-  } else {
-    std::cout << "Failed!!!" << std::endl;
-    std::cout << "The output is: " << std::endl;
-    printContainer(numbers);
-    std::cout << "The correct result is: " << std::endl;
-    printContainer(expected);
-  }
-
+  compareResult(numbers, expected);
 }
 
 
 //
 // test rSort()
 //
-void testRSort() {
+inline void testRSort() {
   std::cout << "\nTesting my random sort implementation..." << std::endl;
 
   std::vector<int> numbers  = {0, 9, 8, 2, 1, 3, 5, 7, 6, 4};
@@ -56,22 +64,14 @@ void testRSort() {
 
   rSort(numbers.begin(), numbers.end());
 
-  if ( numbers == expected ) {
-    std::cout << "Passed!" << std::endl;
-  } else {
-    std::cout << "Failed!!!" << std::endl;
-    std::cout << "The output is: " << std::endl;
-    printContainer(numbers);
-    std::cout << "The correct result is: " << std::endl;
-    printContainer(expected);
-  }
+  compareResult(numbers, expected);
 }
 
 
 //
 // test heapSort()
 //
-void testHeapSort() {
+inline void testHeapSort() {
 
   std::cout << "\nTesting my heap sort implementation..." << std::endl;
 
@@ -80,22 +80,14 @@ void testHeapSort() {
 
   heapSort(numbers.begin(), numbers.end());
 
-  if ( numbers == expected ) {
-    std::cout << "Passed!" << std::endl;
-  } else {
-    std::cout << "Failed!!!" << std::endl;
-    std::cout << "The output is: " << std::endl;
-    printContainer(numbers);
-    std::cout << "The correct result is: " << std::endl;
-    printContainer(expected);
-  }
+  compareResult(numbers, expected);
 }
 
 
 //
 // test mergeSort()
 //
-void testMergeSort() {
+inline void testMergeSort() {
 
   std::cout << "\nTesting my merge sort implementation..." << std::endl;
 
@@ -104,21 +96,13 @@ void testMergeSort() {
 
   mergeSort(numbers.begin(), numbers.end());
 
-  if ( numbers == expected ) {
-    std::cout << "Passed!" << std::endl;
-  } else {
-    std::cout << "Failed!!!" << std::endl;
-    std::cout << "The output is: " << std::endl;
-    printContainer(numbers);
-    std::cout << "The correct result is: " << std::endl;
-    printContainer(expected);
-  }
+  compareResult(numbers, expected);
 }
 
 //
 // test rSelect()
 //
-void testRSelect() {
+inline void testRSelect() {
   std::cout << "\nTesting my random selection implementation..." << std::endl;
 
   std::vector<int> original_numbers  = {0, 9, 8, 2, 1, 3, 5, 7, 6, 4};
@@ -134,26 +118,19 @@ void testRSelect() {
   rSelect(numbers.begin(), numbers.end(), 5);
   result.push_back(numbers[4]);
 
-  numbers= original_numbers;
+  numbers = original_numbers;
   rSelect(numbers.begin(), numbers.end(), numbers.size());
   result.push_back(*(numbers.end() - 1));
 
-  if ( result != expected ) {
-    std::cout << "Failed!!!" << std::endl;
-    std::cout << "The output is: " << std::endl;
-    printContainer(result);
-    std::cout << "The correct result is: " << std::endl;
-    printContainer(expected);
-  } else {
-    std::cout << "Passed!" << std::endl;
-  }
+  compareResult(result, expected);
+
 }
 
 
 //
 // test M3Select()
 //
-void testM3Select() {
+inline void testM3Select() {
   std::cout << "\nTesting my median-of-three selection implementation..."
             << std::endl;
 
@@ -174,15 +151,7 @@ void testM3Select() {
   m3Select(numbers.begin(), numbers.end(), numbers.size());
   result.push_back(*(numbers.end() - 1));
 
-  if ( result != expected ) {
-    std::cout << "Failed!!!" << std::endl;
-    std::cout << "The output is: " << std::endl;
-    printContainer(result);
-    std::cout << "The correct result is: " << std::endl;
-    printContainer(expected);
-  } else {
-    std::cout << "Passed!" << std::endl;
-  }
+  compareResult(result, expected);
 }
 
 
