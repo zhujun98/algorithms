@@ -5,6 +5,7 @@
 // - testQuickSort()
 // - testRSort()
 // - testHeapsort()
+// - testMergeSort
 // - testRSelect()
 // - testM3Select()
 //
@@ -90,6 +91,29 @@ void testHeapSort() {
   }
 }
 
+
+//
+// test mergeSort()
+//
+void testMergeSort() {
+
+  std::cout << "\nTesting my merge sort implementation..." << std::endl;
+
+  std::vector<int> numbers  = {0, 9, 8, 2, 1, 3, 5, 7, 6, 4};
+  std::vector<int> expected = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+  mergeSort(numbers.begin(), numbers.end());
+
+  if ( numbers == expected ) {
+    std::cout << "Passed!" << std::endl;
+  } else {
+    std::cout << "Failed!!!" << std::endl;
+    std::cout << "The output is: " << std::endl;
+    printContainer(numbers);
+    std::cout << "The correct result is: " << std::endl;
+    printContainer(expected);
+  }
+}
 
 //
 // test rSelect()

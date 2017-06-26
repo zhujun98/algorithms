@@ -7,6 +7,7 @@
 // - rSort()
 // - quickSort()
 // - heapSort()
+// - mergeSort()
 //
 
 #ifndef SORTING_AND_SELECTION_SORTING_H
@@ -14,6 +15,7 @@
 
 #include <iostream>
 #include <queue>
+#include <list>
 #include <functional>
 
 #include "utilities.h"
@@ -120,6 +122,60 @@ inline void heapSort(Iterator first, Iterator last) {
   }
 
 //  print_queue(my_heap);
+}
+
+
+//
+// implementation of merge sort algorithm
+//
+// Sort the elements in the range [first, last) into ascending order.
+//
+// @param first: iterator to the first position
+// @param last: iterator to the last position
+//
+template <class Iterator>
+inline void mergeSort(Iterator first, Iterator last) {
+
+  std::size_t length = last - first;
+
+  if ( length == 1 ) { return; }
+
+  std::size_t middle = length / 2;
+
+  mergeSort(first, first + middle);
+  mergeSort(first + middle, last);
+
+  // merge the two sorted half arrays into a queue
+  typedef typename std::iterator_traits<Iterator>::value_type T;
+
+  // make a copy of initial container
+  // this initialization is faster than copying the elements one by one
+  std::vector<T> copy(first, last);
+
+  Iterator i = copy.begin(), j = i + middle;
+  for ( auto k = first; k != last; ++k ) {
+    if ( i == copy.begin() + middle ) {
+      *k = *j;
+      ++j;
+    } else if ( j == copy.end() ) {
+      *k = *i;
+      ++i;
+    } else {
+      if ( *i <= *j ) {
+        *k = *i;
+        ++i;
+      } else {
+        *k = *j;
+        ++j;
+      }
+    }
+  }
+
+}
+
+template <class Iterator>
+inline void merge(Iterator first, Iterator middle, Iterator last) {
+
 }
 
 #endif // SORTING_AND_SELECTION_SORTING_H
