@@ -23,7 +23,7 @@
 
 
 //
-// check the sorting result and output information
+// check the result and output information
 //
 template <class T>
 void inline compareResult(T output, T expected) {
