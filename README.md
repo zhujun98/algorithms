@@ -15,6 +15,7 @@ See [here](./inversion_count)
 * rSort() -- random sort -- O(nlog(n))
 * quickSort() -- random sort using median-of-three as pivot -- O(nlog(n))
 * heapSort() -- O(nlog(n))
+* mergeSort() -- O(nlog(n))
 * rSelect() -- random selection, both in place and out of place -- O(n)
 * m3Select() -- random selection using median-of-three as pivot -- O(n)
 
