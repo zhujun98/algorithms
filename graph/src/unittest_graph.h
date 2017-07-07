@@ -5,6 +5,7 @@
 // - simpleUdGraph()
 // - simpleGraph()
 // - distanceGraph()
+// - testBreathFirstSearch
 // - testKarger()
 // - testKosaraju()
 // - testDijkstra()
@@ -80,7 +81,6 @@ namespace my_test {
     return graph;
   }
 
-
   //
   // build a simple directed graph for testing
   //
@@ -105,6 +105,47 @@ namespace my_test {
     graph.connect(2, 3, 1, 3);
 
     return graph;
+  }
+
+  //
+  // test the implementation of breathFirstSearch algorithm
+  //
+  void testBreathFirstSearch() {
+    std::cout << "\nTesting BFS algorithm..." << std::endl;
+
+    // test on undirected graph
+    UdGraphAdj ud_graph = simpleUdGraph();
+
+    std::vector<int> result = ud_graph.breathFirstSearch(0);
+    std::vector<int> expected_result = {0, 1, 2, 3, 4, 7, 5, 6};
+
+    if ( result == expected_result ) {
+      ;
+//      std::cout << "Passed!" << std::endl;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: " << std::endl;
+      graph::printContainer(result);
+      std::cout << "The correct result is: " << std::endl;
+      graph::printContainer(expected_result);
+    }
+
+    // test on directed graph
+    GraphAdj graph = simpleGraph();
+
+    result = graph.breathFirstSearch(0);
+    expected_result = {0, 3, 1, 6, 4, 2, 7, 5, 8};
+
+    if ( result == expected_result ) {
+      std::cout << "Passed!" << std::endl;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: " << std::endl;
+      graph::printContainer(result);
+      std::cout << "The correct result is: " << std::endl;
+      graph::printContainer(expected_result);
+    }
+
   }
 
   //
