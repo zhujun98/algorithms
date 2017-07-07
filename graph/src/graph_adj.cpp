@@ -28,9 +28,13 @@ namespace graph {
 
 }
 
+/*
+ * Directed graph
+ */
 
 GraphAdj::GraphAdj(unsigned int n) {
   graph::GraphAdjVertex adj_list;
+
   // initialize a adjacency list with n elements (head nodes)
   for (int i = 0; i < n; ++i) {
     adj_list.visited = false;
@@ -43,6 +47,19 @@ GraphAdj::GraphAdj(unsigned int n) {
 GraphAdj::~GraphAdj() {
   for (int i=0; i<vertices_.size();++i) {
     clearList(i);
+  }
+}
+
+void GraphAdj::clearList(int vertex) {
+
+  graph::AdjListNode* current = vertices_[vertex].head;
+
+  if ( !vertices_[vertex].head ) { return; }
+
+  while ( current ) {
+    vertices_[vertex].head = current->next;
+    delete current;
+    current = vertices_[vertex].head;
   }
 }
 
@@ -78,53 +95,36 @@ graph::GraphAdjVertex GraphAdj::getVertex(int value) const {
   return vertices_[value];
 }
 
+void GraphAdj::addEdge(int tail, int head, int weight, double distance) {
 
-void GraphAdj::clearList(int vertex) {
+  assert(tail != head);
 
-  graph::AdjListNode* current = vertices_[vertex].head;
+  graph::AdjListNode* new_node = graph::newAdjListNode(head, weight, distance);
 
-  if ( !vertices_[vertex].head ) { return; }
+  graph::AdjListNode* current = vertices_[tail].head;
+  graph::AdjListNode* previous = vertices_[tail].head;
 
-  while ( current ) {
-    vertices_[vertex].head = current->next;
-    delete current;
-    current = vertices_[vertex].head;
-  }
-}
-
-void GraphAdj::addEdge(int first, int second, int weight, double distance) {
-
-  assert(first != second);
-
-  graph::AdjListNode* new_node = graph::newAdjListNode(second, weight, distance);
-
-  graph::AdjListNode* current = vertices_[first].head;
-  graph::AdjListNode* previous = vertices_[first].head;
-
-  if ( !vertices_[first].head) {
-    // the linked list is empty
-    vertices_[first].head = new_node;
-  } else if ( second == vertices_[first].head->value ) {
-    vertices_[first].head->weight += weight;
+  if ( !vertices_[tail].head) {
+    vertices_[tail].head = new_node;
+  } else if ( head == vertices_[tail].head->value ) {
+    vertices_[tail].head->weight += weight;
     delete new_node;
     return;
-  } else if ( second < vertices_[first].head->value ) {
+  } else if ( head < vertices_[tail].head->value ) {
     // insert the new node in the head
-    vertices_[first].head = new_node;
-    vertices_[first].head->next = current;
+    vertices_[tail].head = new_node;
+    vertices_[tail].head->next = current;
   } else {
     // insert the new node in the middle
     current = current->next;
     while ( current ) {
-      if ( current->value == second ) {
+      if ( current->value == head ) {
         current->weight += weight;
         delete new_node;
-
         return;
-      } else if ( current->value > second ) {
+      } else if ( current->value > head ) {
         new_node->next = current;
         previous->next = new_node;
-
         return;
       } else {
         current = current->next;
@@ -140,33 +140,30 @@ void GraphAdj::addEdge(int first, int second, int weight, double distance) {
 //
 // complexity O(n)
 //
-int GraphAdj::delEdge(int first, int second) {
+int GraphAdj::delEdge(int tail, int head) {
 
-  assert(first != second);
+  assert(tail != head);
 
   int weight;
 
-  if ( !vertices_[first].head ) { return 0; }
+  if ( !vertices_[tail].head ) { return 0; }
 
-  graph::AdjListNode* current = vertices_[first].head;
-  graph::AdjListNode* previous = vertices_[first].head;
+  graph::AdjListNode* current = vertices_[tail].head;
+  graph::AdjListNode* previous = vertices_[tail].head;
 
-  if ( vertices_[first].head->value == second ) {
+  if ( vertices_[tail].head->value == head ) {
     // if node is the head node
-    vertices_[first].head = current->next;
+    vertices_[tail].head = current->next;
     weight = current->weight;
     delete current;
-
     return weight;
-
   } else {
     current = current->next;
     while ( current ) {
-      if ( current->value == second ) {
+      if ( current->value == head ) {
         previous->next = current->next;
         weight = current->weight;
         delete current;
-
         return weight;
       } else {
         previous = previous->next;
@@ -178,34 +175,32 @@ int GraphAdj::delEdge(int first, int second) {
   return 0;
 }
 
-bool GraphAdj::connect(int first, int second, int weight, double distance) {
+bool GraphAdj::connect(int tail, int head, int weight, double distance) {
 
-  assert(first != second);
+  if ( isConnected(tail, head) ) { return false; }
 
-  if ( isConnected(first, second) ) { return false; }
-
-  addEdge(first, second, weight, distance);
+  addEdge(tail, head, weight, distance);
 
   return true;
 }
 
-int GraphAdj::disconnect(int first, int second) {
+int GraphAdj::disconnect(int tail, int head) {
 
-  assert(first != second);
-
-  int weight = delEdge(first, second);
+  int weight = delEdge(tail, head);
 
   return weight;
 }
 
-bool GraphAdj::isConnected(int first, int second) const {
+bool GraphAdj::isConnected(int tail, int head) const {
+
+  if ( tail == head ) { return true; }
 
   bool connected = false;
 
-  graph::AdjListNode* current = vertices_[first].head;
+  graph::AdjListNode* current = vertices_[tail].head;
 
   while ( current ) {
-    if ( current->value == second ) {
+    if ( current->value == head ) {
       connected = true;
     }
     current = current->next;
@@ -234,25 +229,24 @@ void GraphAdj::display() const {
   }
 }
 
-std::vector<int> GraphAdj::BFS(int vertex) {
-
+std::vector<int> GraphAdj::breathFirstSearch(int value) {
+  // the container for visited vertices in finding sequence
   std::vector<int> visited;
   std::queue<int> tracker;
 
-  tracker.push(vertex);
-  visited.push_back(vertex);
-  vertices_[vertex].visited = true;
+  tracker.push(value);
+  visited.push_back(value);
+  vertices_[value].visited = true;
   while (!tracker.empty()) {
     int current_vertex = tracker.front();
     tracker.pop();
 
     graph::GraphAdjVertex *current_head = &vertices_[current_vertex];
-
     graph::AdjListNode* current_node = current_head->head;
+
     // find all children vertices which have not been visited yet
     while (current_node) {
       if ( !vertices_[current_node->value].visited ) {
-        // move to the next node
         tracker.push(current_node->value);
         visited.push_back(current_node->value);
         vertices_[current_node->value].visited = true;
@@ -264,12 +258,12 @@ std::vector<int> GraphAdj::BFS(int vertex) {
   return visited;
 }
 
-std::vector<int> GraphAdj::DFS(int vertex) {
-
+std::vector<int> GraphAdj::depthFirstSearch(int value) {
+  // the container for sink vertices in finding sequence
   std::vector<int> sink;
   std::stack<int> tracker;
 
-  tracker.push(vertex);
+  tracker.push(value);
   // search the vertex reachable from the current vertex
   while ( !tracker.empty() ) {
     // retreat to the last vertex
@@ -283,11 +277,8 @@ std::vector<int> GraphAdj::DFS(int vertex) {
     while ( current_node ) {
       graph::GraphAdjVertex* next_head = &vertices_[current_node->value];
       if ( !next_head->visited ) {
-        // move to the next vertex
         current_head = next_head;
-        // mark the vertex visited
         current_head->visited = true;
-        // store the vertex in the stack
         tracker.push(current_node->value);
 
         retreat = false;
@@ -295,11 +286,9 @@ std::vector<int> GraphAdj::DFS(int vertex) {
       }
       current_node = current_node->next;
     }
-    // find a sink vertex
+    // if a sink vertex is found
     if ( retreat ) {
-      // store the sink vertex
       sink.push_back(current_vertex);
-      // remove the sink vertex from stack
       tracker.pop();
     }
   }
@@ -307,7 +296,9 @@ std::vector<int> GraphAdj::DFS(int vertex) {
   return sink;
 }
 
-
+/*
+ * Undirected graph
+ */
 UdGraphAdj::UdGraphAdj(unsigned int n) : GraphAdj(n) {}
 
 UdGraphAdj::~UdGraphAdj() {}

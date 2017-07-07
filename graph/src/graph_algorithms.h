@@ -27,9 +27,9 @@ namespace graph {
   //
   // implementation of the Karger's mini-cut algorithm on an undirected graph
   //
-  // @param n: number of random contractions
+  // @param n: the number of random contractions
   //
-  // @return: number of min cut
+  // @return: the number of min cut
   //
   inline int karger(const UdGraphAdj &graph, unsigned int n) {
 
@@ -47,22 +47,12 @@ namespace graph {
     return min_cut;
   }
 
-  struct Dist {
-    int vertex;
-    double distance;
-
-    friend bool operator<(Dist a, Dist b) {
-      return a.distance > b.distance;
-    }
-  };
-
-
   //
   // Apply the Kosaraju's algorithm to find the strongly connected components (SCC)
   //
   // @param graph: a directed graph
   //
-  // @return: strongly connected components
+  // @return: the strongly connected components
   //
   inline std::vector<std::vector<int>> kosaraju(GraphAdj& graph) {
     // First step, get the reversed graph
@@ -78,7 +68,7 @@ namespace graph {
     std::stack<int> finish_time;
     for (std::size_t i = 0; i < graph.size(); ++i) {
       if (!graph.getVertex(i).visited) {
-        std::vector<int> tmp = graph.DFS(i);
+        std::vector<int> tmp = graph.depthFirstSearch(i);
         for (std::size_t j = 0; j < tmp.size(); ++j) {
           finish_time.push(tmp[j]);
         }
@@ -92,7 +82,7 @@ namespace graph {
     std::vector<std::vector<int>> scc;
     while (!finish_time.empty()) {
       if (!graph_reversed.getVertex(finish_time.top()).visited) {
-        std::vector<int> tmp = graph_reversed.DFS(finish_time.top());
+        std::vector<int> tmp = graph_reversed.depthFirstSearch(finish_time.top());
         scc.push_back(tmp);
       }
       finish_time.pop();
@@ -105,8 +95,8 @@ namespace graph {
   //
   // implementation of the Dijkstra's shorted path algorithm without heap
   //
-  // @param graph: GraphAdj object
-  // @param source: starting vertex value
+  // @param graph: a directed graph
+  // @param start: the starting vertex value
   // @param max_distance: maximum distance from the source. If there is no connection
   //                      between two vertices, the distance between them will be
   //                      represented by "max_distance".
@@ -114,7 +104,7 @@ namespace graph {
   // @param return: a vector containing the shortest distance between each vertex
   //                to the source
   //
-  inline std::vector<double> dijkstra(const GraphAdj &graph, int source,
+  inline std::vector<double> dijkstra(const GraphAdj &graph, int start,
                                       double max_distance=std::numeric_limits<double>::max()) {
     // a set of frontier vertices
     std::vector<int> frontier;
@@ -124,15 +114,15 @@ namespace graph {
     std::vector<double> shortest_distance(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
       remain.insert(i);
-      if (i != source) {
+      if (i != start) {
         shortest_distance[i] = max_distance;
       } else {
         shortest_distance[i] = 0;
       }
     }
 
-    remain.erase(source);
-    frontier.push_back(source);
+    remain.erase(start);
+    frontier.push_back(start);
     // run until there is no vertex left in the remain set
     while ( remain.size() ) {
       int vertex_to_move;  // the vertex to be moved from remain to frontier

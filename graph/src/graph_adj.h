@@ -22,14 +22,14 @@ namespace graph {
   // node in a linked list
   //
   struct AdjListNode {
-    int value;  // value of the node
-    int weight;  // weight of the connection with this node
-    double distance;  // distance to this node
+    int value;  // value of the corresponding vertex
+    int weight;  // weight of the connection between the head vertex and this node
+    double distance;  // distance from the head vertex to this node
     AdjListNode* next;  // pointer to the next node
   };
 
   //
-  // vertex of the graph, stored in an array-like container (vector here)
+  // vertex of the graph, stored in vector
   //
   struct GraphAdjVertex {
     bool visited;  // flag indicate whether a vertex has been visited
@@ -39,9 +39,9 @@ namespace graph {
   //
   // construct a new AdjListNode
   //
-  // @param value: value of the node
-  // @param weight: weight of the connection with this node
-  // @param distance: distance to this node
+  // @param value: value of the corresponding vertex
+  // @param weight: weight of the connection between the head vertex and this node
+  // @param distance: distance from the head vertex to this node
   //
   // @return: pointer of the new node
   //
@@ -49,50 +49,58 @@ namespace graph {
 
 }
 
-
+/*
+ * Directed graph
+ */
 class GraphAdj {
+
 protected:
+  //
+  // clear (release memory) the linked list belonged to a vertex
+  //
+  // @param vertex: the vertex value
+  //
+  void clearList(int vertex);
 
   std::vector<graph::GraphAdjVertex> vertices_;
 
   //
-  // add an edge between first and second. First is the tail in a linked
-  // list. The nodes in the linked list are sorted in ascending order
+  // Add an edge from tail to head. The nodes in the linked
+  // list are sorted in ascending order.
+  //
+  // Public method connect() is implemented to add an edge for both
+  // directed graph and undirected graph
+  //
   // Note: the sorting will not increase the complexity since it is
   //       anyhow necessary to traverse the list to check the existence
   //       of the identical node. For the identical node, we only
   //       increase the weight.
   //
-  // @param first: first vertex
-  // @param second: second vertex
-  // @param weight: weight of edge
-  // @param distance: distance of the edge
+  // @param tail: the tail vertex value
+  // @param head: the head vertex value
+  // @param weight: the weight of edge
+  // @param distance: the distance of the edge
   //
-  void addEdge(int first, int second, int weight, double distance);
+  void addEdge(int tail, int head, int weight, double distance);
 
   //
-  // delete the edge (first, second)
+  // Delete the edge from tail to head
   //
-  // @param first: the first vertex
-  // @param second: the second vertex
+  // Public method disconnect() is implemented to delete an edge for both
+  // directed graph and undirected graph
+  //
+  // @param tail: the tail vertex value
+  // @param head: the head vertex value
   //
   // @return: weight of the removed node
   //
-  int delEdge(int first, int second);
-
-  //
-  // clear (release memory) the linked list belonged to a vertex
-  //
-  // @param vertex: value of the vertex
-  //
-  void clearList(int vertex);
+  int delEdge(int tail, int head);
 
 public:
-
   //
   // constructor
   //
-  // @param n: total number of vertices
+  // @param n: the total number of vertices
   //
   GraphAdj(unsigned int n);
 
@@ -119,7 +127,7 @@ public:
   //
   // get a vertex
   //
-  // @param value: value of the vertex
+  // @param value: the vertex value
   //
   // @return: vertex
   //
@@ -128,61 +136,61 @@ public:
   //
   // check whether two vertices are connected
   //
-  // @param first: the first vertex
-  // @param second: the second vertex
+  // @param tail: the tail vertex value
+  // @param head: the head vertex value
   //
   // @return: true for connected and false for unconnected. Throw an error
   //          if the two vertices are only partially connected.
   //
-  virtual bool isConnected(int first, int second) const;
+  virtual bool isConnected(int tail, int head) const;
 
   //
   // connect two vertices
   //
-  // @param first: the first vertex
-  // @param second: the second vertex
-  // @param weight: weight of edge
-  // @param distance: distance of the edge
+  // @param tail: the tail vertex value
+  // @param head: the head vertex value
+  // @param weight: the weight of the edge
+  // @param distance: the distance of the edge
   //
   // @return: true for success and false for already connected vertices
   //
-  virtual bool connect(int first, int second, int weight=1, double distance=1.0);
+  virtual bool connect(int tail, int head, int weight=1, double distance=1.0);
 
   //
   // disconnect two vertices
   //
-  // @param first: the first vertex
-  // @param second: the second vertex
+  // @param tail: the tail vertex value
+  // @param head: the head vertex value
   //
   // @return: number of edges between the two vertices
   //
-  virtual int disconnect(int first, int second);
+  virtual int disconnect(int tail, int head);
 
   //
   // collapse the vertex src to the vertex dst and empty the linked list for src
   //
-  // @param src: value of the source vertex
-  // @param dst: value of the destination vertex
+  // @param src: the value of the source vertex
+  // @param dst: the value of the destination vertex
   //
   virtual void collapse(int src, int dst);
 
   //
   // Apply breath-first-search (BFS) from a vertex
   //
-  // @param vertex: starting vertex
+  // @param vertex: starting vertex value
   //
   // @return: a vector of visited vertices, ordered by finding time
   //
-  std::vector<int> BFS(int vertex);
+  std::vector<int> breathFirstSearch(int value);
 
   //
   // Apply depth-first-search (DFS) from a vertex
   //
-  // @param vertex: starting vertex
+  // @param value: starting vertex value
   //
   // @return: a vector of sink vertices, ordered by finding time
   //
-  std::vector<int> DFS(int vertex);
+  std::vector<int> depthFirstSearch(int value);
 
   //
   // display the graph
@@ -192,6 +200,9 @@ public:
 };
 
 
+/*
+ * Undirected graph
+ */
 class UdGraphAdj: public GraphAdj {
 public:
   //
@@ -212,8 +223,8 @@ public:
   //
   // check whether two vertices are connected
   //
-  // @param first: the first vertex
-  // @param second: the second vertex
+  // @param first: the first vertex value
+  // @param second: the second vertex value
   //
   // @return: true for connected and false for unconnected. Throw an error
   //          if the two vertices are only partially connected.
@@ -223,10 +234,10 @@ public:
   //
   // connect two vertices
   //
-  // @param first: the first vertex
-  // @param second: the second vertex
-  // @param weight: weight of edge
-  // @param distance: distance of the edge
+  // @param first: the first vertex value
+  // @param second: the second vertex value
+  // @param weight: the weight of the edge
+  // @param distance: the distance of the edge
   //
   // @return: true for success and false for already connected vertices
   //
@@ -235,8 +246,8 @@ public:
 
   // disconnect two vertices
   //
-  // @param first: the first vertex
-  // @param second: the second vertex
+  // @param first: the first vertex value
+  // @param second: the second vertex value
   //
   // @return: number of edges between the two vertices
   //

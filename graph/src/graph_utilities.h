@@ -24,9 +24,9 @@ namespace graph {
   //
   // copy a graph
   //
-  // @param graph: original graph (could be directed or undirected)
+  // @param graph: the original graph (can be directed or undirected)
   //
-  // @param return: copied graph
+  // @param return: the copied graph
   //
   template <class G>
   inline G copyGraph(const G& graph) {
@@ -47,9 +47,9 @@ namespace graph {
   //
   // reverse a directed graph
   //
-  // @param graph: original graph
+  // @param graph: the original graph
   //
-  // @param return: reversed graph
+  // @param return: the reversed graph
   //
   inline GraphAdj reverseGraph(const GraphAdj& graph) {
     std::size_t g_size = graph.size();
@@ -69,13 +69,13 @@ namespace graph {
   //
   // contract an undirected graph until only two non-empty linked lists remain
   //
-  // @param graph: UnGraphAdj object
+  // @param graph: an undirected graph
   //
-  // @return: number of edges in the contracted graph
+  // @return: the number of edges in the contracted graph
   //
   inline int graphContract(UdGraphAdj& graph, bool display=false) {
 
-    /* Distribution on which to apply the generator */
+    // Distribution on which to apply the generator
     std::vector<int> connected_vertices = graph.getConnectedVertices();
 
     std::random_device rd;
@@ -102,7 +102,7 @@ namespace graph {
   //
   // print the strongly connected components
   //
-  // @param scc: strongly connected components implemented by two nested containers
+  // @param scc: strongly connected components represented by two nested containers
   //
   template <class VV>
   inline void printSCC(const VV& scc) {
