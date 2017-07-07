@@ -6,6 +6,7 @@
 // - simpleGraph()
 // - distanceGraph()
 // - testBreathFirstSearch
+// - testDepthFirstSearch
 // - testKarger()
 // - testKosaraju()
 // - testDijkstra()
@@ -146,6 +147,46 @@ namespace my_test {
       graph::printContainer(expected_result);
     }
 
+  }
+
+  //
+  // test the implementation of depthFirstSearch algorithm
+  //
+  void testDepthFirstSearch() {
+    std::cout << "\nTesting DFS algorithm..." << std::endl;
+
+    // test on undirected graph
+    UdGraphAdj ud_graph = simpleUdGraph();
+
+    std::vector<int> result = ud_graph.depthFirstSearch(0);
+    std::vector<int> expected_result = {3, 6, 5, 4, 7, 2, 1, 0};
+
+    if ( result == expected_result ) {
+      ;
+//      std::cout << "Passed!" << std::endl;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: " << std::endl;
+      graph::printContainer(result);
+      std::cout << "The correct result is: " << std::endl;
+      graph::printContainer(expected_result);
+    }
+
+    // test on directed graph
+    GraphAdj graph = simpleGraph();
+
+    result = graph.depthFirstSearch(0);
+    expected_result = {8, 5, 2, 7, 4, 1, 6, 3, 0};
+
+    if ( result == expected_result ) {
+      std::cout << "Passed!" << std::endl;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: " << std::endl;
+      graph::printContainer(result);
+      std::cout << "The correct result is: " << std::endl;
+      graph::printContainer(expected_result);
+    }
   }
 
   //
