@@ -3,11 +3,16 @@
 //
 #include <iostream>
 
+#include "implementation_benchmark.h"
 #include "assignments.h"
+
 
 int main() {
 
   std::cout << "Hello" << std::endl;
 
-  assignment::run2SumAssignment();
+  runBenchmark(1000000);
+
+  // This takes a long time
+//  assignment::run2SumAssignment();
  }

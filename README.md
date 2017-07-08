@@ -23,7 +23,7 @@ See [here](./sorting_and_selection)
 
 ## graph
 
-* adjacency list representation of directed and undirected graph
+* Adjacency list representation of directed and undirected graph
 * Depth first search (DFS)
 * Breath first search (BFS)
 * Karger's random algorithm
@@ -34,7 +34,8 @@ See [here](./graph)
 
 ## hash table
 
-* a relatively large 2-sum problem
+* A relatively large 2-sum problem
+* Benchmark between std::map and std::unsorted_map
 
 See [here](./hash_table)
 
