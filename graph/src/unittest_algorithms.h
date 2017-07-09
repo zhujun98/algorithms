@@ -14,6 +14,7 @@
 #include "graph_utilities.h"
 #include "unittest_graph.h"
 #include "graph_algorithms.h"
+#include <string>
 
 
 namespace graph_test {
@@ -65,13 +66,13 @@ namespace graph_test {
   // test the implementation of Dijkastra's algorithm
   //
   void testDijkstra() {
-
     std::cout << "\nTesting Dijkstra's algorithm..." << std::endl;
 
-    GraphAdj<int> graph = graph_test::distanceGraph();
+    GraphAdj<std::string> graph = graph_test::distanceGraph();
 
-    std::vector<double> shortest_distance = graph::dijkstra(graph, 0);
-    std::vector<double> expected_result = {0, 1, 3, 6};
+    std::string source = "a";
+    std::vector<double> shortest_distance = graph::dijkstra(graph, source);
+    std::vector<double> expected_result = {0, 1, 6, 3};
 
     if ( shortest_distance == expected_result ) {
       std::cout << "Passed!" << std::endl;
@@ -82,7 +83,6 @@ namespace graph_test {
       std::cout << "The correct result is: " << std::endl;
       graph_utilities::printVector(expected_result);
     }
-
   }
 
 }

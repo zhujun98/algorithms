@@ -87,24 +87,25 @@ namespace graph_test {
   //
   // The annotation "0 *- 1" means from 0 to 1.
   //    (1)    (6)
-  // 0  *-  1  *-  3
+  // a  *-  b  *-  d
   //   *    *    /
   //    \   |(2)/
   // (4) \  |  / (3)
   //      \ | *
-  //        2
+  //        c
   //
   // @param return: a directed graph
   //
-  GraphAdj<int> distanceGraph() {
-    GraphAdj<int> graph;
+  GraphAdj<std::string> distanceGraph() {
+    GraphAdj<std::string> graph;
 
-    graph.connect(0, 1, 1, 1);
-    graph.connect(1, 3, 1, 6);
-    graph.connect(0, 2, 1, 4);
-    graph.connect(1, 2, 1, 2);
-    graph.connect(2, 3, 1, 3);
+    graph.connect("a", "b", 1, 1);
+    graph.connect("b", "d", 1, 6);
+    graph.connect("a", "c", 1, 4);
+    graph.connect("b", "c", 1, 2);
+    graph.connect("c", "d", 1, 3);
 
+//    graph.display();
     return graph;
   }
 
