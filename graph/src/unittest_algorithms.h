@@ -71,15 +71,16 @@ namespace graph_test {
     GraphAdj<std::string> graph = graph_test::distanceGraph();
 
     std::string source = "a";
-    std::vector<double> shortest_distance = graph::dijkstra(graph, source);
-    std::vector<double> expected_result = {0, 1, 6, 3};
+    std::vector<std::pair<double, std::string>> shortest_path = graph::dijkstra(graph, source);
+    std::vector<std::pair<double, std::string>> expected_result =
+        {{0, "a"}, {1, "a"}, {6, "c"}, {3, "b"}};
 
-    if ( shortest_distance == expected_result ) {
+    if ( shortest_path == expected_result ) {
       std::cout << "Passed!" << std::endl;
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
-      graph_utilities::printVector(shortest_distance);
+      graph_utilities::printVector(shortest_path);
       std::cout << "The correct result is: " << std::endl;
       graph_utilities::printVector(expected_result);
     }

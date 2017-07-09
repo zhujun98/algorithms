@@ -133,16 +133,18 @@ namespace graph {
   //
   // @param graph: a directed graph
   // @param source: the starting vertex value
-  // @param max_distance: maximum distance from the source. If there is no connection
-  //                      between two vertices, the distance between them will be
-  //                      represented by "max_distance".
+  // @param max_distance: maximum distance from the source. If there is no
+  //                      connection between two vertices, the distance
+  //                      between them will be represented by "max_distance".
   //
-  // @param return: a vector containing the shortest distance between each vertex
-  //                to the source
+  // @param return: a vector containing a pair of the shortest distance
+  //                between each vertex to the source as well as the previous
+  //                vertex of each vertex.
   //
   template <class T>
-  inline std::vector<double> dijkstra(const GraphAdj<T> &graph, T source,
-                                      double max_distance=std::numeric_limits<double>::max()) {
+  inline std::vector<std::pair<double, T>> dijkstra(
+      const GraphAdj<T> &graph, T source,
+      double max_distance=std::numeric_limits<double>::max()) {
     if ( !graph.getVertex(source) ) {
       std::cout << source << " is not a vertex of the graph!" << std::endl;
       return {};
@@ -151,13 +153,14 @@ namespace graph {
     // a set of vertex indices waiting to removed one by one
     std::set<int> remain;  // look up complexity O(log(n))
     // storing the shortest distance for each vertices
-    std::vector<double> shortest_distance(graph.size());
+    std::vector<std::pair<double, T>> shortest_path(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
       remain.insert(i);
       if (graph.getVertexByIndex(i)->value != source) {
-        shortest_distance[i] = max_distance;
+        shortest_path[i].first = max_distance;
       } else {
-        shortest_distance[i] = 0;
+        shortest_path[i].first = 0;
+        shortest_path[i].second = source;
       }
     }
 
@@ -167,8 +170,8 @@ namespace graph {
       double current_min_distance = max_distance;
       int selected_index = -1;
       for ( auto it = remain.begin(); it != remain.end(); ++it ) {
-        if ( shortest_distance[*it] < current_min_distance ) {
-          current_min_distance = shortest_distance[*it];
+        if ( shortest_path[*it].first < current_min_distance ) {
+          current_min_distance = shortest_path[*it].first;
           selected_index = *it;
         }
       }
@@ -183,9 +186,10 @@ namespace graph {
         // check whether the vertex is in the remain set
         if ( remain.find(currentIndex) != remain.end() ) {
           // update shortest distance information
-          double tmp = shortest_distance[selected_index] + current_edge->distance;
-          if (shortest_distance[currentIndex] > tmp) {
-            shortest_distance[currentIndex] = tmp;
+          double tmp = shortest_path[selected_index].first + current_edge->distance;
+          if (shortest_path[currentIndex].first > tmp) {
+            shortest_path[currentIndex].first = tmp;
+            shortest_path[currentIndex].second = graph.getVertexByIndex(selected_index)->value;
           }
         }
         current_edge = current_edge->next;
@@ -193,7 +197,7 @@ namespace graph {
 
     }
 
-    return shortest_distance;
+    return shortest_path;
   }
 
 }

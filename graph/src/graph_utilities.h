@@ -24,11 +24,23 @@ namespace graph_utilities {
   // @param v: a 1D vector
   //
   template <class T>
-  inline void printVector(const T& v) {
+  inline void printVector(const std::vector<T>& v) {
     for (auto i=v.begin(); i != v.end(); ++i) {
       std::cout << *i << " ";
     }
+    std::cout << std::endl;
+  }
 
+  //
+  // print the std::pair elements in a 1D vector
+  //
+  // @param v: a 1D vector
+  //
+  template <class T1, class T2>
+  inline void printVector(const std::vector<std::pair<T1, T2>>& v) {
+    for (auto i=v.begin(); i != v.end(); ++i) {
+      std::cout << i->first << "," << i->second << " ";
+    }
     std::cout << std::endl;
   }
 

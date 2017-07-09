@@ -78,22 +78,22 @@ namespace assignment {
 
     std::cout << "Finished reading data!" << std::endl;
 
-    std::vector<double> shortest_distance = graph::dijkstra(graph, 1);
+    std::vector<std::pair<double, int>> shortest_path = graph::dijkstra(graph, 1);
 
     std::cout << "The shortest distance to vertex" << std::endl;
     std::cout << "7,37,59,82,99,115,133,165,188,197" << std::endl;
     std::cout << "are: " << std::endl;
 
-    std::cout << shortest_distance[graph.getVertexIndex(7)] << ","
-              << shortest_distance[graph.getVertexIndex(37)] << ","
-              << shortest_distance[graph.getVertexIndex(59)] << ","
-              << shortest_distance[graph.getVertexIndex(82)] << ","
-              << shortest_distance[graph.getVertexIndex(99)] << ","
-              << shortest_distance[graph.getVertexIndex(115)] << ","
-              << shortest_distance[graph.getVertexIndex(133)] << ","
-              << shortest_distance[graph.getVertexIndex(165)] << ","
-              << shortest_distance[graph.getVertexIndex(188)] << ","
-              << shortest_distance[graph.getVertexIndex(197)];
+    std::cout << shortest_path[graph.getVertexIndex(7)].first << ","
+              << shortest_path[graph.getVertexIndex(37)].first << ","
+              << shortest_path[graph.getVertexIndex(59)].first << ","
+              << shortest_path[graph.getVertexIndex(82)].first << ","
+              << shortest_path[graph.getVertexIndex(99)].first << ","
+              << shortest_path[graph.getVertexIndex(115)].first << ","
+              << shortest_path[graph.getVertexIndex(133)].first << ","
+              << shortest_path[graph.getVertexIndex(165)].first << ","
+              << shortest_path[graph.getVertexIndex(188)].first << ","
+              << shortest_path[graph.getVertexIndex(197)].first << std::endl;
   }
 
   //
