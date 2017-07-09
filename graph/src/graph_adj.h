@@ -360,6 +360,22 @@ public:
   }
 
   //
+  // get the index of a vertex with value "value"
+  //
+  // @param value: the vertex value
+  //
+  // @return: the vertex index in the vector
+  //
+  int const getVertexIndex(T value) const {
+    auto search = hash_.find(value);
+    if ( search == hash_.end() ) {
+      return -1;
+    } else {
+      return search->second;
+    }
+  }
+
+  //
   // get the pointer to a const vertex by index of the vertex vector
   //
   // @param value: the index
