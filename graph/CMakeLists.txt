@@ -9,11 +9,11 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 set(sources
         src/main.cpp
-        src/graph_adj.cpp
         src/graph_adj.h
         src/graph_utilities.h
         src/graph_algorithms.h
         src/unittest_graph.h
+        src/unittest_algorithms.h
         src/assignments.h)
 
 add_executable(run ${sources})

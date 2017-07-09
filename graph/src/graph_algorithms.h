@@ -2,6 +2,7 @@
 // Created by jun on 6/23/17.
 //
 // Functions:
+// - graphContract()
 // - karger()
 // - kosaraju()
 // - dijkstra()
@@ -23,6 +24,39 @@
 
 
 namespace graph {
+  //
+  // contract an undirected graph until only two non-empty linked lists remain
+  //
+  // @param graph: an undirected graph
+  //
+  // @return: the number of edges in the contracted graph
+  //
+  template <class T>
+  inline int graphContract(UdGraphAdj<T>& graph, bool display=false) {
+
+    // Distribution on which to apply the generator
+    std::vector<T> connected_vertices = graph.getConnectedVertices();
+
+    std::random_device rd;
+    std::default_random_engine generator(rd());
+    while ( connected_vertices.size() > 2 ) {
+      std::uniform_int_distribution<long unsigned> distribution(0, 10000000);
+
+      unsigned long first = distribution(generator) % connected_vertices.size();
+      unsigned long second = distribution(generator) % (connected_vertices.size() - 1);
+      if (second >= first) { ++second; }
+
+      if ( display ) {
+        std::cout << connected_vertices[first] << " " << connected_vertices[second] << std::endl;
+      }
+      graph.collapse(connected_vertices[first], connected_vertices[second]);
+
+      connected_vertices = graph.getConnectedVertices();
+      if ( display) { graph.display(); }
+    }
+
+    return graph.countEdge();
+  }
 
   //
   // implementation of the Karger's mini-cut algorithm on an undirected graph
@@ -31,16 +65,17 @@ namespace graph {
   //
   // @return: the number of min cut
   //
-  inline int karger(const UdGraphAdj &graph, unsigned int n) {
+  template <class T>
+  inline int karger(const UdGraphAdj<T>& graph, unsigned int n) {
 
     int min_cut = graph.countEdge();
     int cut;
 
     // apply Karger's algorithm to find the minimum cut in the graph
     for (int i = 0; i < n; ++i) {
-      UdGraphAdj copy = copyGraph(graph);
+      UdGraphAdj<T> graph_copy(graph);
 
-      cut = graphContract(copy);
+      cut = graphContract(graph_copy);
       if (cut < min_cut) { min_cut = cut; }
     }
 
@@ -54,21 +89,22 @@ namespace graph {
   //
   // @return: the strongly connected components
   //
-  inline std::vector<std::vector<int>> kosaraju(GraphAdj& graph) {
+  template <class T>
+  inline std::vector<std::vector<T>> kosaraju(GraphAdj<T>& graph) {
     // First step, get the reversed graph
     //
     // In order to save space, the original graph is not copied.
     // Therefore, the original graph will be contaminated in the first pass
-    GraphAdj graph_reversed = reverseGraph(graph);
+    GraphAdj<T> graph_reversed = graph::reverseGraph(graph);
 
     //
     // First pass, recursively run DFS on the original graph.
     // The finish time of each vertex will be store in a stack!!!
     //
-    std::stack<int> finish_time;
+    std::stack<T> finish_time;
     for (std::size_t i = 0; i < graph.size(); ++i) {
-      if (!graph.getVertex(i).visited) {
-        std::vector<int> tmp = graph.depthFirstSearch(i);
+      if (!graph.getVertexByIndex(i)->visited) {
+        std::vector<T> tmp = graph.depthFirstSearch(graph.getVertexByIndex(i)->value);
         for (std::size_t j = 0; j < tmp.size(); ++j) {
           finish_time.push(tmp[j]);
         }
@@ -79,10 +115,10 @@ namespace graph {
     // Second pass, recursively run DFS using each vertex stored in
     // the stack. The last finished vertex will be track first!
     //
-    std::vector<std::vector<int>> scc;
+    std::vector<std::vector<T>> scc;
     while (!finish_time.empty()) {
-      if (!graph_reversed.getVertex(finish_time.top()).visited) {
-        std::vector<int> tmp = graph_reversed.depthFirstSearch(finish_time.top());
+      if (!graph_reversed.getVertex(finish_time.top())->visited) {
+        std::vector<T> tmp = graph_reversed.depthFirstSearch(finish_time.top());
         scc.push_back(tmp);
       }
       finish_time.pop();
@@ -90,7 +126,6 @@ namespace graph {
 
     return scc;
   }
-
 
   //
   // implementation of the Dijkstra's shorted path algorithm without heap
@@ -104,7 +139,8 @@ namespace graph {
   // @param return: a vector containing the shortest distance between each vertex
   //                to the source
   //
-  inline std::vector<double> dijkstra(const GraphAdj &graph, int start,
+  template <class T>
+  inline std::vector<double> dijkstra(const GraphAdj<T> &graph, int start,
                                       double max_distance=std::numeric_limits<double>::max()) {
     // a set of frontier vertices
     std::vector<int> frontier;
@@ -130,7 +166,7 @@ namespace graph {
       double current_min_distance = max_distance;
       // loop the frontier vertices
       for (int i=0; i<frontier.size(); ++i) {
-        AdjListNode *current_node = graph.getVertex(frontier[i]).head;
+        Edge<T> *current_node = graph.getVertex(frontier[i])->next;
         bool remove_from_frontier = true;
         while (current_node) {
           // try to find the vertex in the remain set

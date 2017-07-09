@@ -53,7 +53,7 @@ namespace assignment {
               << "\n" << std::string(80, '-') << "\n"
               << std::endl;
 
-    GraphAdj graph(200);
+    GraphAdj<int> graph;
 
     std::ifstream ifs("../data/dijkstraData.txt", std::ifstream::in);
     std::string line;
@@ -112,7 +112,7 @@ namespace assignment {
               << "\n" << std::string(80, '-') << "\n"
               << std::endl;
 
-    UdGraphAdj graph(200);
+    UdGraphAdj<int> graph;
 
     std::string line;
     // create an input file stream
@@ -165,7 +165,7 @@ namespace assignment {
               << "\n" << std::string(80, '-') << "\n"
               << std::endl;
 
-    GraphAdj graph(875714);
+    GraphAdj<int> graph;
 
     std::string line;
     std::ifstream ifs("../data/SCC.txt", std::ifstream::in);
@@ -194,7 +194,7 @@ namespace assignment {
         std::cout << "Warning: Find a line with two identical numbers: "
                   << first << " " << second << std::endl;
       } else {
-        graph.connect(first - 1, second - 1);
+        graph.connect(first, second);
       }
       graph.connect(1, 2);
     }
