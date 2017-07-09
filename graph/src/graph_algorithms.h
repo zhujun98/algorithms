@@ -129,9 +129,10 @@ namespace graph {
 
   //
   // implementation of the Dijkstra's shorted path algorithm without heap
+  // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
   //
   // @param graph: a directed graph
-  // @param start: the starting vertex value
+  // @param source: the starting vertex value
   // @param max_distance: maximum distance from the source. If there is no connection
   //                      between two vertices, the distance between them will be
   //                      represented by "max_distance".
@@ -140,57 +141,56 @@ namespace graph {
   //                to the source
   //
   template <class T>
-  inline std::vector<double> dijkstra(const GraphAdj<T> &graph, int start,
+  inline std::vector<double> dijkstra(const GraphAdj<T> &graph, T source,
                                       double max_distance=std::numeric_limits<double>::max()) {
-    // a set of frontier vertices
-    std::vector<int> frontier;
-    // a set of vertices waiting to be moved into the frontier set
-    std::set<int> remain;
+    if ( !graph.getVertex(source) ) {
+      std::cout << source << " is not a vertex of the graph!" << std::endl;
+      return {};
+    }
+
+    // a set of vertex indices waiting to removed one by one
+    std::set<int> remain;  // look up complexity O(log(n))
     // storing the shortest distance for each vertices
     std::vector<double> shortest_distance(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
       remain.insert(i);
-      if (i != start) {
+      if (graph.getVertexByIndex(i)->value != source) {
         shortest_distance[i] = max_distance;
       } else {
         shortest_distance[i] = 0;
       }
     }
 
-    remain.erase(start);
-    frontier.push_back(start);
     // run until there is no vertex left in the remain set
-    while ( remain.size() ) {
-      int vertex_to_move;  // the vertex to be moved from remain to frontier
-      // the minimum distance from the vertices in the remain set to the source
+    while ( !remain.empty() ) {
+      // pick the index in the 'remain' set with the shortest distance
       double current_min_distance = max_distance;
-      // loop the frontier vertices
-      for (int i=0; i<frontier.size(); ++i) {
-        Edge<T> *current_node = graph.getVertex(frontier[i])->next;
-        bool remove_from_frontier = true;
-        while (current_node) {
-          // try to find the vertex in the remain set
-          if ( remain.find(current_node->value) != remain.end() ) {
-            remove_from_frontier = false;
-            double tmp = shortest_distance[frontier[i]] + current_node->distance;
-            if (shortest_distance[current_node->value] > tmp) {
-              shortest_distance[current_node->value] = tmp;
-            }
-            if ( tmp < current_min_distance ) {
-              vertex_to_move = current_node->value;
-              current_min_distance = tmp;
-            }
-          }
-          current_node = current_node->next;
+      int selected_index = -1;
+      for ( auto it = remain.begin(); it != remain.end(); ++it ) {
+        if ( shortest_distance[*it] < current_min_distance ) {
+          current_min_distance = shortest_distance[*it];
+          selected_index = *it;
         }
-        // if the vertex and all its connected vertices are in the frontier set,
-        // remove this vertex from the frontier
-        if ( remove_from_frontier ) { frontier.erase(frontier.begin() + i); }
-
       }
 
-    remain.erase(vertex_to_move);
-    frontier.push_back(vertex_to_move);
+      remain.erase(selected_index);
+
+      // Loop the neighbors of the "selected_index" which is still in the
+      // "remain" set.
+      Edge<T> *current_edge = graph.getVertexByIndex(selected_index)->next;
+      while (current_edge) {
+        int currentIndex = graph.getVertexIndex(current_edge->value);
+        // check whether the vertex is in the remain set
+        if ( remain.find(currentIndex) != remain.end() ) {
+          // update shortest distance information
+          double tmp = shortest_distance[selected_index] + current_edge->distance;
+          if (shortest_distance[currentIndex] > tmp) {
+            shortest_distance[currentIndex] = tmp;
+          }
+        }
+        current_edge = current_edge->next;
+      }
+
     }
 
     return shortest_distance;
