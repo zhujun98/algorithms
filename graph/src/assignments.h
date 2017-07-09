@@ -64,13 +64,13 @@ namespace assignment {
       int vertex;
       while ( iss >> number ) {
         if ( flag == 0 ) {
-          vertex = std::stoi(number) - 1;
+          vertex = std::stoi(number);
           flag = 1;
         } else {
           std::size_t found = number.find(",");
           int value = std::stoi(number.substr(0, found));
           double distance = std::stod(number.substr(found+1, number.size()));
-          graph.connect(vertex, value-1, 1, distance);
+          graph.connect(vertex, value, 1, distance);
         };
       }
     }
@@ -78,17 +78,22 @@ namespace assignment {
 
     std::cout << "Finished reading data!" << std::endl;
 
-    std::vector<double> shortest_distance = graph::dijkstra(graph, 0);
+    std::vector<double> shortest_distance = graph::dijkstra(graph, 1);
 
     std::cout << "The shortest distance to vertex" << std::endl;
     std::cout << "7,37,59,82,99,115,133,165,188,197" << std::endl;
     std::cout << "are: " << std::endl;
 
-    std::cout << shortest_distance[6] << "," << shortest_distance[36] << ","
-              << shortest_distance[58] << "," << shortest_distance[81] << ","
-              << shortest_distance[98] << "," << shortest_distance[114] << ","
-              << shortest_distance[132] << "," << shortest_distance[164] << ","
-              << shortest_distance[187] << "," << shortest_distance[196];
+    std::cout << shortest_distance[graph.getVertexIndex(7)] << ","
+              << shortest_distance[graph.getVertexIndex(37)] << ","
+              << shortest_distance[graph.getVertexIndex(59)] << ","
+              << shortest_distance[graph.getVertexIndex(82)] << ","
+              << shortest_distance[graph.getVertexIndex(99)] << ","
+              << shortest_distance[graph.getVertexIndex(115)] << ","
+              << shortest_distance[graph.getVertexIndex(133)] << ","
+              << shortest_distance[graph.getVertexIndex(165)] << ","
+              << shortest_distance[graph.getVertexIndex(188)] << ","
+              << shortest_distance[graph.getVertexIndex(197)];
   }
 
   //
