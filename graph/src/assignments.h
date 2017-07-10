@@ -110,7 +110,7 @@ namespace assignment {
   //
   // @param repeated_times: how many times the random contraction will be performed
   //
-  inline void runKargerAssignment(unsigned int repeated_times=10000) {
+  inline void runKargerAssignment(unsigned int repeated_times=1000) {
 
     std::cout << "\n" << std::string(80, '-') << "\n"
               << "This is the minimum cut assignment in the Stanford's Algorithm course at Coursera"
