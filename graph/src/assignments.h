@@ -69,8 +69,8 @@ namespace assignment {
         } else {
           std::size_t found = number.find(",");
           int value = std::stoi(number.substr(0, found));
-          double distance = std::stod(number.substr(found+1, number.size()));
-          graph.connect(vertex, value, 1, distance);
+          double length = std::stod(number.substr(found+1, number.size()));
+          graph.connect(vertex, value, length);
         };
       }
     }

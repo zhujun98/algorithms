@@ -100,15 +100,15 @@ namespace graph_test {
   GraphAdj<std::string> distanceGraph() {
     GraphAdj<std::string> graph;
 
-    graph.connect("a", "b", 1, 1);
-    graph.connect("b", "d", 1, 6);
-    graph.connect("a", "c", 1, 4);
-    graph.connect("b", "c", 1, 2);
-    graph.connect("c", "d", 1, 3);
-    graph.connect("c", "f", 1, 2);
-    graph.connect("d", "f", 1, 3);
-    graph.connect("d", "g", 1, 5);
-    graph.connect("f", "g", 1, 2);
+    graph.connect("a", "b", 1);
+    graph.connect("b", "d", 6);
+    graph.connect("a", "c", 4);
+    graph.connect("b", "c", 2);
+    graph.connect("c", "d", 3);
+    graph.connect("c", "f", 2);
+    graph.connect("d", "f", 3);
+    graph.connect("d", "g", 5);
+    graph.connect("f", "g", 2);
 
 //    graph.display();
     return graph;

@@ -28,8 +28,7 @@ namespace graph {
   template <class T>
   struct Edge {
     T value;  // value of the head vertex of the edge
-    int weight;  // weight of the edge
-    double distance;  // length of the edge
+    double weight;  // weight (length) of the edge
     Edge<T>* next;  // pointer to the next edge in the same linked list
   };
 
@@ -47,18 +46,16 @@ namespace graph {
   // construct a new Edge
   //
   // @param value: value of the head vertex of the edge
-  // @param weight: weight of the edge
-  // @param distance: length of the edge
+  // @param weight: weight (length) of the edge
   //
   // @return: pointer to the new edge
   //
   template <class T>
-  Edge<T>* newEdge(T value, int weight=1, double distance=1.0){
+  Edge<T>* newEdge(T value, double weight=1.0){
 
     Edge<T>* new_edge =new Edge<T>;
     new_edge->value = value;
     new_edge->weight = weight;
-    new_edge->distance = distance;
     new_edge->next = NULL;
 
     return new_edge;
@@ -176,9 +173,8 @@ protected:
   // @param tail: the tail vertex value
   // @param head: the head vertex value
   // @param weight: the weight of edge
-  // @param distance: the length of the edge
   //
-  void addEdge(T tail, T head, int weight, double distance) {
+  void addEdge(T tail, T head, double weight) {
     if ( tail == head ) { return; }
 
     graph::GraphAdjVertex<T> * v_tail = getVtx(tail);
@@ -199,7 +195,7 @@ protected:
     v_tail = getVtx(tail);
     v_head = getVtx(head);
 
-    graph::Edge<T>* new_edge = graph::newEdge(head, weight, distance);
+    graph::Edge<T>* new_edge = graph::newEdge(head, weight);
 
     graph::Edge<T>* current = v_tail->next;
     graph::Edge<T>* previous = v_tail->next;
@@ -455,14 +451,13 @@ public:
   // @param tail: the tail vertex value
   // @param head: the head vertex value
   // @param weight: the weight of the edge
-  // @param distance: the length of the edge
   //
   // @return: true for success and false for already connected vertices
   //
-  virtual bool connect(T tail, T head, int weight=1, double distance=1.0) {
+  virtual bool connect(T tail, T head, double weight=1.0) {
     if ( isConnected(tail, head) ) { return false; }
 
-    addEdge(tail, head, weight, distance);
+    addEdge(tail, head, weight);
 
     return true;
   }
@@ -594,7 +589,7 @@ public:
                 << it->visited << " )";
       while (pprint) {
         std::cout << " -> " << pprint->value
-                  << " (" << pprint->weight << ',' << pprint->distance << ")";
+                  << " (" << pprint->weight << ")";
         pprint = pprint->next;
       }
 
@@ -700,16 +695,15 @@ public:
   // @param first: the first vertex value
   // @param second: the second vertex value
   // @param weight: the weight of the edge
-  // @param distance: the distance of the edge
   //
   // @return: true for success and false for already connected vertices
   //
-  bool connect(T first, T second, int weight=1, double distance=1.0) {
+  bool connect(T first, T second, double weight=1.0) {
     if ( isConnected(first, second) ) { return false; }
 
     // we need to add a node for the lists a and b respectively
-    addEdge(first, second, weight, distance);
-    addEdge(second, first, weight, distance);
+    addEdge(first, second, weight);
+    addEdge(second, first, weight);
 
     return true;
   }
@@ -752,10 +746,10 @@ public:
       // change the node with value 'src' in other linked lists to 'dst'
       // TODO:: this could be fast since the linked list is traversed twice here for code simplicity
       int weight = delEdge(current->value, source);
-      addEdge(current->value, destination, weight, 1);
+      addEdge(current->value, destination, weight);
 
       // add node in the linked list 'src' to the linked list 'dst'
-      addEdge(destination, current->value, current->weight, 1);
+      addEdge(destination, current->value, current->weight);
 
       current = current->next;
     }

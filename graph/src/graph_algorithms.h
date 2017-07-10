@@ -201,7 +201,7 @@ namespace graph {
         // (here not in 'remain' container) since its shortest distance will
         // (should) not be updated further. Moreover, the find operation is
         // expensive compared to an addiction operation and a comparing.
-        double tmp = shortest_path[selected_index].first + current_edge->distance;
+        double tmp = shortest_path[selected_index].first + current_edge->weight;
         if (shortest_path[currentIndex].first > tmp) {
           shortest_path[currentIndex].first = tmp;
           shortest_path[currentIndex].second = graph.getVertexByIndex(selected_index)->value;
