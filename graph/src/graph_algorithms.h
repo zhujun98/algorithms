@@ -13,6 +13,7 @@
 
 #include <limits>
 #include <stack>
+#include <list>
 #include <vector>
 #include <queue>
 #include <set>
@@ -133,6 +134,8 @@ namespace graph {
   //
   // @param graph: a directed graph
   // @param source: the starting vertex value
+  // @param destination: the destination vertex value. Search for the entire
+  //                     graph if destination == source
   // @param max_distance: maximum distance from the source. If there is no
   //                      connection between two vertices, the distance
   //                      between them will be represented by "max_distance".
@@ -142,11 +145,15 @@ namespace graph {
   //                vertex of each vertex.
   //
   template <class T>
-  inline std::vector<std::pair<double, T>> dijkstra(
-      const GraphAdj<T> &graph, T source,
+  inline std::vector<std::pair<double, T>> dijkstra_base(
+      const GraphAdj<T> &graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
     if ( !graph.getVertex(source) ) {
       std::cout << source << " is not a vertex of the graph!" << std::endl;
+      return {};
+    }
+    if ( !graph.getVertex(destination) ) {
+      std::cout << destination << " is not a vertex of the graph!" << std::endl;
       return {};
     }
 
@@ -176,6 +183,11 @@ namespace graph {
         }
       }
 
+      if ( source != destination &&
+           selected_index == graph.getVertexIndex(destination) ) {
+        return shortest_path;
+      }
+
       remain.erase(selected_index);
 
       // Loop the neighbors of the "selected_index" which is still in the
@@ -194,11 +206,48 @@ namespace graph {
         }
         current_edge = current_edge->next;
       }
-
     }
 
     return shortest_path;
   }
+
+  //
+  // Explore the entire graph using dijkstra's algorithm
+  //
+  template <class T>
+  inline std::vector<std::pair<double, T>> dijkstra(
+      const GraphAdj<T> &graph, T source,
+      double max_distance=std::numeric_limits<double>::max()) {
+
+    return dijkstra_base(graph, source, source, max_distance);
+  }
+
+  //
+  // Looking for the shortest path between source and destination
+  //
+  template <class T>
+  inline std::pair<std::list<T>, double> dijkstra(
+      const GraphAdj<T> &graph, T source, T destination,
+      double max_distance=std::numeric_limits<double>::max()) {
+
+    std::vector<std::pair<double, T>> shortest_path =
+        dijkstra_base(graph, source, destination, max_distance);
+
+    std::pair<std::list<T>, double> shortest_path_destination;
+
+    int destination_index = graph.getVertexIndex(destination);
+    shortest_path_destination.second = shortest_path[destination_index].first;
+
+    T current_vertex = destination;
+    shortest_path_destination.first.push_front(current_vertex);
+    while ( true ) {
+      current_vertex = shortest_path[graph.getVertexIndex(current_vertex)].second;
+      shortest_path_destination.first.push_front(current_vertex);
+      if ( current_vertex == source ) { break; }
+    }
+
+    return shortest_path_destination;
+  };
 
 }
 
