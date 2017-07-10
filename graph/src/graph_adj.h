@@ -179,7 +179,7 @@ protected:
   // @param distance: the length of the edge
   //
   void addEdge(T tail, T head, int weight, double distance) {
-    assert(tail != head);
+    if ( tail == head ) { return; }
 
     graph::GraphAdjVertex<T> * v_tail = getVtx(tail);
     if ( !v_tail ) {
@@ -249,7 +249,7 @@ protected:
   // @return: weight of the removed node
   //
   int delEdge(T tail, T head) {
-    assert(tail != head);
+    if ( tail == head ) { return 0; }
 
     int weight;
     graph::GraphAdjVertex<T>* v_tail = getVtx(tail);
@@ -643,8 +643,7 @@ public:
       }
     }
 
-    assert( count % 2 == 0 );
-
+    assert(count%2 == 0);
     return count/2;
   }
 
@@ -686,10 +685,10 @@ public:
       current = current->next;
     }
 
+    assert(connected1 == connected2);
+
     if ( connected1 && connected2 ) {
       return true;
-    } else if ( connected1 || connected2 ) {
-      throw std::invalid_argument("two vertices are only partially connected");
     } else {
       return false;
     }
@@ -706,8 +705,6 @@ public:
   // @return: true for success and false for already connected vertices
   //
   bool connect(T first, T second, int weight=1, double distance=1.0) {
-    assert(first != second);
-
     if ( isConnected(first, second) ) { return false; }
 
     // we need to add a node for the lists a and b respectively
@@ -723,12 +720,9 @@ public:
   // @param first: the first vertex value
   // @param second: the second vertex value
   //
-  // @return: number of edges between the two vertices
+  // @return: weight of the edge between the two vertices
   //
   int disconnect(T first, T second) {
-
-    assert(first != second);
-
     int weight1 = delEdge(first, second);
     int weight2 = delEdge(second, first);
 
@@ -737,37 +731,37 @@ public:
     return weight1;
   }
   //
-  // collapse the vertex src to the vertex dst and empty the linked list for src
+  // Collapse the vertex source to the vertex destination and empty
+  // the linked list for source.
   //
-  // @param src: value of the source vertex
-  // @param dst: value of the destination vertex
+  // @param source: the source vertex value
+  // @param destination: the destination vertex value
   //
-  void collapse(T src, T dst) {
-    assert(src != dst);
+  void collapse(T source, T destination) {
+    if ( source == destination ) { return; }
 
     // first remove loops
-    disconnect(src, dst);
+    disconnect(source, destination);
 
     // In each collapse, the No. of edges will be reduced only by the No. of edges
     // between the source and destination vertices!
 
     // change the value of nodes with value src to dst
-    graph::Edge<T>* current = getVtx(src)->next;
+    graph::Edge<T>* current = getVtx(source)->next;
     while ( current ) {
       // change the node with value 'src' in other linked lists to 'dst'
       // TODO:: this could be fast since the linked list is traversed twice here for code simplicity
-      int weight = delEdge(current->value, src);
-      addEdge(current->value, dst, weight, 1);
+      int weight = delEdge(current->value, source);
+      addEdge(current->value, destination, weight, 1);
 
       // add node in the linked list 'src' to the linked list 'dst'
-      addEdge(dst, current->value, current->weight, 1);
+      addEdge(destination, current->value, current->weight, 1);
 
       current = current->next;
     }
 
     // delete linked list and release memory
-    clearList(src);
-
+    clearList(source);
   }
 };
 
