@@ -195,15 +195,18 @@ namespace graph {
       Edge<T> *current_edge = graph.getVertexByIndex(selected_index)->next;
       while (current_edge) {
         int currentIndex = graph.getVertexIndex(current_edge->value);
-        // check whether the vertex is in the remain set
-        if ( remain.find(currentIndex) != remain.end() ) {
-          // update shortest distance information
-          double tmp = shortest_path[selected_index].first + current_edge->distance;
-          if (shortest_path[currentIndex].first > tmp) {
-            shortest_path[currentIndex].first = tmp;
-            shortest_path[currentIndex].second = graph.getVertexByIndex(selected_index)->value;
-          }
+
+        // update shortest distance information
+        // Note: It is not necessary to check whether 'currentIndex' is visited
+        // (here not in 'remain' container) since its shortest distance will
+        // (should) not be updated further. Moreover, the find operation is
+        // expensive compared to an addiction operation and a comparing.
+        double tmp = shortest_path[selected_index].first + current_edge->distance;
+        if (shortest_path[currentIndex].first > tmp) {
+          shortest_path[currentIndex].first = tmp;
+          shortest_path[currentIndex].second = graph.getVertexByIndex(selected_index)->value;
         }
+
         current_edge = current_edge->next;
       }
     }
