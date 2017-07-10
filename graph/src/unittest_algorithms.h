@@ -74,7 +74,7 @@ namespace graph_test {
     std::vector<std::pair<double, std::string>> shortest_path =
         graph::dijkstra(graph, source);
     std::vector<std::pair<double, std::string>> expected_shortest_path =
-        {{0, "a"}, {1, "a"}, {6, "c"}, {3, "b"}};
+        {{0, "a"}, {1, "a"}, {6, "c"}, {3, "b"}, {5, "c"}, {7, "f"}};
 
     std::string destination = "c";
     std::pair<std::list<std::string>, double> shortest_path_destination =

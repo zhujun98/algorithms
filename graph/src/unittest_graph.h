@@ -86,13 +86,14 @@ namespace graph_test {
   // build a simple directed graph for testing
   //
   // The annotation "0 *- 1" means from 0 to 1.
-  //    (1)    (6)
-  // a  *-  b  *-  d
-  //   *    *    /
-  //    \   |(2)/
-  // (4) \  |  / (3)
-  //      \ | *
-  //        c
+  //    (1)    (6)      (5)
+  // a  *-  b  *-  d  *-----  g
+  //   *    *    /   *       /
+  //    \   |(2)/     \ (3) / (2)
+  // (4) \  |  / (3)   \   /
+  //      \ | *         \ *
+  //        c  *-------  f
+  //              (2)
   //
   // @param return: a directed graph
   //
@@ -104,6 +105,10 @@ namespace graph_test {
     graph.connect("a", "c", 1, 4);
     graph.connect("b", "c", 1, 2);
     graph.connect("c", "d", 1, 3);
+    graph.connect("c", "f", 1, 2);
+    graph.connect("d", "f", 1, 3);
+    graph.connect("d", "g", 1, 5);
+    graph.connect("f", "g", 1, 2);
 
 //    graph.display();
     return graph;
