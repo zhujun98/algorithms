@@ -79,6 +79,10 @@ namespace graph_test {
     std::string source = "a";
     std::vector<std::pair<double, std::string>> shortest_path =
         graph::dijkstra(graph, source);
+    std::vector<std::pair<double, std::string>> shortest_path_1 =
+        graph::dijkstra_base_tree(graph, source, source);
+    assert(shortest_path == shortest_path_1);
+
     std::vector<std::pair<double, std::string>> expected_shortest_path =
         {{0, "a"}, {1, "a"}, {6, "c"}, {3, "b"}, {5, "c"}, {7, "f"}};
 
@@ -96,7 +100,11 @@ namespace graph_test {
     std::string destination = "f";
     std::vector<std::pair<double, std::string>> shortest_path_dst =
         graph::dijkstra(graph, source, destination);
+    std::vector<std::pair<double, std::string>> shortest_path_dst_1 =
+        graph::dijkstra_base_tree(graph, source, destination);
+    assert(shortest_path_dst == shortest_path_dst_1);
 
+    // remove the untouched vertices
     auto pend = std::remove_if(shortest_path_dst.begin(),
                                shortest_path_dst.end(),
                                isEmpty);

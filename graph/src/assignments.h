@@ -80,6 +80,18 @@ namespace assignment {
 
     std::vector<std::pair<double, int>> shortest_path = graph::dijkstra(graph, 1);
 
+    // compare speeds of different implementations
+    clock_t t0;
+
+    t0 = clock();
+    graph::dijkstra_base_tree(graph, 1, 1);
+    std::cout << "Run time using the tree-based implementation: "
+              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+    t0 = clock();
+    graph::dijkstra_base_priority_queue(graph, 1, 1);
+    std::cout << "Run time using the heap-based implementation: "
+              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+
     std::cout << "The shortest distance to vertex" << std::endl;
     std::cout << "7,37,59,82,99,115,133,165,188,197" << std::endl;
     std::cout << "are: " << std::endl;

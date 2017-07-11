@@ -237,6 +237,9 @@ namespace graph {
   // std::set keeps tracking the smallest element so that the look-up
   // time is only O(1).
   //
+  // The speed is comparable with the implementation using priority queue.
+  // However, the overhead (memory) of a self-balanced RB-tree is much higher.
+  //
   // @param graph: a directed graph
   // @param source: the starting vertex value
   // @param destination: the destination vertex value. The entire graph
@@ -250,7 +253,7 @@ namespace graph {
   //                parent vertex of each vertex.
   //
   template <class T>
-  inline std::vector<std::pair<double, T>> dijkstra_base(
+  inline std::vector<std::pair<double, T>> dijkstra_base_tree(
       const GraphAdj<T> &graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
     if ( !graph.getVertex(source) ) {
@@ -263,7 +266,7 @@ namespace graph {
     }
 
     // a set of vertex <distance, index> indices waiting to removed one by one
-    std::set<std::pair<double, int>> remain;  // look up complexity O(log(n))
+    std::set<std::pair<double, int>> remain;
     // storing the shortest distance and its parent vertex for each vertex
     std::vector<std::pair<double, T>> distances(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
@@ -281,6 +284,7 @@ namespace graph {
     while ( !remain.empty() ) {
       // pick the index in the 'remain' set with the shortest distance.
       int selected_index = remain.begin()->second;
+
       remain.erase(remain.begin());
 
       if ( source != destination &&
@@ -315,6 +319,91 @@ namespace graph {
   }
 
   //
+  // This is a similar implementation as dijkstra_base_tree excpet a
+  // priority_queue is used to track the un-finished vertex set.
+  //
+  // The speed is comparable with the implementation using self-balanced
+  // RB-tree.
+  //
+  template <class T>
+  inline std::vector<std::pair<double, T>> dijkstra_base_priority_queue(
+      const GraphAdj<T> &graph, T source, T destination,
+      double max_distance=std::numeric_limits<double>::max()) {
+    if ( !graph.getVertex(source) ) {
+      std::cout << source << " is not a vertex of the graph!" << std::endl;
+      return {};
+    }
+    if ( !graph.getVertex(destination) ) {
+      std::cout << destination << " is not a vertex of the graph!" << std::endl;
+      return {};
+    }
+
+    // a set of vertex <distance, index> indices waiting to removed one by one
+    typedef std::pair<double, int> distance_index_pair_t ;
+    std::priority_queue<distance_index_pair_t,
+                        std::vector<distance_index_pair_t>,
+                        std::greater<distance_index_pair_t>> remain;
+    // storing the shortest distance and its parent vertex for each vertex
+    std::vector<std::pair<double, T>> distances(graph.size());
+    for (int i = 0; i < graph.size(); ++i) {
+      if (graph.getVertexByIndex(i)->value != source) {
+        remain.push(std::make_pair(max_distance, i));
+        distances[i].first = max_distance;
+      } else {
+        remain.push(std::make_pair(0, i));
+        distances[i].first = 0;
+        distances[i].second = source;
+      }
+    }
+
+    // run until there is no vertex left in the remain set
+    while ( !remain.empty() ) {
+      double selected_distance = remain.top().first;
+      int selected_index = remain.top().second;
+
+      remain.pop();
+
+      if ( source != destination &&
+           selected_index == graph.vertexToIndex(destination) ) {
+        return distances;
+      }
+
+      // Since we leave old copies of the vertex in the priority queue
+      // (with outdated higher distances), we should ignore it when we come
+      // across it again in order to speed up. Otherwise, it still works.
+      // However, the speed will be much slower since it will traverse its
+      // children vertices again.
+      if (selected_distance > distances[selected_index].first) { continue; }
+
+      // Loop the neighbors of the "selected_index" which is still in the
+      // "remain" set.
+      Edge<T> *current_edge = graph.getVertexByIndex(selected_index)->next;
+      while (current_edge) {
+        int current_index = graph.vertexToIndex(current_edge->value);
+
+        // update shortest distance information
+        // Note: It is not necessary to check whether 'currentIndex' is visited
+        // (here not in 'remain' container) since its shortest distance will
+        // (should) not be updated further. Moreover, the find operation is
+        // expensive compared to an addiction operation and a comparing.
+        //
+        // Also, it is not necessary to find and remove the old (distance, vertex)
+        // pair here since it will pop up later.
+        double new_distance = distances[selected_index].first + current_edge->weight;
+        if (distances[current_index].first > new_distance) {
+          distances[current_index].first = new_distance;
+          distances[current_index].second = graph.getVertexByIndex(selected_index)->value;
+          remain.push(std::make_pair(distances[current_index].first, current_index));
+        }
+
+        current_edge = current_edge->next;
+      }
+    }
+
+    return distances;
+  }
+
+  //
   // Explore the entire graph using dijkstra's algorithm
   //
   template <class T>
@@ -322,7 +411,7 @@ namespace graph {
       const GraphAdj<T> &graph, T source,
       double max_distance=std::numeric_limits<double>::max()) {
 
-    return dijkstra_base(graph, source, source, max_distance);
+    return dijkstra_base_priority_queue(graph, source, source, max_distance);
   }
 
   //
@@ -333,7 +422,7 @@ namespace graph {
       const GraphAdj<T> &graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
 
-    return dijkstra_base(graph, source, destination, max_distance);
+    return dijkstra_base_priority_queue(graph, source, destination, max_distance);
   }
 
   //
