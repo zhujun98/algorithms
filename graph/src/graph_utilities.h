@@ -1,9 +1,7 @@
 //
 // Created by jun on 6/19/17.
 //
-// Functions:
-// - printVector()
-// - printSCC()
+// Various help functions:
 //
 
 #ifndef GRAPH_GRAPH_UTILITIES_H
@@ -13,11 +11,8 @@
 #include <random>
 #include <vector>
 
-#include "graph_adj.h"
-
 
 namespace graph_utilities {
-
   //
   // print the elements in an iterable 1D container
   //
@@ -32,7 +27,7 @@ namespace graph_utilities {
   }
 
   //
-  // print the std::pair elements in an iterable 1D container
+  // print the std::pair elements in an iterable 1D vector
   //
   // @param v: a 1D container with std::pair elements
   //
@@ -41,23 +36,6 @@ namespace graph_utilities {
     for (auto i=v.begin(); i != v.end(); ++i) {
       std::cout << i->first << "," << i->second << " ";
     }
-    std::cout << std::endl;
-  }
-
-  //
-  // print the path
-  //
-  // @param v: pair struct which stores the shortest path information from
-  //           one vertex to another.
-  //
-  template <class T>
-  inline void printPathVector(const std::pair<std::list<T>, double>& v) {
-    int count = 0;
-    for (auto it=v.first.begin(); it != v.first.end(); ++it, ++count) {
-      std::cout << *it;
-      if ( count < v.first.size() - 1 ) { std::cout << "->"; }
-    }
-    std::cout << " (" << v.second << ")";
     std::cout << std::endl;
   }
 

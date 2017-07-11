@@ -1,16 +1,8 @@
 //
 // Created by jun on 6/23/17.
 //
-// Functions:
-// - simpleUdGraph()
-// - simpleGraph()
-// - distanceGraph()
-// - testGraphCopy()
-// - testReverseGraph()
-// - testBreathFirstSearch()
-// - testDepthFirstSearch()
+// Test graph implementations.
 //
-
 #ifndef GRAPH_UNITTEST_GRAPH_H
 #define GRAPH_UNITTEST_GRAPH_H
 
@@ -220,7 +212,6 @@ namespace graph_test {
       std::cout << "The correct result is: " << std::endl;
       graph_utilities::printContainer(expected_result_ud);
     }
-
   }
 
 }

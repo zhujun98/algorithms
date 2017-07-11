@@ -1,7 +1,7 @@
 //
 // Created by jun on 6/6/17.
 //
-// implementation of the directed and undirected graph using adjacency list
+// Implementation of the directed and undirected graph using adjacency list
 //
 // base class:
 // - GraphAdj()

@@ -1,20 +1,18 @@
 //
 // Created by jun on 6/23/17.
 //
-// Functions:
-// - testKarger()
-// - testKosaraju()
-// - testDijkstra()
+// Test implementations of graph related algorithms.
 //
 
 #ifndef GRAPH_UNITTEST_ALGORITHMS_H
 #define GRAPH_UNITTEST_ALGORITHMS_H
 
+#include <string>
+
 #include "graph_adj.h"
 #include "graph_utilities.h"
 #include "unittest_graph.h"
 #include "graph_algorithms.h"
-#include <string>
 
 
 namespace graph_test {

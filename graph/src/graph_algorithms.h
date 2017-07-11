@@ -1,15 +1,14 @@
 //
 // Created by jun on 6/23/17.
 //
-// Functions:
-// - breathFirstSearch()
-// - depthFirstSearch()
-// - graphContract()
-// - karger()
-// - kosaraju()
-// - dijkstra()
+// Implementations of different graph algorithms/operations:
+// - breathFirstSearch
+// - depthFirstSearch
+// - graphContract
+// - Karger's algorithm
+// - Kosaraju's algorithm
+// - Dijkstra's algorithm
 //
-
 #ifndef GRAPH_GRAPH_ALGORITHMS_H
 #define GRAPH_GRAPH_ALGORITHMS_H
 
@@ -228,20 +227,27 @@ namespace graph {
   }
 
   //
-  // implementation of the Dijkstra's shorted path algorithm without heap
+  // implementation of the Dijkstra's shorted path algorithm
   // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+  //
+  // A self-balanced RB-tree (std::set) is used to store the unfinished
+  // vertices and its current shortest distance to the source. It allows
+  // us to find, remove and insert any other element in log(n) time
+  // (decreasing the priority and re-inserting). In addition, since
+  // std::set keeps tracking the smallest element so that the look-up
+  // time is only O(1).
   //
   // @param graph: a directed graph
   // @param source: the starting vertex value
-  // @param destination: the destination vertex value. The entire graph will
-  //                     be searched if destination == source.
-  // @param max_distance: maximum distance from the source. If there is no
-  //                      connection between two vertices, the distance
+  // @param destination: the destination vertex value. The entire graph
+  //                     will be searched if destination == source.
+  // @param max_distance: maximum distance from the source. If there is
+  //                      no connection between two vertices, the distance
   //                      between them will be represented by "max_distance".
   //
   // @param return: a vector containing a pair of the shortest distance
-  //                between each vertex to the source as well as the previous
-  //                vertex of each vertex.
+  //                between each vertex to the source as well as the
+  //                parent vertex of each vertex.
   //
   template <class T>
   inline std::vector<std::pair<double, T>> dijkstra_base(
@@ -256,7 +262,7 @@ namespace graph {
       return {};
     }
 
-    // a set of vertex indices waiting to removed one by one
+    // a set of vertex <distance, index> indices waiting to removed one by one
     std::set<std::pair<double, int>> remain;  // look up complexity O(log(n))
     // storing the shortest distance and its parent vertex for each vertex
     std::vector<std::pair<double, T>> distances(graph.size());
@@ -273,10 +279,7 @@ namespace graph {
 
     // run until there is no vertex left in the remain set
     while ( !remain.empty() ) {
-      // pick the index in the 'remain' set with the shortest distance
-      // Note: Although the std::set was implemented as a RB-tree, it keeps
-      //       tracking the smallest element so that the look-up time is
-      //       still O(1).
+      // pick the index in the 'remain' set with the shortest distance.
       int selected_index = remain.begin()->second;
       remain.erase(remain.begin());
 
@@ -323,7 +326,7 @@ namespace graph {
   }
 
   //
-  // Stop exploring when reaching the destination vertex
+  // Explore the graph until reaching the destination vertex
   //
   template <class T>
   inline std::vector<std::pair<double, T>> dijkstra(
