@@ -191,8 +191,7 @@ namespace graph_test {
     // test on directed graph
     GraphAdj<int> graph = simpleGraph();
 
-    std::vector<bool> visited (graph.size(), false);
-    std::vector<int> result = graph::depthFirstSearch(graph, 1, visited);
+    std::vector<int> result = graph::depthFirstSearch(graph, 1);
     std::vector<int> expected_result = {9, 6, 3, 8, 5, 2, 7, 4, 1};
 
     if ( result == expected_result ) {
@@ -209,8 +208,7 @@ namespace graph_test {
     UdGraphAdj<std::string> ud_graph = simpleUdGraph();
     std::string source = "a";
 
-    std::vector<bool> un_visited (graph.size(), false);
-    std::vector<std::string> result_ud = graph::depthFirstSearch(ud_graph, source, un_visited);
+    std::vector<std::string> result_ud = graph::depthFirstSearch(ud_graph, source);
     std::vector<std::string> expected_result_ud = {"d", "g", "f", "e", "h", "c", "b", "a"};
 
     if ( result_ud == expected_result_ud ) {

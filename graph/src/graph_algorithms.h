@@ -79,6 +79,8 @@ namespace graph {
   //
   template <class G, class T>
   std::vector<T> depthFirstSearch(const G& graph, T value, std::vector<bool>& visited) {
+    assert( graph.size() == visited.size() );
+
     graph::GraphAdjVertex<T> const* v = graph.getVertex(value);
     if ( !v ) { return {}; }
 
@@ -113,6 +115,12 @@ namespace graph {
     }
 
     return sink;
+  }
+
+  template <class G, class T>
+  std::vector<T> depthFirstSearch(const G& graph, T value) {
+    std::vector<bool> visited (graph.size(), false);
+    return depthFirstSearch(graph, value, visited);
   }
 
   //
