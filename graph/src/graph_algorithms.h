@@ -252,9 +252,9 @@ namespace graph {
   //                between each vertex to the source as well as the
   //                parent vertex of each vertex.
   //
-  template <class T>
+  template <class G, class T>
   inline std::vector<std::pair<double, T>> dijkstra_base_tree(
-      const GraphAdj<T> &graph, T source, T destination,
+      const G& graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
     if ( !graph.getVertex(source) ) {
       std::cout << source << " is not a vertex of the graph!" << std::endl;
@@ -325,9 +325,9 @@ namespace graph {
   // The speed is comparable with the implementation using self-balanced
   // RB-tree.
   //
-  template <class T>
+  template <class G, class T>
   inline std::vector<std::pair<double, T>> dijkstra_base_priority_queue(
-      const GraphAdj<T> &graph, T source, T destination,
+      const G& graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
     if ( !graph.getVertex(source) ) {
       std::cout << source << " is not a vertex of the graph!" << std::endl;
@@ -406,9 +406,9 @@ namespace graph {
   //
   // Explore the entire graph using dijkstra's algorithm
   //
-  template <class T>
+  template <class G, class T>
   inline std::vector<std::pair<double, T>> dijkstra(
-      const GraphAdj<T> &graph, T source,
+      const G& graph, T source,
       double max_distance=std::numeric_limits<double>::max()) {
 
     return dijkstra_base_priority_queue(graph, source, source, max_distance);
@@ -417,9 +417,9 @@ namespace graph {
   //
   // Explore the graph until reaching the destination vertex
   //
-  template <class T>
+  template <class G, class T>
   inline std::vector<std::pair<double, T>> dijkstra(
-      const GraphAdj<T> &graph, T source, T destination,
+      const G& graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
 
     return dijkstra_base_priority_queue(graph, source, destination, max_distance);
@@ -433,8 +433,8 @@ namespace graph {
   // @param source: value of source vertex
   // @param destination: value of destination vertex
   //
-  template <class T>
-  inline void showDijkstraPath(const GraphAdj<T> &graph,
+  template <class G, class T>
+  inline void showDijkstraPath(const G& graph,
                                const std::vector<std::pair<double, T>>& distances,
                                T source, T destination) {
     std::stack<T> path;
