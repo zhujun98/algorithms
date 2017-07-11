@@ -19,7 +19,7 @@
 namespace graph_utilities {
 
   //
-  // print the elements in a 1D container
+  // print the elements in an iterable 1D container
   //
   // @param v: a 1D container
   //
@@ -32,7 +32,7 @@ namespace graph_utilities {
   }
 
   //
-  // print the std::pair elements in a 1D container
+  // print the std::pair elements in an iterable 1D container
   //
   // @param v: a 1D container with std::pair elements
   //
