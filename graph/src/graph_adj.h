@@ -74,7 +74,6 @@ namespace graph {
 
     GraphAdjVertex<T>* new_vertex = new GraphAdjVertex<T>;
     new_vertex->value = value;
-    new_vertex->visited = false;
     new_vertex->next = NULL;
 
     return new_vertex;
@@ -82,6 +81,9 @@ namespace graph {
 
   //
   // reverse the directed graph
+  // Note:: the value->index hash table is usually different from the
+  //        one in the original graph, which is affected by the sequence
+  //        of the edges being added.
   //
   // @param graph: a graph object
   //
@@ -110,7 +112,6 @@ template <class T>
 class GraphAdj {
 
 protected:
-
   // hash table that converts the vertex value to the vector index
   std::unordered_map<T, int> valueToIndex_;
 
@@ -237,10 +238,10 @@ protected:
   //
   // @return: weight of the removed node
   //
-  int delEdge(T tail, T head) {
+  double delEdge(T tail, T head) {
     if ( tail == head ) { return 0; }
 
-    int weight;
+    double weight;
     graph::GraphAdjVertex<T>* v_tail = getVtx(tail);
     if ( !v_tail ) { return 0; }
     graph::Edge<T>* current = v_tail->next;
@@ -251,6 +252,7 @@ protected:
       v_tail->next = current->next;
       weight = current->weight;
       delete current;
+
       return weight;
     } else {
       current = current->next;
@@ -259,6 +261,7 @@ protected:
           previous->next = current->next;
           weight = current->weight;
           delete current;
+
           return weight;
         } else {
           previous = previous->next;
@@ -462,8 +465,8 @@ public:
   //
   // @return: number of edges between the two vertices
   //
-  virtual int disconnect(T tail, T head) {
-    int weight = delEdge(tail, head);
+  virtual double disconnect(T tail, T head) {
+    double weight = delEdge(tail, head);
 
     return weight;
   }
@@ -615,9 +618,9 @@ public:
   //
   // @return: weight of the edge between the two vertices
   //
-  int disconnect(T first, T second) {
-    int weight1 = delEdge(first, second);
-    int weight2 = delEdge(second, first);
+  double disconnect(T first, T second) {
+    double weight1 = delEdge(first, second);
+    double weight2 = delEdge(second, first);
 
     assert(weight1 == weight2);
 
@@ -644,7 +647,7 @@ public:
     while ( current ) {
       // change the node with value 'src' in other linked lists to 'dst'
       // TODO:: this could be fast since the linked list is traversed twice here for code simplicity
-      int weight = delEdge(current->value, source);
+      double weight = delEdge(current->value, source);
       addEdge(current->value, destination, weight);
 
       // add node in the linked list 'src' to the linked list 'dst'
