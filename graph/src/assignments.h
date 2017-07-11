@@ -84,16 +84,16 @@ namespace assignment {
     std::cout << "7,37,59,82,99,115,133,165,188,197" << std::endl;
     std::cout << "are: " << std::endl;
 
-    std::cout << shortest_path[graph.getVertexIndex(7)].first << ","
-              << shortest_path[graph.getVertexIndex(37)].first << ","
-              << shortest_path[graph.getVertexIndex(59)].first << ","
-              << shortest_path[graph.getVertexIndex(82)].first << ","
-              << shortest_path[graph.getVertexIndex(99)].first << ","
-              << shortest_path[graph.getVertexIndex(115)].first << ","
-              << shortest_path[graph.getVertexIndex(133)].first << ","
-              << shortest_path[graph.getVertexIndex(165)].first << ","
-              << shortest_path[graph.getVertexIndex(188)].first << ","
-              << shortest_path[graph.getVertexIndex(197)].first << std::endl;
+    std::cout << shortest_path[graph.vertexToIndex(7)].first << ","
+              << shortest_path[graph.vertexToIndex(37)].first << ","
+              << shortest_path[graph.vertexToIndex(59)].first << ","
+              << shortest_path[graph.vertexToIndex(82)].first << ","
+              << shortest_path[graph.vertexToIndex(99)].first << ","
+              << shortest_path[graph.vertexToIndex(115)].first << ","
+              << shortest_path[graph.vertexToIndex(133)].first << ","
+              << shortest_path[graph.vertexToIndex(165)].first << ","
+              << shortest_path[graph.vertexToIndex(188)].first << ","
+              << shortest_path[graph.vertexToIndex(197)].first << std::endl;
   }
 
   //

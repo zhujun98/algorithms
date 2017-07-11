@@ -110,6 +110,13 @@ template <class T>
 class GraphAdj {
 
 protected:
+
+  // hash table that converts the vertex value to the vector index
+  std::unordered_map<T, int> valueToIndex_;
+
+  // vector of vertices
+  std::vector<graph::GraphAdjVertex<T>> vertices_;
+
   //
   // get the pointer to a vertex
   //
@@ -143,12 +150,6 @@ protected:
       current = v->next;
     }
   }
-
-  // hash table that converts the vertex value to the vector index
-  std::unordered_map<T, int> valueToIndex_;
-
-  // vector of verticies
-  std::vector<graph::GraphAdjVertex<T>> vertices_;
 
   //
   // Add an edge from tail to head. The nodes in the linked
@@ -331,6 +332,22 @@ public:
   std::size_t size() const { return vertices_.size(); }
 
   //
+  // get the index of a vertex with value "value"
+  //
+  // @param value: the vertex value
+  //
+  // @return: the vertex index in the vector
+  //
+  int const vertexToIndex(T value) const {
+    auto search = valueToIndex_.find(value);
+    if ( search == valueToIndex_.end() ) {
+      return -1;
+    } else {
+      return search->second;
+    }
+  }
+
+  //
   // get the pointer to a const vertex by vertex value
   //
   // @param value: the vertex value
@@ -343,22 +360,6 @@ public:
       return NULL;
     } else {
       return &vertices_[search->second];
-    }
-  }
-
-  //
-  // get the index of a vertex with value "value"
-  //
-  // @param value: the vertex value
-  //
-  // @return: the vertex index in the vector
-  //
-  int const getVertexIndex(T value) const {
-    auto search = valueToIndex_.find(value);
-    if ( search == valueToIndex_.end() ) {
-      return -1;
-    } else {
-      return search->second;
     }
   }
 

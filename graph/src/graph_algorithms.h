@@ -47,7 +47,7 @@ namespace graph {
 
     track.push(value);
     search.push_back(value);
-    visited[graph.getVertexIndex(value)] = true;
+    visited[graph.vertexToIndex(value)] = true;
     while (!track.empty()) {
       graph::GraphAdjVertex<T> const* current_head = graph.getVertex(track.front());
       track.pop();
@@ -55,10 +55,10 @@ namespace graph {
       graph::Edge<T>* current_node = current_head->next;
       // find all children vertices which have not been visited yet
       while (current_node) {
-        if ( !visited[graph.getVertexIndex(current_node->value)] ) {
+        if ( !visited[graph.vertexToIndex(current_node->value)] ) {
           track.push(current_node->value);
           search.push_back(current_node->value);
-          visited[graph.getVertexIndex(current_node->value)] = true;
+          visited[graph.vertexToIndex(current_node->value)] = true;
         }
         current_node = current_node->next;
       }
@@ -91,13 +91,13 @@ namespace graph {
     // search the vertex reachable from the current vertex
     while ( !tracker.empty() ) {
       current_vertex_value = tracker.top();
-      visited[graph.getVertexIndex(current_vertex_value)] = true;
+      visited[graph.vertexToIndex(current_vertex_value)] = true;
 
       bool retreat = true;  // a flag indicating whether to retreat to the last vertex
       graph::Edge<T>* current_node = graph.getVertex(current_vertex_value)->next;
       // find the next reachable vertex which has not been visited
       while ( current_node ) {
-        if ( !visited[graph.getVertexIndex(current_node->value)] ) {
+        if ( !visited[graph.vertexToIndex(current_node->value)] ) {
           tracker.push(current_node->value);
           retreat = false;
           break;
@@ -208,7 +208,7 @@ namespace graph {
     //
     std::vector<bool> reversed_visited (graph_reversed.size(), false);
     while (!finish_time.empty()) {
-      if (!reversed_visited[graph_reversed.getVertexIndex(finish_time.top())]) {
+      if (!reversed_visited[graph_reversed.vertexToIndex(finish_time.top())]) {
         std::vector<T> search = depthFirstSearch(
             graph_reversed, finish_time.top(), reversed_visited);
         scc.push_back(search);
@@ -275,7 +275,7 @@ namespace graph {
       }
 
       if ( source != destination &&
-           selected_index == graph.getVertexIndex(destination) ) {
+           selected_index == graph.vertexToIndex(destination) ) {
         return shortest_path;
       }
 
@@ -285,7 +285,7 @@ namespace graph {
       // "remain" set.
       Edge<T> *current_edge = graph.getVertexByIndex(selected_index)->next;
       while (current_edge) {
-        int currentIndex = graph.getVertexIndex(current_edge->value);
+        int currentIndex = graph.vertexToIndex(current_edge->value);
 
         // update shortest distance information
         // Note: It is not necessary to check whether 'currentIndex' is visited
@@ -329,13 +329,13 @@ namespace graph {
 
     std::pair<std::list<T>, double> shortest_path_destination;
 
-    int destination_index = graph.getVertexIndex(destination);
+    int destination_index = graph.vertexToIndex(destination);
     shortest_path_destination.second = shortest_path[destination_index].first;
 
     T current_vertex = destination;
     shortest_path_destination.first.push_front(current_vertex);
     while ( true ) {
-      current_vertex = shortest_path[graph.getVertexIndex(current_vertex)].second;
+      current_vertex = shortest_path[graph.vertexToIndex(current_vertex)].second;
       shortest_path_destination.first.push_front(current_vertex);
       if ( current_vertex == source ) { break; }
     }
