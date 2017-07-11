@@ -233,8 +233,8 @@ namespace graph {
   //
   // @param graph: a directed graph
   // @param source: the starting vertex value
-  // @param destination: the destination vertex value. Search for the entire
-  //                     graph if destination == source
+  // @param destination: the destination vertex value. The entire graph will
+  //                     be searched if destination == source.
   // @param max_distance: maximum distance from the source. If there is no
   //                      connection between two vertices, the distance
   //                      between them will be represented by "max_distance".
@@ -257,60 +257,58 @@ namespace graph {
     }
 
     // a set of vertex indices waiting to removed one by one
-    std::set<int> remain;  // look up complexity O(log(n))
-    // storing the shortest distance for each vertices
-    std::vector<std::pair<double, T>> shortest_path(graph.size());
+    std::set<std::pair<double, int>> remain;  // look up complexity O(log(n))
+    // storing the shortest distance and its parent vertex for each vertex
+    std::vector<std::pair<double, T>> distances(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
-      remain.insert(i);
       if (graph.getVertexByIndex(i)->value != source) {
-        shortest_path[i].first = max_distance;
+        remain.insert(std::make_pair(max_distance, i));
+        distances[i].first = max_distance;
       } else {
-        shortest_path[i].first = 0;
-        shortest_path[i].second = source;
+        remain.insert(std::make_pair(0, i));
+        distances[i].first = 0;
+        distances[i].second = source;
       }
     }
 
     // run until there is no vertex left in the remain set
     while ( !remain.empty() ) {
       // pick the index in the 'remain' set with the shortest distance
-      double current_min_distance = max_distance;
-      int selected_index = -1;
-      for ( auto it = remain.begin(); it != remain.end(); ++it ) {
-        if ( shortest_path[*it].first < current_min_distance ) {
-          current_min_distance = shortest_path[*it].first;
-          selected_index = *it;
-        }
-      }
+      // Note: Although the std::set was implemented as a RB-tree, it keeps
+      //       tracking the smallest element so that the look-up time is
+      //       still O(1).
+      int selected_index = remain.begin()->second;
+      remain.erase(remain.begin());
 
       if ( source != destination &&
            selected_index == graph.vertexToIndex(destination) ) {
-        return shortest_path;
+        return distances;
       }
-
-      remain.erase(selected_index);
 
       // Loop the neighbors of the "selected_index" which is still in the
       // "remain" set.
       Edge<T> *current_edge = graph.getVertexByIndex(selected_index)->next;
       while (current_edge) {
-        int currentIndex = graph.vertexToIndex(current_edge->value);
+        int current_index = graph.vertexToIndex(current_edge->value);
 
         // update shortest distance information
         // Note: It is not necessary to check whether 'currentIndex' is visited
         // (here not in 'remain' container) since its shortest distance will
         // (should) not be updated further. Moreover, the find operation is
         // expensive compared to an addiction operation and a comparing.
-        double tmp = shortest_path[selected_index].first + current_edge->weight;
-        if (shortest_path[currentIndex].first > tmp) {
-          shortest_path[currentIndex].first = tmp;
-          shortest_path[currentIndex].second = graph.getVertexByIndex(selected_index)->value;
+        double new_distance = distances[selected_index].first + current_edge->weight;
+        if (distances[current_index].first > new_distance) {
+          remain.erase(std::make_pair(distances[current_index].first, current_index));
+          distances[current_index].first = new_distance;
+          distances[current_index].second = graph.getVertexByIndex(selected_index)->value;
+          remain.insert(std::make_pair(distances[current_index].first, current_index));
         }
 
         current_edge = current_edge->next;
       }
     }
 
-    return shortest_path;
+    return distances;
   }
 
   //
@@ -325,32 +323,43 @@ namespace graph {
   }
 
   //
-  // Looking for the shortest path between source and destination
+  // Stop exploring when reaching the destination vertex
   //
   template <class T>
-  inline std::pair<std::list<T>, double> dijkstra(
+  inline std::vector<std::pair<double, T>> dijkstra(
       const GraphAdj<T> &graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
 
-    std::vector<std::pair<double, T>> shortest_path =
-        dijkstra_base(graph, source, destination, max_distance);
+    return dijkstra_base(graph, source, destination, max_distance);
+  }
 
-    std::pair<std::list<T>, double> shortest_path_destination;
-
-    int destination_index = graph.vertexToIndex(destination);
-    shortest_path_destination.second = shortest_path[destination_index].first;
-
+  //
+  // Visualize the shortest path between source and destination vertices
+  //
+  // @param graph: directed graph object
+  // @param distances: search result from function Dijkstra()
+  // @param source: value of source vertex
+  // @param destination: value of destination vertex
+  //
+  template <class T>
+  inline void showDijkstraPath(const GraphAdj<T> &graph,
+                               const std::vector<std::pair<double, T>>& distances,
+                               T source, T destination) {
+    std::stack<T> path;
     T current_vertex = destination;
-    shortest_path_destination.first.push_front(current_vertex);
     while ( true ) {
-      current_vertex = shortest_path[graph.vertexToIndex(current_vertex)].second;
-      shortest_path_destination.first.push_front(current_vertex);
+      current_vertex = distances[graph.vertexToIndex(current_vertex)].second;
+      path.push(current_vertex);
       if ( current_vertex == source ) { break; }
     }
 
-    return shortest_path_destination;
-  };
+    while ( !path.empty() ) {
+      std::cout << path.top() << " -> ";
+      path.pop();
+    }
+    std::cout << destination << std::endl;
 
+  };
 }
 
 #endif //GRAPH_GRAPH_ALGORITHMS_H

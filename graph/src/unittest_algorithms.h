@@ -63,6 +63,14 @@ namespace graph_test {
   }
 
   //
+  // Check whether a vertex was explored after the search using
+  // Dijkstra's algorithm
+  //
+  bool isEmpty(const std::pair<double, std::string>& vertex) {
+    return vertex.second.empty();
+  }
+
+  //
   // test the implementation of Dijkastra's algorithm
   //
   void testDijkstra() {
@@ -76,11 +84,6 @@ namespace graph_test {
     std::vector<std::pair<double, std::string>> expected_shortest_path =
         {{0, "a"}, {1, "a"}, {6, "c"}, {3, "b"}, {5, "c"}, {7, "f"}};
 
-    std::string destination = "c";
-    std::pair<std::list<std::string>, double> shortest_path_destination =
-        graph::dijkstra(graph, source, destination);
-    std::pair<std::list<std::string>, double> expected_shortest_path_destination =
-        {{"a", "b", "c"}, 3};
 
     if ( shortest_path == expected_shortest_path ) {
       ;
@@ -92,15 +95,30 @@ namespace graph_test {
       graph_utilities::printContainer(expected_shortest_path);
     }
 
-    if ( shortest_path_destination == expected_shortest_path_destination ) {
+    std::string destination = "f";
+    std::vector<std::pair<double, std::string>> shortest_path_dst =
+        graph::dijkstra(graph, source, destination);
+
+    auto pend = std::remove_if(shortest_path_dst.begin(),
+                               shortest_path_dst.end(),
+                               isEmpty);
+    std::vector<std::pair<double, std::string>>
+        shortest_path_dst_filtered (shortest_path_dst.begin(), pend);
+
+    std::vector<std::pair<double, std::string>> expected_shortest_path_dst =
+        {{0, "a"}, {1, "a"}, {6, "c"}, {3, "b"}, {5, "c"}};
+
+    if ( shortest_path_dst_filtered == expected_shortest_path_dst ) {
       std::cout << "Passed!" << std::endl;
+      graph::showDijkstraPath(graph, shortest_path_dst, source, destination);
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
-      graph_utilities::printPathVector(shortest_path_destination);
+      graph_utilities::printContainer(shortest_path_dst_filtered);
       std::cout << "The correct result is: " << std::endl;
-      graph_utilities::printPathVector(expected_shortest_path_destination);
+      graph_utilities::printContainer(expected_shortest_path_dst);
     }
+
   }
 
 }
