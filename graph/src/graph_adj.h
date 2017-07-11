@@ -15,6 +15,7 @@
 #include <iostream>
 #include <assert.h>
 #include <list>
+#include <forward_list>
 #include <vector>
 #include <stack>
 #include <queue>
@@ -117,20 +118,11 @@ protected:
   // @return: pointer to the vertex
   //
   graph::GraphAdjVertex<T>* getVtx(T value) {
-    auto search = hash_.find(value);
-    if ( search == hash_.end() ) {
+    auto search = valueToIndex_.find(value);
+    if ( search == valueToIndex_.end() ) {
       return NULL;
     } else {
       return &vertices_[search->second];
-    }
-  }
-
-  //
-  // reset all the vertices to unvisited
-  //
-  void reset() {
-    for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-      it->visited = false;
     }
   }
 
@@ -153,7 +145,7 @@ protected:
   }
 
   // hash table that converts the vertex value to the vector index
-  std::unordered_map<T, int> hash_;
+  std::unordered_map<T, int> valueToIndex_;
 
   // vector of verticies
   std::vector<graph::GraphAdjVertex<T>> vertices_;
@@ -181,14 +173,14 @@ protected:
     if ( !v_tail ) {
       graph::GraphAdjVertex<T>* new_vertex = graph::newGraphAdjVertex<T>(tail);
       vertices_.push_back(*new_vertex);
-      hash_.insert(std::pair<T, int> (tail, vertices_.size() - 1));
+      valueToIndex_.insert(std::pair<T, int> (tail, vertices_.size() - 1));
     }
 
     graph::GraphAdjVertex<T>* v_head = getVtx(head);
     if ( !v_head ) {
       graph::GraphAdjVertex<T>* new_vertex = graph::newGraphAdjVertex<T>(head);
       vertices_.push_back(*new_vertex);
-      hash_.insert(std::pair<T, int> (head, vertices_.size() - 1));
+      valueToIndex_.insert(std::pair<T, int> (head, vertices_.size() - 1));
     }
 
     // the address may have changed due to the rearrangement of the vector
@@ -282,7 +274,7 @@ public:
   // constructor
   //
   GraphAdj() {
-    hash_.max_load_factor(0.5);
+    valueToIndex_.max_load_factor(0.5);
   }
 
   //
@@ -302,7 +294,6 @@ public:
     for ( auto it1 = vertices_.begin(), it2 = g.vertices_.begin();
           it2 != g.vertices_.end(); ++it1, ++it2 ) {
 
-      it1->visited = it2->visited;
       it1->value = it2->value;
 
       graph::Edge<T>* current_node1 = it1->next;
@@ -321,7 +312,7 @@ public:
       }
     }
 
-    hash_ = g.hash_;
+    valueToIndex_ = g.valueToIndex_;
   }
 
   //
@@ -347,8 +338,8 @@ public:
   // @return: pointer to the const vertex
   //
   graph::GraphAdjVertex<T> const* getVertex(T value) const {
-    auto search = hash_.find(value);
-    if ( search == hash_.end() ) {
+    auto search = valueToIndex_.find(value);
+    if ( search == valueToIndex_.end() ) {
       return NULL;
     } else {
       return &vertices_[search->second];
@@ -363,8 +354,8 @@ public:
   // @return: the vertex index in the vector
   //
   int const getVertexIndex(T value) const {
-    auto search = hash_.find(value);
-    if ( search == hash_.end() ) {
+    auto search = valueToIndex_.find(value);
+    if ( search == valueToIndex_.end() ) {
       return -1;
     } else {
       return search->second;
@@ -485,98 +476,6 @@ public:
   virtual void collapse(T src, T dst) {};
 
   //
-  // Breath-first-search (BFS) starting from a vertex
-  //
-  // @param vertex: the starting vertex value
-  //
-  // @return: a vector of visited vertices, ordered by finding time
-  //
-  std::vector<T> breathFirstSearch(T value) {
-    graph::GraphAdjVertex<T>* v = getVtx(value);
-    if ( !v ) { return std::vector<T> {}; }
-
-    // the container for visited vertices in finding sequence
-    std::vector<T> visited;
-    std::queue<T> track;
-
-    track.push(value);
-    visited.push_back(value);
-    v->visited = true;
-    while (!track.empty()) {
-      graph::GraphAdjVertex<T>* current_head = getVtx(track.front());
-      track.pop();
-
-      graph::Edge<T>* current_node = current_head->next;
-      // find all children vertices which have not been visited yet
-      while (current_node) {
-        if ( !getVtx(current_node->value)->visited ) {
-          track.push(current_node->value);
-          visited.push_back(current_node->value);
-          getVtx(current_node->value)->visited = true;
-        }
-        current_node = current_node->next;
-      }
-    }
-
-    reset();
-    return visited;
-  }
-
-  //
-  // Depth-first-search (DFS) starting from a vertex
-  //
-  // @param value: starting vertex value
-  //
-  // @return: a vector of sink vertices, ordered by finding time
-  //
-  std::vector<T> depthFirstSearch(T value) {
-    graph::GraphAdjVertex<T>* v = getVtx(value);
-    if ( !v ) { return std::vector<T> {}; }
-
-    // the container for sink vertices in finding sequence
-    std::vector<T> sink;
-    std::stack<T> tracker;
-
-    tracker.push(value);
-    v->visited = true;
-    T current_vertex_value = tracker.top();
-    // search the vertex reachable from the current vertex
-    while ( true ) {
-      bool retreat = true;  // a flag indicating whether to retreat to the last vertex
-      graph::Edge<T>* current_node = v->next;
-      // find the next reachable vertex which has not been visited
-      while ( current_node ) {
-        graph::GraphAdjVertex<T>* next_v = getVtx(current_node->value);
-        if ( !next_v->visited ) {
-          next_v->visited = true;
-          tracker.push(current_node->value);
-
-          retreat = false;
-          break;
-        }
-        current_node = current_node->next;
-      }
-      // if a sink vertex is found
-      if ( retreat ) {
-        sink.push_back(current_vertex_value);
-        tracker.pop();
-      }
-
-      if ( tracker.empty() ) {
-        break;
-      } else {
-        current_vertex_value = tracker.top();
-        v = getVtx(current_vertex_value);
-        v->visited = true;
-      }
-    }
-
-//    reset();
-
-    return sink;
-  }
-
-  //
   // display the graph
   //
   void display() const {
@@ -585,8 +484,7 @@ public:
     for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
       graph::Edge<T>* pprint = it->next;
 
-      std::cout << "Vertex [" << it->value << "] (visited = "
-                << it->visited << " )";
+      std::cout << "Vertex [" << it->value << "] ";
       while (pprint) {
         std::cout << " -> " << pprint->value
                   << " (" << pprint->weight << ")";
@@ -608,7 +506,7 @@ template <class T>
 class UdGraphAdj: public GraphAdj<T> {
 private:
   using GraphAdj<T>::vertices_;
-  using GraphAdj<T>::hash_;
+  using GraphAdj<T>::valueToIndex_;
   using GraphAdj<T>::addEdge;
   using GraphAdj<T>::delEdge;
   using GraphAdj<T>::clearList;

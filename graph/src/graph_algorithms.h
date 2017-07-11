@@ -2,6 +2,8 @@
 // Created by jun on 6/23/17.
 //
 // Functions:
+// - breathFirstSearch()
+// - depthFirstSearch()
 // - graphContract()
 // - karger()
 // - kosaraju()
@@ -25,6 +27,94 @@
 
 
 namespace graph {
+  //
+  // Breath-first-search (BFS) starting from a vertex
+  //
+  // @param graph: graph object
+  // @param vertex: the starting vertex value
+  //
+  // @return: a vector of visited vertices, ordered by finding time
+  //
+  template <class G, class T>
+  std::vector<T> breathFirstSearch(const G& graph, T value) {
+    graph::GraphAdjVertex<T> const* v = graph.getVertex(value);
+    if ( !v ) { return {}; }
+
+    // the container for visited vertices in finding sequence
+    std::vector<T> search;
+    std::queue<T> track;
+    std::vector<bool> visited (graph.size(), false);
+
+    track.push(value);
+    search.push_back(value);
+    visited[graph.getVertexIndex(value)] = true;
+    while (!track.empty()) {
+      graph::GraphAdjVertex<T> const* current_head = graph.getVertex(track.front());
+      track.pop();
+
+      graph::Edge<T>* current_node = current_head->next;
+      // find all children vertices which have not been visited yet
+      while (current_node) {
+        if ( !visited[graph.getVertexIndex(current_node->value)] ) {
+          track.push(current_node->value);
+          search.push_back(current_node->value);
+          visited[graph.getVertexIndex(current_node->value)] = true;
+        }
+        current_node = current_node->next;
+      }
+    }
+
+    return search;
+  }
+
+  //
+  // Depth-first-search (DFS) starting from a vertex
+  //
+  // @param graph: graph object
+  // @param value: starting vertex value
+  // @param visited: An indicator which indicates whether a vertex has
+  //                 been visited.
+  //
+  // @return: a vector of sink vertices, ordered by finding time
+  //
+  template <class G, class T>
+  std::vector<T> depthFirstSearch(const G& graph, T value, std::vector<bool>& visited) {
+    graph::GraphAdjVertex<T> const* v = graph.getVertex(value);
+    if ( !v ) { return {}; }
+
+    // the container for sink vertices in finding sequence
+    std::vector<T> sink;
+    std::stack<T> tracker;
+
+    tracker.push(value);
+    T current_vertex_value;
+    // search the vertex reachable from the current vertex
+    while ( !tracker.empty() ) {
+      current_vertex_value = tracker.top();
+      visited[graph.getVertexIndex(current_vertex_value)] = true;
+
+      bool retreat = true;  // a flag indicating whether to retreat to the last vertex
+      graph::Edge<T>* current_node = graph.getVertex(current_vertex_value)->next;
+      // find the next reachable vertex which has not been visited
+      while ( current_node ) {
+        if ( !visited[graph.getVertexIndex(current_node->value)] ) {
+          tracker.push(current_node->value);
+          retreat = false;
+          break;
+        }
+        current_node = current_node->next;
+      }
+      // if a sink vertex is found
+      if ( retreat ) {
+        sink.push_back(current_vertex_value);
+        tracker.pop();
+      }
+
+    }
+
+    return sink;
+  }
+
   //
   // contract an undirected graph until only two non-empty linked lists remain
   //
@@ -92,35 +182,36 @@ namespace graph {
   //
   template <class T>
   inline std::vector<std::vector<T>> kosaraju(GraphAdj<T>& graph) {
-    // First step, get the reversed graph
-    //
-    // In order to save space, the original graph is not copied.
-    // Therefore, the original graph will be contaminated in the first pass
+    std::vector<std::vector<T>> scc;
+    // reverse the directed graph
     GraphAdj<T> graph_reversed = graph::reverseGraph(graph);
 
     //
     // First pass, recursively run DFS on the original graph.
-    // The finish time of each vertex will be store in a stack!!!
+    // The finish time of each vertex will be store in a stack
     //
+    std::vector<bool> visited (graph.size(), false);
     std::stack<T> finish_time;
     for (std::size_t i = 0; i < graph.size(); ++i) {
-      if (!graph.getVertexByIndex(i)->visited) {
-        std::vector<T> tmp = graph.depthFirstSearch(graph.getVertexByIndex(i)->value);
-        for (std::size_t j = 0; j < tmp.size(); ++j) {
-          finish_time.push(tmp[j]);
+      if (!visited[i]) {
+        std::vector<T> search = graph::depthFirstSearch
+            (graph, graph.getVertexByIndex(i)->value, visited);
+        for ( auto j=0; j < search.size(); ++j) {
+          finish_time.push(search[j]);
         }
       }
     }
 
     //
     // Second pass, recursively run DFS using each vertex stored in
-    // the stack. The last finished vertex will be track first!
+    // the stack. The last finished vertex will be tracked first!
     //
-    std::vector<std::vector<T>> scc;
+    std::vector<bool> reversed_visited (graph_reversed.size(), false);
     while (!finish_time.empty()) {
-      if (!graph_reversed.getVertex(finish_time.top())->visited) {
-        std::vector<T> tmp = graph_reversed.depthFirstSearch(finish_time.top());
-        scc.push_back(tmp);
+      if (!reversed_visited[graph_reversed.getVertexIndex(finish_time.top())]) {
+        std::vector<T> search = depthFirstSearch(
+            graph_reversed, finish_time.top(), reversed_visited);
+        scc.push_back(search);
       }
       finish_time.pop();
     }

@@ -57,10 +57,10 @@ namespace graph_test {
   //
   // The annotation "1 *- 4" means from 1 to 4.
   //
-  // 1  *-  4 *- 2  *-  5  *-  3  *-  6
-  //  \    *      \    *        \    *
-  //   *  /        *  /          *  /
-  //     7           8             9
+  // 1  *-  4 *- 2  *-  5  *-  3  *-  6   10 *- 11
+  //  \    *      \    *        \    *     \    *
+  //   *  /        *  /          *  /       *  /
+  //     7  *----    8             9         12
   // @param return: a directed graph
   //
   GraphAdj<int> simpleGraph() {
@@ -77,6 +77,10 @@ namespace graph_test {
     graph.connect(3, 6);
     graph.connect(6, 9);
     graph.connect(9, 3);
+    graph.connect(7, 8);
+    graph.connect(10, 11);
+    graph.connect(11, 12);
+    graph.connect(12, 10);
 
 //    graph.display();
     return graph;
@@ -147,32 +151,33 @@ namespace graph_test {
     // test on directed graph
     GraphAdj<int> graph = simpleGraph();
 
-    std::vector<int> result = graph.breathFirstSearch(1);
-    std::vector<int> expected_result = {1, 4, 2, 7, 5, 3, 8, 6, 9};
+    std::vector<int> result = graph::breathFirstSearch(graph, 1);
+    std::vector<int> expected_result({1, 4, 2, 7, 5, 8, 3, 6, 9});
 
     if ( result == expected_result ) {
       ;
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
-      graph_utilities::printVector(result);
+      graph_utilities::printContainer(result);
       std::cout << "The correct result is: " << std::endl;
-      graph_utilities::printVector(expected_result);
+      graph_utilities::printContainer(expected_result);
     }
 
     // test on undirected graph
     UdGraphAdj<std::string> ud_graph = simpleUdGraph();
-    std::vector<std::string> result_ud = ud_graph.breathFirstSearch("a");
-    std::vector<std::string> expected_result_ud = {"a", "b", "c", "d", "e", "h", "f", "g"};
+    std::string source = "a";
+    std::vector<std::string> result_ud = graph::breathFirstSearch(ud_graph, source);
+    std::vector<std::string> expected_result_ud({"a", "b", "c", "d", "e", "h", "f", "g"});
 
     if ( result_ud == expected_result_ud ) {
       std::cout << "Passed!" << std::endl;
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
-      graph_utilities::printVector(result_ud);
+      graph_utilities::printContainer(result_ud);
       std::cout << "The correct result is: " << std::endl;
-      graph_utilities::printVector(expected_result_ud);
+      graph_utilities::printContainer(expected_result_ud);
     }
 
   }
@@ -186,7 +191,8 @@ namespace graph_test {
     // test on directed graph
     GraphAdj<int> graph = simpleGraph();
 
-    std::vector<int> result = graph.depthFirstSearch(1);
+    std::vector<bool> visited (graph.size(), false);
+    std::vector<int> result = graph::depthFirstSearch(graph, 1, visited);
     std::vector<int> expected_result = {9, 6, 3, 8, 5, 2, 7, 4, 1};
 
     if ( result == expected_result ) {
@@ -194,15 +200,17 @@ namespace graph_test {
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
-      graph_utilities::printVector(result);
+      graph_utilities::printContainer(result);
       std::cout << "The correct result is: " << std::endl;
-      graph_utilities::printVector(expected_result);
+      graph_utilities::printContainer(expected_result);
     }
 
     // test on undirected graph
     UdGraphAdj<std::string> ud_graph = simpleUdGraph();
+    std::string source = "a";
 
-    std::vector<std::string> result_ud = ud_graph.depthFirstSearch("a");
+    std::vector<bool> un_visited (graph.size(), false);
+    std::vector<std::string> result_ud = graph::depthFirstSearch(ud_graph, source, un_visited);
     std::vector<std::string> expected_result_ud = {"d", "g", "f", "e", "h", "c", "b", "a"};
 
     if ( result_ud == expected_result_ud ) {
@@ -210,9 +218,9 @@ namespace graph_test {
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
-      graph_utilities::printVector(result_ud);
+      graph_utilities::printContainer(result_ud);
       std::cout << "The correct result is: " << std::endl;
-      graph_utilities::printVector(expected_result_ud);
+      graph_utilities::printContainer(expected_result_ud);
     }
 
   }

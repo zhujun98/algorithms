@@ -28,7 +28,7 @@ namespace graph_test {
 
     std::vector<std::vector<int>> scc = graph::kosaraju(graph);
 
-    std::vector<std::vector<int>> expected_scc = {{4, 7, 1}, {5, 8, 2}, {6, 9, 3}};
+    std::vector<std::vector<int>> expected_scc = {{11, 12, 10}, {4, 7, 1}, {5, 8, 2}, {6, 9, 3}};
 
     if ( scc == expected_scc ) {
       std::cout << "Passed!" << std::endl;
@@ -87,9 +87,9 @@ namespace graph_test {
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
-      graph_utilities::printVector(shortest_path);
+      graph_utilities::printContainer(shortest_path);
       std::cout << "The correct result is: " << std::endl;
-      graph_utilities::printVector(expected_shortest_path);
+      graph_utilities::printContainer(expected_shortest_path);
     }
 
     if ( shortest_path_destination == expected_shortest_path_destination ) {

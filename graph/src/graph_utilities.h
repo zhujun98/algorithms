@@ -19,12 +19,12 @@
 namespace graph_utilities {
 
   //
-  // print the elements in a 1D vector
+  // print the elements in a 1D container
   //
-  // @param v: a 1D vector
+  // @param v: a 1D container
   //
   template <class T>
-  inline void printVector(const std::vector<T>& v) {
+  inline void printContainer(const T& v) {
     for (auto i=v.begin(); i != v.end(); ++i) {
       std::cout << *i << " ";
     }
@@ -32,12 +32,12 @@ namespace graph_utilities {
   }
 
   //
-  // print the std::pair elements in a 1D vector
+  // print the std::pair elements in a 1D container
   //
-  // @param v: a 1D vector with std::pair elements
+  // @param v: a 1D container with std::pair elements
   //
   template <class T1, class T2>
-  inline void printVector(const std::vector<std::pair<T1, T2>>& v) {
+  inline void printContainer(const std::vector<std::pair<T1, T2>>& v) {
     for (auto i=v.begin(); i != v.end(); ++i) {
       std::cout << i->first << "," << i->second << " ";
     }
