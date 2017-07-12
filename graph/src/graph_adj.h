@@ -287,23 +287,24 @@ public:
       graph::GraphAdjVertex<T>* new_vertex =
           new graph::GraphAdjVertex<T>(*g.vertices_[i]);
       vertices_.push_back(new_vertex);
+      vertices_[i]->next = NULL;
 
-      graph::Edge<T>* current_node2 = g.vertices_[i]->next;
-      if ( !current_node2 ) { continue; }
-      graph::Edge<T>* new_node = new graph::Edge<T>(*current_node2);
-      vertices_[i]->next = new_node;
-
-      graph::Edge<T>* current_node1 = new_node;
-      while ( current_node2->next ) {
-        new_node = new graph::Edge<T>(*current_node2->next);
-
-        current_node1->next = new_node;
-        current_node1 = current_node1->next;
-        current_node2 = current_node2->next;
+      graph::Edge<T>* current_node;
+      graph::Edge<T>* current_node_cp = g.vertices_[i]->next;
+      while ( current_node_cp ) {
+        graph::Edge<T>* new_node = new graph::Edge<T>(*current_node_cp);
+        if ( !vertices_[i]->next ) {
+          vertices_[i]->next = new_node;
+        } else {
+          current_node->next = new_node;
+        }
+        current_node = new_node;
+        current_node_cp = current_node_cp->next;
       }
-
     }
+
     valueToIndex_ = std::unordered_map<T, int>(g.valueToIndex_);
+    assert(valueToIndex_.load_factor() == g.valueToIndex_.load_factor());
   }
 
   //
@@ -383,12 +384,12 @@ public:
 
     return count;
   }
+
   //
   // get a vector of vertices with at least one edge
   //
   std::vector<T> getConnectedVertices() const {
     std::vector<T> connectedVertices;
-
     for (int i = 0; i < vertices_.size(); ++i) {
       if ( vertices_[i]->next ) {
         connectedVertices.push_back(vertices_[i]->value);
