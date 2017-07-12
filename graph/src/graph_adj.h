@@ -31,6 +31,7 @@ namespace graph {
     T value;  // value of the head vertex of the edge
     double weight;  // weight (length) of the edge
     Edge<T>* next;  // pointer to the next edge in the same linked list
+//    ~Edge() { std::cout << "deallocated Edge!" << std::endl; }
   };
 
   //
@@ -39,8 +40,8 @@ namespace graph {
   template <class T>
   struct GraphAdjVertex {
     T value;  // value of the vertex
-    bool visited;  // flag indicate whether a vertex has been visited
     Edge<T>* next;  // head node of the linked list
+//    ~GraphAdjVertex() { std::cout << "deallocated GraphAdjVertex!" << std::endl; }
   };
 
   //
@@ -116,7 +117,7 @@ protected:
   std::unordered_map<T, int> valueToIndex_;
 
   // vector of vertices
-  std::vector<graph::GraphAdjVertex<T>> vertices_;
+  std::vector<graph::GraphAdjVertex<T>*> vertices_;
 
   //
   // get the pointer to a vertex
@@ -130,7 +131,7 @@ protected:
     if ( search == valueToIndex_.end() ) {
       return NULL;
     } else {
-      return &vertices_[search->second];
+      return vertices_[search->second];
     }
   }
 
@@ -144,7 +145,6 @@ protected:
     if ( !v->next ) { return; }
 
     graph::Edge<T>* current = v->next;
-
     while ( current ) {
       v->next = current->next;
       delete current;
@@ -171,24 +171,22 @@ protected:
   void addEdge(T tail, T head, double weight) {
     if ( tail == head ) { return; }
 
-    graph::GraphAdjVertex<T> * v_tail = getVtx(tail);
+    graph::GraphAdjVertex<T>* v_tail = getVtx(tail);
     if ( !v_tail ) {
       graph::GraphAdjVertex<T>* new_vertex = graph::newGraphAdjVertex<T>(tail);
-      vertices_.push_back(*new_vertex);
+      vertices_.push_back(new_vertex);
       valueToIndex_.insert(std::pair<T, int> (tail, vertices_.size() - 1));
     }
 
     graph::GraphAdjVertex<T>* v_head = getVtx(head);
     if ( !v_head ) {
       graph::GraphAdjVertex<T>* new_vertex = graph::newGraphAdjVertex<T>(head);
-      vertices_.push_back(*new_vertex);
+      vertices_.push_back(new_vertex);
       valueToIndex_.insert(std::pair<T, int> (head, vertices_.size() - 1));
     }
 
     // the address may have changed due to the rearrangement of the vector
     v_tail = getVtx(tail);
-    v_head = getVtx(head);
-
     graph::Edge<T>* new_edge = graph::newEdge(head, weight);
 
     graph::Edge<T>* current = v_tail->next;
@@ -283,49 +281,38 @@ public:
 
   //
   // copy constructor
-  // TODO:: improve it
   //
   GraphAdj(const GraphAdj<T>& g) {
-    graph::GraphAdjVertex<T> adj_list;
+    for (int i=0; i != g.vertices_.size(); ++i) {
+      graph::GraphAdjVertex<T>* new_vertex =
+          new graph::GraphAdjVertex<T>(*g.vertices_[i]);
+      vertices_.push_back(new_vertex);
 
-    for (int i = 0; i < g.size(); ++i) {
-      adj_list.visited = false;
-      adj_list.next = NULL;
+      graph::Edge<T>* current_node2 = g.vertices_[i]->next;
+      if ( !current_node2 ) { continue; }
+      graph::Edge<T>* new_node = new graph::Edge<T>(*current_node2);
+      vertices_[i]->next = new_node;
 
-      vertices_.push_back(adj_list);
-    }
+      graph::Edge<T>* current_node1 = new_node;
+      while ( current_node2->next ) {
+        new_node = new graph::Edge<T>(*current_node2->next);
 
-    for ( auto it1 = vertices_.begin(), it2 = g.vertices_.begin();
-          it2 != g.vertices_.end(); ++it1, ++it2 ) {
-
-      it1->value = it2->value;
-
-      graph::Edge<T>* current_node1 = it1->next;
-      graph::Edge<T>* current_node2 = it2->next;
-
-      while ( current_node2 ) {
-        graph::Edge<T>* new_node = new graph::Edge<T>(*current_node2);
-        if ( !it1->next ) {
-          it1->next = new_node;
-          current_node1 = new_node;
-        } else {
-          current_node1->next = new_node;
-          current_node1 = current_node1->next;
-        }
+        current_node1->next = new_node;
+        current_node1 = current_node1->next;
         current_node2 = current_node2->next;
       }
-    }
 
-    valueToIndex_ = g.valueToIndex_;
+    }
+    valueToIndex_ = std::unordered_map<T, int>(g.valueToIndex_);
   }
 
   //
   // destructor
-  // TODO: check memory leak
   //
   virtual ~GraphAdj() {
-    for (auto it = vertices_.begin(); it != vertices_.end() ; ++it) {
-      clearList(it->value);
+    for (auto i = 0; i < vertices_.size() ; ++i) {
+      clearList(vertices_[i]->value);
+      delete vertices_[i];
     }
   }
 
@@ -362,7 +349,7 @@ public:
     if ( search == valueToIndex_.end() ) {
       return NULL;
     } else {
-      return &vertices_[search->second];
+      return vertices_[search->second];
     }
   }
 
@@ -377,7 +364,7 @@ public:
     if ( index < 0 || index >= vertices_.size() ) {
       return NULL;
     } else {
-      return &vertices_[index];
+      return vertices_[index];
     }
   }
 
@@ -386,8 +373,8 @@ public:
   //
   virtual int countEdge() const {
     int count = 0;
-    for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-      graph::Edge<T>* current = it->next;
+    for (int i = 0; i < vertices_.size(); ++i ) {
+      graph::Edge<T>* current = vertices_[i]->next;
       while ( current ) {
         count += current->weight;
         current = current->next;
@@ -402,9 +389,9 @@ public:
   std::vector<T> getConnectedVertices() const {
     std::vector<T> connectedVertices;
 
-    for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-      if ( it->next ) {
-        connectedVertices.push_back(it->value);
+    for (int i = 0; i < vertices_.size(); ++i) {
+      if ( vertices_[i]->next ) {
+        connectedVertices.push_back(vertices_[i]->value);
       }
     }
 
@@ -485,10 +472,10 @@ public:
   void display() const {
     std::cout << "------------------------------" << std::endl;
 
-    for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-      graph::Edge<T>* pprint = it->next;
+    for (int i = 0; i < vertices_.size(); ++i ) {
+      graph::Edge<T>* pprint = vertices_[i]->next;
 
-      std::cout << "Vertex [" << it->value << "] ";
+      std::cout << "Vertex [" << vertices_[i]->value << "] ";
       while (pprint) {
         std::cout << " -> " << pprint->value
                   << " (" << pprint->weight << ")";
@@ -533,7 +520,7 @@ public:
   int countEdge() const {
     int count = 0;
     for (int i=0; i<vertices_.size(); ++i) {
-      graph::Edge<T>* current = vertices_[i].next;
+      graph::Edge<T>* current = vertices_[i]->next;
       while ( current ) {
         count += current->weight;
         current = current->next;
