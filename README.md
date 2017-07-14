@@ -40,3 +40,7 @@ See [here](./graph)
 See [here](./hash_table)
 
 ## binary search tree
+
+
+## Greedy algorithms
+* Weighted sum of completion time (See [here](./weighted_sum_of_completion_time))
