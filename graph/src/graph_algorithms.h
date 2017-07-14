@@ -265,9 +265,9 @@ namespace graph {
       return {};
     }
 
-    // a set of vertex <distance, index> indices waiting to removed one by one
+    // A set of vertex <current shortest distance, index>
     std::set<std::pair<double, int>> remain;
-    // storing the shortest distance and its parent vertex for each vertex
+    // Store the shortest distance and its parent vertex for each vertex
     std::vector<std::pair<double, T>> distances(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
       if (graph.getVertexByIndex(i)->value != source) {
@@ -280,9 +280,9 @@ namespace graph {
       }
     }
 
-    // run until there is no vertex left in the remain set
+    // Run until there is no vertex left in the remain set.
     while ( !remain.empty() ) {
-      // pick the index in the 'remain' set with the shortest distance.
+      // Pick the index in the 'remain' set with the shortest distance.
       int selected_index = remain.begin()->second;
 
       remain.erase(remain.begin());
@@ -298,11 +298,12 @@ namespace graph {
       while (current_edge) {
         int current_index = graph.vertexToIndex(current_edge->value);
 
-        // update shortest distance information
-        // Note: It is not necessary to check whether 'currentIndex' is visited
-        // (here not in 'remain' container) since its shortest distance will
-        // (should) not be updated further. Moreover, the find operation is
-        // expensive compared to an addiction operation and a comparing.
+        // Update shortest distance information.
+        // Note: It is not necessary to check whether 'currentIndex' has
+        // been visited (here not in 'remain' container) since its
+        // shortest distance will (should) not be updated further.
+        // Moreover, the find operation is expensive compared to an
+        // addiction operation and a comparing.
         double new_distance = distances[selected_index].first + current_edge->weight;
         if (distances[current_index].first > new_distance) {
           remain.erase(std::make_pair(distances[current_index].first, current_index));
@@ -338,12 +339,12 @@ namespace graph {
       return {};
     }
 
-    // a set of vertex <distance, index> indices waiting to removed one by one
+    // A set of vertex <current shortest distance, index>.
     typedef std::pair<double, int> distance_index_pair_t ;
     std::priority_queue<distance_index_pair_t,
                         std::vector<distance_index_pair_t>,
                         std::greater<distance_index_pair_t>> remain;
-    // storing the shortest distance and its parent vertex for each vertex
+    // Store the shortest distance and its parent vertex for each vertex.
     std::vector<std::pair<double, T>> distances(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
       if (graph.getVertexByIndex(i)->value != source) {
@@ -356,7 +357,7 @@ namespace graph {
       }
     }
 
-    // run until there is no vertex left in the remain set
+    // Run until there is no vertex left in the remain set.
     while ( !remain.empty() ) {
       double selected_distance = remain.top().first;
       int selected_index = remain.top().second;
@@ -369,10 +370,10 @@ namespace graph {
       }
 
       // Since we leave old copies of the vertex in the priority queue
-      // (with outdated higher distances), we should ignore it when we come
-      // across it again in order to speed up. Otherwise, it still works.
-      // However, the speed will be much slower since it will traverse its
-      // children vertices again.
+      // (with outdated higher distances), we should ignore it when we
+      // come across it again in order to speed up. Otherwise, it still
+      // works. However, the speed will be much slower since it will
+      // traverse its children vertices again.
       if (selected_distance > distances[selected_index].first) { continue; }
 
       // Loop the neighbors of the "selected_index" which is still in the
@@ -381,14 +382,15 @@ namespace graph {
       while (current_edge) {
         int current_index = graph.vertexToIndex(current_edge->value);
 
-        // update shortest distance information
-        // Note: It is not necessary to check whether 'currentIndex' is visited
-        // (here not in 'remain' container) since its shortest distance will
-        // (should) not be updated further. Moreover, the find operation is
-        // expensive compared to an addiction operation and a comparing.
+        // Update shortest distance information
+        // Note: It is not necessary to check whether 'currentIndex' has
+        // been visited (here not in 'remain' container) since its
+        // shortest distance will (should) not be updated further.
+        // Moreover, the find operation is expensive compared to an
+        // addiction operation and a comparing.
         //
-        // Also, it is not necessary to find and remove the old (distance, vertex)
-        // pair here since it will pop up later.
+        // Also, it is not necessary to find and remove the old
+        // (distance, vertex) pair here since it will pop up later.
         double new_distance = distances[selected_index].first + current_edge->weight;
         if (distances[current_index].first > new_distance) {
           distances[current_index].first = new_distance;
