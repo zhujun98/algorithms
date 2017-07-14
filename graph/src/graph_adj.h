@@ -377,7 +377,7 @@ public:
     for (int i = 0; i < vertices_.size(); ++i ) {
       graph::Edge<T>* current = vertices_[i]->next;
       while ( current ) {
-        count += current->weight;
+        ++count;
         current = current->next;
       }
     }
@@ -523,7 +523,7 @@ public:
     for (int i=0; i<vertices_.size(); ++i) {
       graph::Edge<T>* current = vertices_[i]->next;
       while ( current ) {
-        count += current->weight;
+        ++count;
         current = current->next;
       }
     }
