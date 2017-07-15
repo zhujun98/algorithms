@@ -329,7 +329,7 @@ public:
   //
   // @return: the vertex index
   //
-  int const vertexToIndex(T value) const {
+  int const valueToIndex(T value) const {
     auto search = valueToIndex_.find(value);
     if ( search == valueToIndex_.end() ) {
       return -1;

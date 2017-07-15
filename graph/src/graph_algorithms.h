@@ -52,7 +52,7 @@ namespace graph {
 
     track.push(value);
     search.push_back(value);
-    visited[graph.vertexToIndex(value)] = true;
+    visited[graph.valueToIndex(value)] = true;
     while (!track.empty()) {
       graph::GraphAdjVertex<T> const* current_head = graph.getVertex(track.front());
       track.pop();
@@ -60,10 +60,10 @@ namespace graph {
       graph::Edge<T>* current_node = current_head->next;
       // find all children vertices which have not been visited yet
       while (current_node) {
-        if ( !visited[graph.vertexToIndex(current_node->value)] ) {
+        if ( !visited[graph.valueToIndex(current_node->value)] ) {
           track.push(current_node->value);
           search.push_back(current_node->value);
-          visited[graph.vertexToIndex(current_node->value)] = true;
+          visited[graph.valueToIndex(current_node->value)] = true;
         }
         current_node = current_node->next;
       }
@@ -98,13 +98,13 @@ namespace graph {
     // search the vertex reachable from the current vertex
     while ( !tracker.empty() ) {
       current_vertex_value = tracker.top();
-      visited[graph.vertexToIndex(current_vertex_value)] = true;
+      visited[graph.valueToIndex(current_vertex_value)] = true;
 
       bool retreat = true;  // a flag indicating whether to retreat to the last vertex
       graph::Edge<T>* current_node = graph.getVertex(current_vertex_value)->next;
       // find the next reachable vertex which has not been visited
       while ( current_node ) {
-        if ( !visited[graph.vertexToIndex(current_node->value)] ) {
+        if ( !visited[graph.valueToIndex(current_node->value)] ) {
           tracker.push(current_node->value);
           retreat = false;
           break;
@@ -221,7 +221,7 @@ namespace graph {
     //
     std::vector<bool> reversed_visited (graph_reversed.size(), false);
     while (!finish_time.empty()) {
-      if (!reversed_visited[graph_reversed.vertexToIndex(finish_time.top())]) {
+      if (!reversed_visited[graph_reversed.valueToIndex(finish_time.top())]) {
         std::vector<T> search = depthFirstSearch(
             graph_reversed, finish_time.top(), reversed_visited);
         scc.push_back(search);
@@ -295,7 +295,7 @@ namespace graph {
       remain.erase(remain.begin());
 
       if ( source != destination &&
-           selected_index == graph.vertexToIndex(destination) ) {
+           selected_index == graph.valueToIndex(destination) ) {
         return distances;
       }
 
@@ -303,7 +303,7 @@ namespace graph {
       // "remain" set.
       Edge<T> *current_edge = graph.getVertexByIndex(selected_index)->next;
       while (current_edge) {
-        int current_index = graph.vertexToIndex(current_edge->value);
+        int current_index = graph.valueToIndex(current_edge->value);
 
         // Update shortest distance information.
         // Note: It is not necessary to check whether 'currentIndex' has
@@ -375,7 +375,7 @@ namespace graph {
       remain.pop();
 
       if ( source != destination &&
-           selected_index == graph.vertexToIndex(destination) ) {
+           selected_index == graph.valueToIndex(destination) ) {
         return distances;
       }
 
@@ -390,7 +390,7 @@ namespace graph {
       // "remain" set.
       Edge<T> *current_edge = graph.getVertexByIndex(selected_index)->next;
       while (current_edge) {
-        int current_index = graph.vertexToIndex(current_edge->value);
+        int current_index = graph.valueToIndex(current_edge->value);
 
         // Update shortest distance information
         // Note: It is not necessary to check whether 'currentIndex' has
@@ -455,7 +455,7 @@ namespace graph {
     std::stack<T> path;
     T current_vertex = destination;
     while ( true ) {
-      current_vertex = distances[graph.vertexToIndex(current_vertex)].second;
+      current_vertex = distances[graph.valueToIndex(current_vertex)].second;
       path.push(current_vertex);
       if ( current_vertex == source ) { break; }
     }
@@ -565,7 +565,7 @@ namespace graph {
   template <class T>
   inline std::pair<double, std::vector<std::pair<T, T>>>
   prim(const UdGraphAdj<T>& graph, T source) {
-    return prim(graph, graph.vertexToIndex(source));
+    return prim(graph, graph.valueToIndex(source));
   }
 }
 
