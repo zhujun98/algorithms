@@ -8,6 +8,7 @@
 // - Karger's algorithm
 // - Kosaraju's algorithm
 // - Dijkstra's algorithm (RB-tree and priority_queue)
+// TODO:: the negative edge check might not sufficient
 // - Prim's algorithm (priority_queue)
 //
 #ifndef GRAPH_GRAPH_ALGORITHMS_H
@@ -261,6 +262,7 @@ namespace graph {
   inline std::vector<std::pair<double, T>> dijkstra_base_tree(
       const G& graph, T source, T destination,
       double max_distance=std::numeric_limits<double>::max()) {
+
     if ( !graph.getVertex(source) ) {
       std::cout << source << " is not a vertex of the graph!" << std::endl;
       return {};
@@ -309,6 +311,9 @@ namespace graph {
         // shortest distance will (should) not be updated further.
         // Moreover, the find operation is expensive compared to an
         // addiction operation and a comparing.
+        if ( current_edge->weight < 0 ) {
+          throw std::invalid_argument("Graph has edge with negative weight!");
+        }
         double new_distance = distances[selected_index].first + current_edge->weight;
         if (distances[current_index].first > new_distance) {
           remain.erase(std::make_pair(distances[current_index].first, current_index));
@@ -396,6 +401,9 @@ namespace graph {
         //
         // Also, it is not necessary to find and remove the old
         // (distance, vertex) pair here since it will pop up later.
+        if ( current_edge->weight < 0 ) {
+          throw std::invalid_argument("Graph has edge with negative weight!");
+        }
         double new_distance = distances[selected_index].first + current_edge->weight;
         if (distances[current_index].first > new_distance) {
           distances[current_index].first = new_distance;
