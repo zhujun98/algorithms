@@ -127,6 +127,50 @@ namespace graph_test {
 
   }
 
+  //
+  // test the implementation of Prim's algorithm
+  //
+  void testPrim() {
+    std::cout << "\nTesting Prim's algorithm..." << std::endl;
+
+    UdGraphAdj<std::string> graph = graph_test::distanceUdGraph();
+
+    typedef std::pair<double, std::vector<std::pair<std::string, std::string>>> mst_tree;
+
+    // starting from the first vertex by default
+    mst_tree mst = graph::prim(graph);
+    mst_tree expected_mst =
+        {-13, {{"a", "e"}, {"e", "d"}, {"d", "b"}, {"e", "c"}, {"e", "f"}}};
+
+    if (mst == expected_mst) {
+      ;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: (total cost = "
+                << mst.first << ")" << std::endl;
+      graph_utilities::printContainer(mst.second);
+      std::cout << "The correct result is: (total cost = "
+                << expected_mst.first << ")" << std::endl;
+      graph_utilities::printContainer(expected_mst.second);
+    }
+
+    // starting from an appointing vertex
+    mst = graph::prim(graph, std::string("c"));
+    expected_mst =
+        {-13, {{"c", "e"}, {"e", "a"}, {"e", "d"}, {"d", "b"}, {"e", "f"}}};
+
+    if (mst == expected_mst) {
+      std::cout << "Passed!" << std::endl;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: (total cost = "
+                << mst.first << ")" << std::endl;
+      graph_utilities::printContainer(mst.second);
+      std::cout << "The correct result is: (total cost = "
+                << expected_mst.first << ")" << std::endl;
+      graph_utilities::printContainer(expected_mst.second);
+    }
+  }
 }
 
 #endif //GRAPH_UNITTEST_ALGORITHMS_H

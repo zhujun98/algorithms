@@ -7,7 +7,8 @@
 // - graphContract
 // - Karger's algorithm
 // - Kosaraju's algorithm
-// - Dijkstra's algorithm
+// - Dijkstra's algorithm (RB-tree and priority_queue)
+// - Prim's algorithm (priority_queue)
 //
 #ifndef GRAPH_GRAPH_ALGORITHMS_H
 #define GRAPH_GRAPH_ALGORITHMS_H
@@ -18,11 +19,15 @@
 #include <vector>
 #include <queue>
 #include <set>
+#include <map>
 #include <algorithm>
 #include <functional>
 
 #include "graph_adj.h"
 #include "graph_utilities.h"
+
+
+const double INF_D = std::numeric_limits<double>::max();
 
 
 namespace graph {
@@ -454,6 +459,99 @@ namespace graph {
     std::cout << destination << std::endl;
 
   };
+
+  //
+  // Make the comparison in Prim's algorithm implementation faster by
+  // only comparing the weight.
+  //
+  template <class T>
+  struct edgeComparitor {
+    bool operator()(const std::pair<double, std::pair<T, T>>& e1,
+                    const std::pair<double, std::pair<T, T>>& e2) {
+      return e1.first > e2.first;
+    }
+  };
+
+  //
+  // Implementation of the Prim's minimum spanning tree algorithm
+  //
+  // @param graph: undirected graph object
+  //
+  // @return: a pair in which the first element is the total cost of
+  //          the minimum spanning tree while the second one is a
+  //          vector of the leaves (<from vertex, to vertex>) in the
+  //          tree in sequence.
+  //
+  template <class T>
+  inline std::pair<double, std::vector<std::pair<T, T>>>
+  prim(const UdGraphAdj<T>& graph, int source_index = 0) {
+
+    // <weight, <from vertex, to vertex>>
+    typedef std::pair<double, std::pair<T, T>> mst_leaf;
+
+    // Minimum spanning tree:
+    // Store the <from, to> vertices of edges (leaves) in the minimum
+    // spanning tree in sequence, where "from" is the vertex in the
+    // processed vertices set while "to" is the vertex in the
+    // un-processed (remain) vertices set.
+    std::vector<std::pair<T, T>> mst;
+    double cost = 0.0;  // total cost of the minimum spanning tree
+    // A set which records processed vertices.
+    std::set<T> processed;
+    // A min priority queue store the graph edge information
+    std::priority_queue<mst_leaf, std::vector<mst_leaf>,
+                        edgeComparitor<T>> remain;
+
+    T source_vertex_value = graph.getVertexByIndex(source_index)->value;
+    processed.insert(source_vertex_value);
+
+    // Initialize the priority queue.
+    graph::Edge<T>* current_edge = graph.getVertex(source_vertex_value)->next;
+    while ( current_edge ) {
+      remain.push(std::make_pair(current_edge->weight,
+                                 std::make_pair(source_vertex_value,
+                                                current_edge->value)));
+      current_edge = current_edge->next;
+    }
+
+    // Run until there is no vertex in the remain set or all the vertices
+    // have been processed.
+    while ( (processed.size() < graph.size()) && !remain.empty() ) {
+      auto pick = remain.top();
+      remain.pop();
+      auto insertion = processed.insert(pick.second.second);
+      // Skip if it is an old copy of a processed vertex left in the
+      // priority queue
+      if ( !insertion.second ) { continue; }
+
+      mst.push_back(pick.second);
+      cost += pick.first;
+
+      // New edges due to one vertex is moved from the unprocessed
+      // vertices set to the processed vertices set. We do not need
+      // to remove the edges which are consist of two processed
+      // vertices but are still in the remain set, since we can
+      // screen it out when it pops out.
+      current_edge = graph.getVertex(pick.second.second)->next;
+      while ( current_edge ) {
+        remain.push(std::make_pair(current_edge->weight,
+                                   std::make_pair(pick.second.second,
+                                                  current_edge->value)));
+        current_edge = current_edge->next;
+      }
+    }
+
+    return std::make_pair(cost, mst);
+  }
+
+  //
+  // Appointing a source vertex in Prim's algorithm
+  //
+  template <class T>
+  inline std::pair<double, std::vector<std::pair<T, T>>>
+  prim(const UdGraphAdj<T>& graph, T source) {
+    return prim(graph, graph.vertexToIndex(source));
+  }
 }
 
 #endif //GRAPH_GRAPH_ALGORITHMS_H

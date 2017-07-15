@@ -111,16 +111,58 @@ namespace graph_test {
   }
 
   //
+  // build a simple directed graph for testing
+  //
+  // The annotation "0 *- 1" means from 0 to 1.
+  //
+  //
+  //
+  //    (1)    (-6)      (5)
+  // a ---- b ---- d -------- f
+  // | \    |    /   \       /
+  // |  \   |(2)/     \(-3) / (2)
+  // |(4)\  |  / (3)   \   /
+  // |    \ | /         \ /
+  // |      c  --------  e
+  // |           (-2)    |
+  // |------- (-4) ------|
+  //
+  //
+  // @param return: a directed graph
+  //
+  UdGraphAdj<std::string> distanceUdGraph() {
+    UdGraphAdj<std::string> graph;
+
+    graph.connect("a", "b", 1);
+    graph.connect("a", "c", 4);
+    graph.connect("b", "d", -6);
+    graph.connect("b", "c", 2);
+    graph.connect("c", "d", 3);
+    graph.connect("c", "e", -2);
+    graph.connect("d", "e", -3);
+    graph.connect("d", "f", 5);
+    graph.connect("e", "f", 2);
+    graph.connect("a", "e", -4);
+
+//    graph.display();
+    return graph;
+  }
+
+  //
   // test the copy constructor
   //
   void testGraphCopy() {
     std::cout << "\nTesting graph copy constructor..." << std::endl;
 
     GraphAdj<int> graph = simpleGraph();
+//    graph.display();
     GraphAdj<int> graph_copy(graph);
+//    graph_copy.display();
 
     UdGraphAdj<std::string> ud_graph = simpleUdGraph();
+//    ud_graph.display();
     UdGraphAdj<std::string> ud_graph_copy(ud_graph);
+//    ud_graph_copy.display();
   }
 
   //
