@@ -159,7 +159,7 @@ namespace graph {
       if ( display) { graph.display(); }
     }
 
-    return graph.countEdge();
+    return int(graph.countWeightedEdge());
   }
 
   //
@@ -172,7 +172,7 @@ namespace graph {
   template <class T>
   inline int karger(const UdGraphAdj<T>& graph, unsigned int n) {
 
-    int min_cut = graph.countEdge();
+    int min_cut = graph.countWeightedEdge();
     int cut;
 
     // apply Karger's algorithm to find the minimum cut in the graph

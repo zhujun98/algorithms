@@ -401,6 +401,22 @@ public:
   }
 
   //
+  // get the sum of weights of all the edges in the graph
+  //
+  virtual double countWeightedEdge() const {
+    int count = 0;
+    for (int i = 0; i < vertices_.size(); ++i ) {
+      graph::Edge<T>* current = vertices_[i]->next;
+      while ( current ) {
+        count += current->weight;
+        current = current->next;
+      }
+    }
+
+    return count;
+  }
+
+  //
   // get a vector of vertices with at least one edge
   //
   std::vector<T> getConnectedVertices() const {
@@ -539,6 +555,23 @@ public:
       graph::Edge<T>* current = vertices_[i]->next;
       while ( current ) {
         ++count;
+        current = current->next;
+      }
+    }
+
+    assert(count%2 == 0);
+    return count/2;
+  }
+
+  //
+  // get the sum of weights of all the edges in the graph
+  //
+  double countWeightedEdge() const {
+    int count = 0;
+    for (int i=0; i<vertices_.size(); ++i) {
+      graph::Edge<T>* current = vertices_[i]->next;
+      while ( current ) {
+        count += current->weight;
         current = current->next;
       }
     }
