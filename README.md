@@ -29,7 +29,7 @@ See [here](./sorting_and_selection)
 * Karger's random algorithm
 * Kosaraju's algorithm
 * Dijkstra's algorithm
-  - Implementation using std::priority_queue()
+  - Implementation utilizing std::priority_queue()
   - Implementation utilizing std::set()
 * Prim's algorithm
   - Implementation utilizing std::priority_queue()
