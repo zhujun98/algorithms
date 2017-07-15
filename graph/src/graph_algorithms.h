@@ -486,6 +486,14 @@ namespace graph {
   inline std::pair<double, std::vector<std::pair<T, T>>>
   prim(const UdGraphAdj<T>& graph, int source_index = 0) {
 
+
+    auto bfs_search = breathFirstSearch(
+        graph, graph.getVertexByIndex(source_index)->value);
+
+    if ( bfs_search.size() != graph.size() ) {
+      throw std::invalid_argument("Input graph is not connected!");
+    }
+
     // <weight, <from vertex, to vertex>>
     typedef std::pair<double, std::pair<T, T>> mst_leaf;
 
