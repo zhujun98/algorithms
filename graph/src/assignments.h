@@ -83,6 +83,7 @@ namespace assignment {
 
     }
     ifs.close();
+    std::cout << "Finished reading data!" << std::endl;
 
     assert( graph.size() == 500);
     assert( graph.countEdge() == 2184 );
@@ -126,7 +127,7 @@ namespace assignment {
   inline void runDijkstraAssignment() {
     std::cout << "\n" << std::string(80, '-') << "\n"
               << "This is the Dijkstra assignment in the Stanford's Algorithm course at Coursera"
-              << "\n" << std::string(80, '-') << "\n"
+              << "\n" << std::string(80, '-')
               << std::endl;
 
     GraphAdj<int> graph;
@@ -151,7 +152,6 @@ namespace assignment {
       }
     }
     ifs.close();
-
     std::cout << "Finished reading data!" << std::endl;
 
     std::vector<std::pair<double, int>> shortest_path = graph::dijkstra(graph, 1);
@@ -168,20 +168,17 @@ namespace assignment {
     std::cout << "Run time using the heap-based implementation: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
 
-    std::cout << "The shortest distance to vertex" << std::endl;
-    std::cout << "7,37,59,82,99,115,133,165,188,197" << std::endl;
-    std::cout << "are: " << std::endl;
-
-    std::cout << shortest_path[graph.valueToIndex(7)].first << ","
-              << shortest_path[graph.valueToIndex(37)].first << ","
-              << shortest_path[graph.valueToIndex(59)].first << ","
-              << shortest_path[graph.valueToIndex(82)].first << ","
-              << shortest_path[graph.valueToIndex(99)].first << ","
-              << shortest_path[graph.valueToIndex(115)].first << ","
-              << shortest_path[graph.valueToIndex(133)].first << ","
-              << shortest_path[graph.valueToIndex(165)].first << ","
-              << shortest_path[graph.valueToIndex(188)].first << ","
-              << shortest_path[graph.valueToIndex(197)].first << std::endl;
+    assert(shortest_path[graph.valueToIndex(7)].first == 2599);
+    assert(shortest_path[graph.valueToIndex(37)].first == 2610);
+    assert(shortest_path[graph.valueToIndex(59)].first == 2947);
+    assert(shortest_path[graph.valueToIndex(82)].first == 2052);
+    assert(shortest_path[graph.valueToIndex(99)].first == 2367);
+    assert(shortest_path[graph.valueToIndex(115)].first == 2399);
+    assert(shortest_path[graph.valueToIndex(133)].first == 2029);
+    assert(shortest_path[graph.valueToIndex(165)].first == 2442);
+    assert(shortest_path[graph.valueToIndex(188)].first == 2505);
+    assert(shortest_path[graph.valueToIndex(197)].first == 3068);
+    std::cout << "Passed!" << std::endl;
   }
 
   //
@@ -198,11 +195,12 @@ namespace assignment {
   //
   // @param repeated_times: how many times the random contraction will be performed
   //
+  // TODO:: check the answer
   inline void runKargerAssignment(unsigned int repeated_times=1000) {
 
     std::cout << "\n" << std::string(80, '-') << "\n"
               << "This is the minimum cut assignment in the Stanford's Algorithm course at Coursera"
-              << "\n" << std::string(80, '-') << "\n"
+              << "\n" << std::string(80, '-')
               << std::endl;
 
     UdGraphAdj<int> graph;
@@ -231,11 +229,10 @@ namespace assignment {
       }
     }
     ifs.close();
-
     std::cout << "Finished reading data!" << std::endl;
 
-    std::cout << "The minimum cut is: "
-              << graph::karger(graph, repeated_times) << std::endl;
+    assert(graph::karger(graph, repeated_times) == 20);
+    std::cout << "Passed!" << std::endl;
   }
 
 
@@ -255,7 +252,7 @@ namespace assignment {
 
     std::cout << "\n" << std::string(80, '-') << "\n"
               << "This is the SCC assignment in the Stanford's Algorithm course at Coursera"
-              << "\n" << std::string(80, '-') << "\n"
+              << "\n" << std::string(80, '-')
               << std::endl;
 
     GraphAdj<int> graph;
@@ -292,7 +289,6 @@ namespace assignment {
       graph.connect(1, 2);
     }
     ifs.close();
-
     std::cout << "Finished reading data!" << std::endl;
 
     std::cout << "Searching strongly connected components...!" << std::endl;
@@ -306,14 +302,12 @@ namespace assignment {
     }
 
     std::sort(scc_length.begin(), scc_length.end(), std::greater<int>());
-
-    int count = 0;
-    std::cout << "The lengths of the five longest SCCs are: " << std::endl;
-    while ( count < 5 && count < scc_length.size() ) {
-      std::cout << scc_length[count] << ",";
-      ++count;
-    }
-    std::cout << std::endl;
+    assert(scc_length[0] == 434821);
+    assert(scc_length[1] == 968);
+    assert(scc_length[2] == 459);
+    assert(scc_length[3] == 313);
+    assert(scc_length[4] == 211);
+    std::cout << "Passed!" << std::endl;
   }
 
 };
