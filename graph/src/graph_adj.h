@@ -323,11 +323,11 @@ public:
   std::size_t size() const { return vertices_.size(); }
 
   //
-  // get the index of a vertex with value "value"
+  // get the index of a vertex by value
   //
   // @param value: the vertex value
   //
-  // @return: the vertex index in the vector
+  // @return: the vertex index
   //
   int const vertexToIndex(T value) const {
     auto search = valueToIndex_.find(value);
@@ -336,6 +336,21 @@ public:
     } else {
       return search->second;
     }
+  }
+
+  //
+  // get the value of a vertex by index
+  //
+  // @param value: the vertex index
+  //
+  // @return: the vertex value
+  //
+  T const indexToValue(int idx) const {
+    if ( idx > vertices_.size() ) {
+      throw std::invalid_argument("Input index is out of range!");
+    }
+
+    return vertices_[idx]->value;
   }
 
   //

@@ -208,7 +208,7 @@ namespace graph {
     for (std::size_t i = 0; i < graph.size(); ++i) {
       if (!visited[i]) {
         std::vector<T> search = graph::depthFirstSearch
-            (graph, graph.getVertexByIndex(i)->value, visited);
+            (graph, graph.indexToValue(i), visited);
         for ( auto j=0; j < search.size(); ++j) {
           finish_time.push(search[j]);
         }
@@ -277,7 +277,7 @@ namespace graph {
     // Store the shortest distance and its parent vertex for each vertex
     std::vector<std::pair<double, T>> distances(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
-      if (graph.getVertexByIndex(i)->value != source) {
+      if (graph.indexToValue(i) != source) {
         remain.insert(std::make_pair(max_distance, i));
         distances[i].first = max_distance;
       } else {
@@ -318,7 +318,7 @@ namespace graph {
         if (distances[current_index].first > new_distance) {
           remain.erase(std::make_pair(distances[current_index].first, current_index));
           distances[current_index].first = new_distance;
-          distances[current_index].second = graph.getVertexByIndex(selected_index)->value;
+          distances[current_index].second = graph.indexToValue(selected_index);
           remain.insert(std::make_pair(distances[current_index].first, current_index));
         }
 
@@ -357,7 +357,7 @@ namespace graph {
     // Store the shortest distance and its parent vertex for each vertex.
     std::vector<std::pair<double, T>> distances(graph.size());
     for (int i = 0; i < graph.size(); ++i) {
-      if (graph.getVertexByIndex(i)->value != source) {
+      if (graph.indexToValue(i) != source) {
         remain.push(std::make_pair(max_distance, i));
         distances[i].first = max_distance;
       } else {
@@ -407,7 +407,7 @@ namespace graph {
         double new_distance = distances[selected_index].first + current_edge->weight;
         if (distances[current_index].first > new_distance) {
           distances[current_index].first = new_distance;
-          distances[current_index].second = graph.getVertexByIndex(selected_index)->value;
+          distances[current_index].second = graph.indexToValue(selected_index);
           remain.push(std::make_pair(distances[current_index].first, current_index));
         }
 
@@ -495,8 +495,7 @@ namespace graph {
   prim(const UdGraphAdj<T>& graph, int source_index = 0) {
 
 
-    auto bfs_search = breathFirstSearch(
-        graph, graph.getVertexByIndex(source_index)->value);
+    auto bfs_search = breathFirstSearch(graph, graph.indexToValue(source_index));
 
     if ( bfs_search.size() != graph.size() ) {
       throw std::invalid_argument("Input graph is not connected!");
@@ -518,7 +517,7 @@ namespace graph {
     std::priority_queue<mst_leaf, std::vector<mst_leaf>,
                         edgeComparitor<T>> remain;
 
-    T source_vertex_value = graph.getVertexByIndex(source_index)->value;
+    T source_vertex_value = graph.indexToValue(source_index);
     processed.insert(source_vertex_value);
 
     // Initialize the priority queue.
