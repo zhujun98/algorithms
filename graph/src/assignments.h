@@ -162,11 +162,11 @@ namespace assignment {
     t0 = clock();
     graph::dijkstra_base_tree(graph, 1, 1);
     std::cout << "Run time using the tree-based implementation: "
-              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
     t0 = clock();
     graph::dijkstra_base_priority_queue(graph, 1, 1);
     std::cout << "Run time using the heap-based implementation: "
-              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << std::endl;
+              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
 
     assert(shortest_path[graph.valueToIndex(7)].first == 2599);
     assert(shortest_path[graph.valueToIndex(37)].first == 2610);
@@ -231,7 +231,10 @@ namespace assignment {
     ifs.close();
     std::cout << "Finished reading data!" << std::endl;
 
+    clock_t t0 = clock();
     assert(graph::karger(graph, repeated_times) == 20);
+    std::cout << "Run time: "
+              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
     std::cout << "Passed!" << std::endl;
   }
 
@@ -292,7 +295,10 @@ namespace assignment {
     std::cout << "Finished reading data!" << std::endl;
 
     std::cout << "Searching strongly connected components...!" << std::endl;
+    clock_t t0 = clock();
     std::vector<std::vector<int>> scc = graph::kosaraju(graph);
+    std::cout << "Run time: "
+              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
 
     // print the result
     std::vector<std::size_t> scc_length;
