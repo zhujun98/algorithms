@@ -8,7 +8,7 @@
 
 #include <string>
 
-#include "graph_adj.h"
+#include "../graph_adj.h"
 
 
 namespace graph_test {

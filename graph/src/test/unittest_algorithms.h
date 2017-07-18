@@ -9,10 +9,10 @@
 
 #include <string>
 
-#include "graph_adj.h"
-#include "graph_utilities.h"
+#include "../graph_adj.h"
+#include "../graph_utilities.h"
 #include "unittest_graph.h"
-#include "graph_algorithms.h"
+#include "../graph_algorithms.h"
 
 
 namespace graph_test {
