@@ -33,7 +33,7 @@ See [here](./sorting_and_selection)
   - Implementation utilizing std::set()
 * Prim's algorithm
   - Implementation utilizing std::priority_queue()
- * Kruskal's algorithm
+* Kruskal's algorithm
   - Implementation utilizing a primitive union find data structure
  
 See [here](./graph)
