@@ -40,6 +40,19 @@ namespace graph_utilities {
   }
 
   //
+  // print a std::map container
+  //
+  // @param m: a std::map<key, value> container
+  //
+  template <class T1, class T2>
+  inline void printContainer(const std::map<T1, T2>& m) {
+    for (auto i=m.begin(); i != m.end(); ++i) {
+      std::cout << i->first << "," << i->second << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  //
   // print the strongly connected components
   //
   // @param scc: strongly connected components represented by two nested
