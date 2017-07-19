@@ -96,6 +96,15 @@ namespace assignment {
 
     assert(int(mst.first) == -3612829);
     std::cout << "Passed!" << std::endl;
+
+    std::cout << "Compare with the Kurlskar's algorithm implementation!" << std::endl;
+    t0 = clock();
+
+    mst = graph::kruskal(graph);
+    std::cout << "Run time: " << 1000.0*(clock() - t0)/CLOCKS_PER_SEC
+              << " ms" << std::endl;
+    assert(int(mst.first) == -3612829);
+
   }
 
   //

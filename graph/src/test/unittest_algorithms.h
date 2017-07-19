@@ -171,6 +171,34 @@ namespace graph_test {
       graph_utilities::printContainer(expected_mst.second);
     }
   }
+
+  //
+  // test the implementation of Kurlskar's algorithm
+  //
+  void testKruskal() {
+    std::cout << "\nTesting Kruskal's algorithm..." << std::endl;
+
+    UdGraphAdj<std::string> graph = graph_test::distanceUdGraph();
+
+    typedef std::pair<double, std::vector<std::pair<std::string, std::string>>> mst_tree;
+
+    // starting from an appointing vertex
+    mst_tree mst = graph::kruskal(graph);
+    mst_tree expected_mst =
+        {-13, {{"b", "d"}, {"a", "e"}, {"e", "d"}, {"e", "c"}, {"f", "e"}}};
+
+    if (mst == expected_mst) {
+      std::cout << "Passed!" << std::endl;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: (total cost = "
+                << mst.first << ")" << std::endl;
+      graph_utilities::printContainer(mst.second);
+      std::cout << "The correct result is: (total cost = "
+                << expected_mst.first << ")" << std::endl;
+      graph_utilities::printContainer(expected_mst.second);
+    }
+  }
 }
 
 #endif //GRAPH_UNITTEST_ALGORITHMS_H

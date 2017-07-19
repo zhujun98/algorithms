@@ -10,7 +10,7 @@
 // - Dijkstra's algorithm (RB-tree and priority_queue)
 // TODO:: the negative edge check might not sufficient
 // - Prim's algorithm (priority_queue)
-//
+// - Kruskal's algorithm (a primitive union find implementation)
 #ifndef GRAPH_GRAPH_ALGORITHMS_H
 #define GRAPH_GRAPH_ALGORITHMS_H
 
@@ -32,6 +32,34 @@ const double INF_D = std::numeric_limits<double>::max();
 
 
 namespace graph {
+
+
+  //
+  // Comparator for edge: greater
+  //
+  template <class T>
+  struct edgeGreater {
+    // <weight, <from vertex, to vertex>>
+    typedef std::pair<double, std::pair<T, T>> graph_edge;
+
+    bool operator()(const graph_edge& e1, const graph_edge& e2) {
+      return e1.first > e2.first;
+    }
+  };
+
+  //
+  // Comparator for edge: less
+  //
+  template <class T>
+  struct edgeLess {
+    // <weight, <from vertex, to vertex>>
+    typedef std::pair<double, std::pair<T, T>> graph_edge;
+
+    bool operator()(const graph_edge& e1, const graph_edge& e2) {
+      return e1.first < e2.first;
+    }
+  };
+
   //
   // Breath-first-search (BFS) starting from a vertex
   //
@@ -122,10 +150,24 @@ namespace graph {
     return sink;
   }
 
+  //
+  // Use internal generated indicator for depth-first-search
+  //
   template <class G, class T>
   std::vector<T> depthFirstSearch(const G& graph, T value) {
     std::vector<bool> visited (graph.size(), false);
     return depthFirstSearch(graph, value, visited);
+  }
+
+  //
+  // Check whether there is a path from vertex source to destination
+  //
+  template <class G, class T>
+  bool checkConnectivity(const G&graph, T source, T destination) {
+    graph::GraphAdjVertex<T> const* v = graph.getVertex(source);
+    if ( !v ) { return false; }
+//    TODO::finish
+
   }
 
   //
@@ -469,18 +511,6 @@ namespace graph {
   };
 
   //
-  // Make the comparison in Prim's algorithm implementation faster by
-  // only comparing the weight.
-  //
-  template <class T>
-  struct edgeComparitor {
-    bool operator()(const std::pair<double, std::pair<T, T>>& e1,
-                    const std::pair<double, std::pair<T, T>>& e2) {
-      return e1.first > e2.first;
-    }
-  };
-
-  //
   // Implementation of the Prim's minimum spanning tree algorithm
   //
   // @param graph: undirected graph object
@@ -494,15 +524,14 @@ namespace graph {
   inline std::pair<double, std::vector<std::pair<T, T>>>
   prim(const UdGraphAdj<T>& graph, int source_index = 0) {
 
-
     auto bfs_search = breathFirstSearch(graph, graph.indexToValue(source_index));
 
     if ( bfs_search.size() != graph.size() ) {
       throw std::invalid_argument("Input graph is not connected!");
     }
 
-    // <weight, <from vertex, to vertex>>
-    typedef std::pair<double, std::pair<T, T>> mst_leaf;
+    // <weight, <tail vertex, head vertex>>
+    typedef std::pair<double, std::pair<T, T>> graph_edge;
 
     // Minimum spanning tree:
     // Store the <from, to> vertices of edges (leaves) in the minimum
@@ -514,8 +543,8 @@ namespace graph {
     // A set which records processed vertices.
     std::set<T> processed;
     // A min priority queue store the graph edge information
-    std::priority_queue<mst_leaf, std::vector<mst_leaf>,
-                        edgeComparitor<T>> remain;
+    std::priority_queue<graph_edge, std::vector<graph_edge>,
+                        edgeGreater<T>> remain;
 
     T source_vertex_value = graph.indexToValue(source_index);
     processed.insert(source_vertex_value);
@@ -532,7 +561,7 @@ namespace graph {
     // Run until there is no vertex in the remain set or all the vertices
     // have been processed.
     while ( (processed.size() < graph.size()) && !remain.empty() ) {
-      auto pick = remain.top();
+      graph_edge pick = remain.top();
       remain.pop();
       auto insertion = processed.insert(pick.second.second);
       // Skip if it is an old copy of a processed vertex left in the
@@ -567,6 +596,109 @@ namespace graph {
   prim(const UdGraphAdj<T>& graph, T source) {
     return prim(graph, graph.valueToIndex(source));
   }
+
+  //
+  // Implementation of the Kruskal's minimum spanning tree algorithm
+  //
+  // A naive union find data structure is implemented to boost the
+  // algorithm. The time complexity of finding the head vertex of a
+  // vertex in a union is O(1). To get the final result, we need to
+  // merge the unions for n times, where n is the number of vertices.
+  // Since we always merge the smaller union to the big one, the time
+  // that a vertex needs to change its head vertex has a time
+  // complexity of O(logn). That is to say, the total time complexity
+  // for the union (merge) operation is O(nlogn).
+  //
+  // @param graph: undirected graph object
+  //
+  // @return: a pair in which the first element is the total cost of
+  //          the minimum spanning tree while the second one is a
+  //          vector of the leaves (<from vertex, to vertex>) in the
+  //          tree in sequence.
+  //
+  template <class T>
+  inline std::pair<double, std::vector<std::pair<T, T>>>
+  kruskal(const UdGraphAdj<T>& graph) {
+    // check the connectivity of the graph
+    auto bfs_search = breathFirstSearch(graph, graph.indexToValue(0));
+
+    if ( bfs_search.size() != graph.size() ) {
+      throw std::invalid_argument("Input graph is not connected!");
+    }
+
+    // <weight, <tail vertex, head vertex>>
+    typedef std::pair<double, std::pair<T, T>> graph_edge;
+    std::vector<graph_edge> edges;
+
+    // store all the edges in a vector
+    for ( int i=0; i<graph.size(); ++i ) {
+      graph::Edge<T>* current_edge = graph.getVertexByIndex(i)->next;
+      while ( current_edge ) {
+        edges.push_back(std::make_pair(current_edge->weight,
+                                       std::make_pair(graph.indexToValue(i),
+                                                      current_edge->value)));
+        current_edge = current_edge->next;
+      }
+    }
+
+    // sort the edges in descending order
+    std::sort(edges.begin(), edges.end(), edgeLess<T>());
+
+    // a vector storing the head vertex of each union
+    std::vector<T> union_find_head;
+    // a vector storing the size of each union with the key being the
+    // head vertex of each union
+    std::map<T, int> union_find_count;
+    // initialization
+    for ( int i=0; i<graph.size(); ++i ) {
+      T vertex = graph.indexToValue(i);
+      union_find_head.push_back(vertex);
+      union_find_count.insert(std::make_pair(vertex, 1));
+    }
+
+    // (tail, head) vertices in the minimum spanning tree
+    std::vector<std::pair<T, T>> mst;
+    // total cost of the minimum spanning tree
+    double cost = 0;
+    for ( auto v : edges ) {
+      if ( mst.size() == graph.size() ) { break; }
+      T tail_vertex = v.second.first;
+      T head_vertex = v.second.second;
+      T head_of_tail_vertex = union_find_head[graph.valueToIndex(tail_vertex)];
+      T head_of_head_vertex = union_find_head[graph.valueToIndex(head_vertex)];
+
+      // if they are in different unions
+      if ( head_of_tail_vertex != head_of_head_vertex ) {
+        mst.push_back(v.second);
+        cost += v.first;
+
+        // merge two unions
+        auto head_of_tail_vertex_search = union_find_count.find(head_of_tail_vertex);
+        auto head_of_head_vertex_search = union_find_count.find(head_of_head_vertex);
+        if ( head_of_tail_vertex_search->second > head_of_head_vertex_search->second ) {
+          head_of_head_vertex_search->second += head_of_head_vertex_search->second;
+          union_find_count.erase(head_of_head_vertex_search);
+          for ( size_t i=0; i < union_find_head.size(); ++i ) {
+            if ( union_find_head[i] == head_of_head_vertex ) {
+              union_find_head[i] = head_of_tail_vertex;
+            }
+          }
+        } else {
+          head_of_head_vertex_search->second += head_of_tail_vertex_search->second;
+          union_find_count.erase(head_of_tail_vertex_search);
+          for ( size_t i=0; i < union_find_head.size(); ++i ) {
+            if ( union_find_head[i] == head_of_tail_vertex ) {
+              union_find_head[i] = head_of_head_vertex;
+            }
+          }
+        }
+      }
+    }
+
+    return std::make_pair(cost, mst);
+  }
+
 }
+
 
 #endif //GRAPH_GRAPH_ALGORITHMS_H
