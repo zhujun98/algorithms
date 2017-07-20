@@ -10,7 +10,7 @@
 // - Dijkstra's algorithm (RB-tree and priority_queue)
 // TODO:: the negative edge check might not sufficient
 // - Prim's algorithm (priority_queue)
-// - Kruskal's algorithm (a primitive union find implementation)
+// - Kruskal's algorithm (a primitive union-find implementation)
 #ifndef GRAPH_GRAPH_ALGORITHMS_H
 #define GRAPH_GRAPH_ALGORITHMS_H
 
@@ -600,7 +600,7 @@ namespace graph {
   //
   // Implementation of the Kruskal's minimum spanning tree algorithm
   //
-  // A naive union find data structure is implemented to boost the
+  // A naive union-find data structure is implemented to boost the
   // algorithm. The time complexity of finding the head vertex of a
   // vertex in a union is O(1). To get the final result, we need to
   // merge the unions for n times, where n is the number of vertices.
