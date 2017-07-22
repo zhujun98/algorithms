@@ -4,9 +4,10 @@
 * inversion count. See [here](./divide_and_conquer/inversion_count)
 
 ## Greedy algorithms
-* Weighted sum of completion time (See [here](./greedy_algorithm/weighted_sum_of_completion_time))
+* Weighted sum of completion time. See [here](./greedy_algorithm/weighted_sum_of_completion_time)
 
 ## Dynamic programming
+* Maximum weight independent set of a path graph. See [here](./dynamic_programming/max_weight_independent_set)
 
 ## Median maintenance
 
