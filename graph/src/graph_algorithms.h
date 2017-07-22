@@ -648,12 +648,12 @@ namespace graph {
     std::vector<T> union_find_head;
     // a vector storing the size of each union with the key being the
     // head vertex of each union
-    std::map<T, int> union_find_count;
+    std::map<T, int> rank;
     // initialization
     for ( int i=0; i<graph.size(); ++i ) {
       T vertex = graph.indexToValue(i);
       union_find_head.push_back(vertex);
-      union_find_count.insert(std::make_pair(vertex, 1));
+      rank.insert(std::make_pair(vertex, 1));
     }
 
     // (tail, head) vertices in the minimum spanning tree
@@ -673,11 +673,11 @@ namespace graph {
         cost += v.first;
 
         // merge two unions
-        auto head_of_tail_vertex_search = union_find_count.find(head_of_tail_vertex);
-        auto head_of_head_vertex_search = union_find_count.find(head_of_head_vertex);
+        auto head_of_tail_vertex_search = rank.find(head_of_tail_vertex);
+        auto head_of_head_vertex_search = rank.find(head_of_head_vertex);
         if ( head_of_tail_vertex_search->second > head_of_head_vertex_search->second ) {
           head_of_head_vertex_search->second += head_of_head_vertex_search->second;
-          union_find_count.erase(head_of_head_vertex_search);
+          rank.erase(head_of_head_vertex_search);
           for ( size_t i=0; i < union_find_head.size(); ++i ) {
             if ( union_find_head[i] == head_of_head_vertex ) {
               union_find_head[i] = head_of_tail_vertex;
@@ -685,7 +685,7 @@ namespace graph {
           }
         } else {
           head_of_head_vertex_search->second += head_of_tail_vertex_search->second;
-          union_find_count.erase(head_of_tail_vertex_search);
+          rank.erase(head_of_tail_vertex_search);
           for ( size_t i=0; i < union_find_head.size(); ++i ) {
             if ( union_find_head[i] == head_of_tail_vertex ) {
               union_find_head[i] = head_of_head_vertex;
