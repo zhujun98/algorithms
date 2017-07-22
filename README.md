@@ -1,14 +1,16 @@
-## Integer multiplication
+## Divide and conquer
 
-Integer multipliction using Karasuba algorithm. See [here](./integer_multiplication)
+* Integer multipliction using Karasuba algorithm. See [here](./divide_and_conquer/integer_multiplication)
+* inversion count. See [here](./divide_and_conquer/inversion_count)
+
+## Greedy algorithms
+* Weighted sum of completion time (See [here](./greedy_algorithm/weighted_sum_of_completion_time))
+
+## Dynamic programming
 
 ## Median maintenance
 
 Keep tracking the median of a streamed integer with a complexity of O(log(i)), where i is the number of integers arrived. See [here](./median_maintenance) 
-
-## Inversion_count
-
-See [here](./inversion_count)
 
 ## Sorting and selection
 
@@ -46,7 +48,3 @@ See [here](./graph)
 See [here](./hash_table)
 
 ## Binary search tree
-
-
-## Greedy algorithms
-* Weighted sum of completion time (See [here](./weighted_sum_of_completion_time))
