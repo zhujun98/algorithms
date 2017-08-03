@@ -10,9 +10,9 @@
 ## Dynamic programming
 * Maximum weight independent set of a path graph. See [here](./dynamic_programming/max_weight_independent_set)
 
-## Median maintenance
+## Heap
 
-Keep tracking the median of a streamed integer with a complexity of O(log(i)), where i is the number of integers arrived. See [here](./median_maintenance) 
+* Median maintenance. See [here](./median_maintenance) 
 
 ## Sorting and selection
 
