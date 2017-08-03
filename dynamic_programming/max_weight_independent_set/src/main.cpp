@@ -74,6 +74,7 @@ std::vector<bool> maxWeightIndependentSet(std::vector<T> path) {
 // vertex 0.)In the box below, enter a 8-bit string, where the ith
 // bit should be 1 if the ith of these 8 vertices is in the
 // maximum-weight independent set, and 0 otherwise.
+// Answer: 10100110
 //
 void runMaxWeightIndependentSetAssignment() {
 
