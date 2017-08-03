@@ -5,6 +5,7 @@
 
 ## Greedy algorithms
 * Weighted sum of completion time. See [here](./greedy_algorithm/weighted_sum_of_completion_time)
+* Huffman coding. See [here](./greedy_algorithm/huffman_coding)
 
 ## Dynamic programming
 * Maximum weight independent set of a path graph. See [here](./dynamic_programming/max_weight_independent_set)
