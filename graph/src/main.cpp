@@ -2,8 +2,8 @@
 // Created by jun on 6/19/17.
 //
 #include "assignments.h"
-#include "unittest_graph.h"
-#include "unittest_algorithms.h"
+#include "test/unittest_graph.h"
+#include "test/unittest_algorithms.h"
 
 
 int main() {
@@ -21,9 +21,9 @@ int main() {
   graph_test::testPrim();
 
   assignment::runPrimAssignment();
-//  assignment::runKargerAssignment();
-//  assignment::runSccAssignment();
-//  assignment::runDijkstraAssignment();
+  assignment::runKargerAssignment();
+  assignment::runSccAssignment();
+  assignment::runDijkstraAssignment();
 
   return 0;
 }
