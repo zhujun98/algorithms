@@ -49,7 +49,6 @@ void testHuffmanCoding() {
   Huffman huffman;
   huffman.buildTree(values, frequencies);
   huffman.printTree();
-
 }
 
 int main() {

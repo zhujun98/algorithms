@@ -16,6 +16,9 @@ struct Node {
   Node* right;
 };
 
+//
+// Generate a new node
+//
 inline Node* newNode(int value, int frequency) {
   Node* node = new Node();
   node->value = value;
@@ -27,23 +30,51 @@ inline Node* newNode(int value, int frequency) {
 class Huffman {
 private:
 
-  Node* root_;
+  Node* root_; // store root of the hoffman tree
 
+  //
+  // release the memory of tree nodes rooted at a certain node
+  //
   void destroyTree(Node* node);
 
 public:
+
+  //
+  // constructor
+  //
   Huffman();
 
+  //
+  // destructor
+  //
   ~Huffman();
 
-  void buildTree(const std::vector<int>& value, const std::vector<int>& frequency);
+  //
+  // Build a Hoffman tree
+  //
+  // @param values: a vector of node values
+  // @param weights: a vector of node weights (frequencies)
+  //
+  void buildTree(const std::vector<int>& values, const std::vector<int>& weights);
 
+  //
+  // Print out a tree structure
+  // The rule is:
+  // - If leaf-node: Output 1 followed by the node value
+  // - If not leaf-node, output 0. Then encode both child nodes in the same way
+  //
   void printTree() const;
   void printTree(Node* node) const;
 
+  //
+  // Get the minimum depth of leaf nodes
+  //
   int minDepth() const;
   int minDepth(Node* node) const;
 
+  //
+  // Get the maximum depth of leaf nodes
+  //
   int maxDepth() const;
   int maxDepth(Node* node) const;
 };

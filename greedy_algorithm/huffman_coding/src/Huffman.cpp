@@ -3,8 +3,10 @@
 //
 #include <iostream>
 #include <queue>
+#include <assert.h>
 
 #include "Huffman.h"
+
 
 Huffman::Huffman() {}
 
@@ -12,16 +14,19 @@ Huffman::~Huffman() {
   destroyTree(root_);
 }
 
+// comparator for ranking nodes
 bool compareNode(const Node* a, const Node* b) {
   return ( a->frequency > b->frequency );
 }
 
-void Huffman::buildTree(const std::vector<int>& value, const std::vector<int>& frequency) {
+void Huffman::buildTree(const std::vector<int>& values, const std::vector<int>& weights) {
+  assert(values.size() == weights.size());
+
   // build a minimum priority queue
   std::priority_queue<Node*, std::vector<Node*>, decltype(&compareNode)> huff_tree(compareNode);
 
-  for ( auto i = 0; i < value.size(); ++i) {
-    Node* new_node = newNode(value[i], frequency[i]);
+  for ( auto i = 0; i < values.size(); ++i) {
+    Node* new_node = newNode(values[i], weights[i]);
     huff_tree.push(new_node);
   }
 
