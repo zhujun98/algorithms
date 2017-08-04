@@ -67,13 +67,15 @@ public:
   void printTree(Node* node) const;
 
   //
-  // Get the minimum depth of leaf nodes
+  // Get the minimum depth of leaf nodes. The depth is defined as number
+  // of edges from the root to the current node.
   //
   int minDepth() const;
   int minDepth(Node* node) const;
 
   //
-  // Get the maximum depth of leaf nodes
+  // Get the maximum depth of leaf nodes. The depth is defined as number
+  // of edges from the root to the current node.
   //
   int maxDepth() const;
   int maxDepth(Node* node) const;

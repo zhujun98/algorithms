@@ -84,7 +84,7 @@ int Huffman::minDepth(Node* node) const {
   if ( node == nullptr ) { return 0; }
 
   if ( node->left == nullptr || node->right == nullptr ) {
-    return 1;
+    return 0;
   } else {
     int depth_left = minDepth(node->left);
     int depth_right = minDepth(node->right);
@@ -103,7 +103,7 @@ int Huffman::maxDepth(Node* node) const {
   if ( node == nullptr ) { return 0; }
 
   if ( node->left == nullptr && node->right == nullptr ) {
-    return 1;
+    return 0;
   } else if ( node->left == nullptr ) {
     return maxDepth(node->right) + 1;
   } if ( node->right == nullptr ) {
