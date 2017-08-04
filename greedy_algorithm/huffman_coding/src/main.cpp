@@ -9,6 +9,27 @@
 #include "Huffman.h"
 
 
+/*
+ * This file describes an instance of the Huffman coding problem.
+ * It has the following format:
+ *
+ * [number_of_symbols]
+ *
+ * [weight (frequency) of symbol #1]
+ *
+ * [weight (frequency) of symbol #2]
+ *
+ * ...
+ *
+ * For example, the third line of the file is "6852892," indicating
+ * that the weight of the second symbol of the alphabet is 6852892.
+ *
+ * Your task in this problem is to run the Huffman coding algorithm on
+ * this data set. What is the minimum and maximum length of a codeword i
+ * n the resulting Huffman code?
+ *
+ * Answer: 9 and 19.
+ */
 void runHuffmanCodingAssignment() {
   std::cout << "\n" << std::string(80, '-') << "\n"
             << "This is the Huffman coding assignment in the \n"
@@ -43,7 +64,17 @@ void runHuffmanCodingAssignment() {
   std::cout << "Passed!" << std::endl;
 }
 
-void testHuffmanCoding() {
+/*
+ * The output tree looks like below:
+ *
+ *                 /\
+ *                /  \
+ *               3   /\
+ *                  2  \
+ *                     /\
+ *                    0  1
+ */
+ void testHuffmanCoding() {
   std::vector<int> values = {0, 1, 2, 3};
   std::vector<int> frequencies = {1, 2, 3, 4};
   Huffman huffman;
