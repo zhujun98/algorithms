@@ -91,32 +91,20 @@ void runWeightedSumOfCompletionTimeAssignment()
 
   std::vector<job> jobs;
 
-  bool flag = true;
-  int n_jobs;
+  // the first line
+  std::getline(ifs, line);
+  int n_jobs = std::stoi(line);
+  // the rest lines
   while (std::getline(ifs, line)) {
-    // skip the first line
-    if ( flag ) {
-      flag = false;
-      n_jobs = std::stoi(line);
-      continue;
-    }
-    std::istringstream iss(line);
 
+    std::istringstream iss(line);
     std::string number;
 
-    int count = 0;
-    int weight;
-    int length;
-    while ( iss >> number ) {
-      ++count;
-      if ( count == 1 ) {
-        weight = std::stoi(number);
-      } else if ( count == 2 ) {
-        length = std::stoi(number);
-      } else {
-        continue;
-      }
-    }
+    iss >> number;
+    int weight = std::stoi(number);
+    iss >> number;
+    int length = std::stoi(number);
+
     jobs.push_back(std::make_pair (weight, length));
   }
   ifs.close();

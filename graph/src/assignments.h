@@ -52,36 +52,28 @@ namespace assignment {
 
     std::ifstream ifs("../data/edges.txt", std::ifstream::in);
     std::string line;
-    bool flag = true;
+
+    // skip the first line
+    std::getline(ifs, line);
+
     while ( std::getline(ifs, line) ) {
       std::istringstream iss(line);
       std::string number;
 
-      // skip the first line
-      if ( flag ) {
-        flag = false;
-        continue;
-      }
-
-      int count = 0;
-      int first;
-      int second;
+      int first_node;
+      int second_node;
       double weight;
-      while ( iss >> number ) {
-        ++ count;
-        if ( count == 1 ) {
-          first = std::stoi(number);
-        } else if ( count == 2 ) {
-          second = std::stoi(number);
-        } else if ( count == 3) {
-          weight = std::stoi(number);
-        } else {
-          break;
-        }
-      }
-      graph.connect(first, second, weight);
+      iss >> number;
+      first_node = std::stoi(number);
+      iss >> number;
+      second_node = std::stoi(number);
+      iss >> number;
+      weight = std::stoi(number);
+
+      graph.connect(first_node, second_node, weight);
 
     }
+
     ifs.close();
     std::cout << "Finished reading data!" << std::endl;
 
@@ -146,18 +138,17 @@ namespace assignment {
     while (std::getline(ifs, line)) {
       std::istringstream iss(line);
       std::string number;
-      int flag = 0;
-      int vertex;
+
+      // read the first entry
+      iss >> number;
+      int vertex = std::stoi(number);
+
+      // read the rest entries
       while ( iss >> number ) {
-        if ( flag == 0 ) {
-          vertex = std::stoi(number);
-          flag = 1;
-        } else {
-          std::size_t found = number.find(",");
-          int value = std::stoi(number.substr(0, found));
-          double length = std::stod(number.substr(found+1, number.size()));
-          graph.connect(vertex, value, length);
-        };
+        std::size_t found = number.find(",");
+        int value = std::stoi(number.substr(0, found));
+        double length = std::stod(number.substr(found+1, number.size()));
+        graph.connect(vertex, value, length);
       }
     }
     ifs.close();
@@ -225,16 +216,13 @@ namespace assignment {
       std::istringstream iss(line);
       std::string number;
 
-      int flag = 0;
-      int vertex;
+      // read the first entry in a line
+      iss >> number;
+      int vertex = std::stoi(number);
+      // read the rest entries
       while ( iss >> number ) {
         int value = std::stoi(number);
-        if ( flag == 0 ) {
-          vertex = value - 1;
-          flag = 1;
-        } else {
-          graph.connect(vertex, value - 1);
-        }
+        graph.connect(vertex, value);
       }
     }
     ifs.close();
@@ -276,21 +264,10 @@ namespace assignment {
       std::istringstream iss(line);
       std::string number;
 
-      int count = 0;
-      int first = -1;
-      int second = -1;
-      while ( iss >> number ) {
-
-        if ( count == 0 ) {
-          first = std::stoi(number);
-        } else if ( count == 1 ) {
-          second = std::stoi(number);
-        } else {
-          continue;
-        };
-
-        ++count;
-      }
+      iss >> number;
+      int first = std::stoi(number);
+      iss >> number;
+      int second = std::stoi(number);
 
       if ( first == second ) {
         std::cout << "Warning: Find a line with two identical numbers: "
@@ -324,7 +301,6 @@ namespace assignment {
     assert(scc_length[4] == 211);
     std::cout << "Passed!" << std::endl;
   }
-
 };
 
 

@@ -43,16 +43,17 @@ void runHuffmanCodingAssignment() {
   std::ifstream ifs("../data/huffman.txt", std::ifstream::in);
 
   int number;
-  int count = -1;
+  ifs >> number; // skip the first line
+
+  int index = 0;
   while ( ifs >> number ) {
-    ++count;
-    if ( count == 0 ) { continue; } // skip the header
+    ++index;
     weights.push_back(number);
-    values.push_back(count);
+    values.push_back(index);
   }
 
   ifs.close();
-  std::cout << "Read in " << count << " numbers!" << std::endl;
+  std::cout << "Read in " << index << " numbers!" << std::endl;
 
   Huffman huffman;
 

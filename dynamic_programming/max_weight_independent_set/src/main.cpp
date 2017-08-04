@@ -89,14 +89,12 @@ void runMaxWeightIndependentSetAssignment() {
   std::ifstream ifs("../data/mwis.txt", std::ifstream::in);
 
   long number;
-  size_t count = -1;
+  ifs >> number; // skip the first line
   while ( ifs >> number ) {
-    ++count;
-    if ( count == 0 ) { continue; }  // skip the header
     numbers.push_back(number);
   }
   ifs.close();
-  std::cout << "Read in " << count << " numbers" << std::endl;
+  std::cout << "Read in " << numbers.size() << " numbers" << std::endl;
 
   std::vector<bool> solution = maxWeightIndependentSet(numbers);
 
