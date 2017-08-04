@@ -9,6 +9,7 @@
 
 ## Dynamic programming
 * Maximum weight independent set of a path graph. See [here](./dynamic_programming/max_weight_independent_set)
+* Knapsack problem. See [here](./dynamic_programming/knapsack)
 
 ## Heap
 

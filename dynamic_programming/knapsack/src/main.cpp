@@ -23,6 +23,7 @@
  *  All numbers are positive.
  *
  *  Answer for the small data set: 2493893
+ *  Answer for the large data set: 4243395
  */
 void runKnapsackAssignment() {
 
@@ -36,10 +37,10 @@ void runKnapsackAssignment() {
   std::string number;
 
   std::getline(ifs, line);
-  std::istringstream iss(line);
-  iss >> number;
+  std::istringstream iss0(line);
+  iss0 >> number;
   int capacity = std::stoi(number);
-  iss >> number;
+  iss0 >> number;
   int n_items = std::stoi(number);
 
   int values [n_items];
@@ -68,9 +69,18 @@ void runKnapsackAssignment() {
   std::cout << "Run time: " << 1000.0*(clock() - t0)/CLOCKS_PER_SEC
             << " ms" << std::endl;
 
-  assert( solution == 2493893 );
+  if ( n_items == 100 ) {
+    assert( solution == 2493893 );
+  } else if (n_items == 2000 ) {
+    assert( solution == 4243395 );
+  } else {
+    std::cout << "Unknown data set!" << std::endl;
+    return;
+  }
+
   std::cout << "Passed!" << std::endl;
 }
+
 
 void testKnapsack() {
 
@@ -85,6 +95,7 @@ void testKnapsack() {
             << " is: " << knapsack.solve(values, weights, n_items, capacity)
             << std::endl;
 }
+
 
 int main() {
   testKnapsack();
