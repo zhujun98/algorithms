@@ -49,10 +49,13 @@ void testHuffmanCoding() {
   Huffman huffman;
   huffman.buildTree(values, frequencies);
   huffman.printTree();
+  assert(huffman.minDepth() == 1);
+  assert(huffman.maxDepth() == 3);
+
+  std::cout << "Passed test case!" << std::endl;
 }
 
 int main() {
-  std::cout << "Hello, World!" << std::endl;
   testHuffmanCoding();
   runHuffmanCodingAssignment();
   return 0;
