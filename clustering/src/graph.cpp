@@ -38,3 +38,7 @@ Edge* Graph::popEdge() {
 
   return edge;
 }
+
+bool Graph::isEdgeEmpty() {
+  return edges_.empty();
+}

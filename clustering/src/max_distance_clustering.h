@@ -24,7 +24,9 @@ class MaxDistanceClustering {
 private:
 
   std::vector<Node*> tracker_;
+  std::vector<node_value> disjoint_sets_;
   int n_sets_; // number of remaining sets
+  double min_spacing_; // maximum spacing between clusters
 
   //
   // Initialize the disjoint sets. Each node forms a set.
@@ -42,12 +44,11 @@ private:
   node_value find(node_value value);
 
   //
-  // Fuse two nodes
+  // Fuse two nodes belong to an edge
   //
-  // @param a: node value
-  // @param b: node value
+  // @param edge: Edge object
   //
-  void union_(node_value a, node_value b);
+  bool union_(const Edge& edge);
 
 public:
 
@@ -72,10 +73,13 @@ public:
   void fit(Graph& graph, int n_clusters);
 
   //
-  // Print the nodes in different unions
+  // Print the result
   //
   void print();
 
+  double getMinSpacing();
+
+  std::vector<node_value> getDisjointSets();
 };
 
 

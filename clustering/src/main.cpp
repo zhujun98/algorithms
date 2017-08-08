@@ -1,12 +1,12 @@
-/*
- *
- */
+//
+// Created by jun on 8/8/17.
+//
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <queue>
+#include <assert.h>
 
 #include "graph.h"
 #include "max_distance_clustering.h"
@@ -46,9 +46,14 @@ void runClusteringAssignmentSmall() {
   std::cout << "Finish reading data!" << std::endl;
   ifs.close();
 
+  clock_t t0 = clock();
   MaxDistanceClustering cluster(n_pts);
   cluster.fit(graph, 4);
-  cluster.print();
+  std::cout << "Run time: " << 1.0e-6*(clock() - t0)*CLOCKS_PER_SEC
+            << " ms" << std::endl;
+
+  assert(cluster.getMinSpacing() == 106);
+  std::cout << "Passed!" << std::endl;
 }
 
 void testMaxDistanceClustering() {
@@ -64,6 +69,10 @@ void testMaxDistanceClustering() {
   MaxDistanceClustering cluster(4);
   cluster.fit(graph, 2);
   cluster.print();
+  std::vector<int> correct_disjoint_sets = {2, 2, 4, 4};
+  assert(cluster.getMinSpacing() == 2);
+  assert(cluster.getDisjointSets() == correct_disjoint_sets);
+  std::cout << "Test passed!" << std::endl;
 }
 
 int main() {

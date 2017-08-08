@@ -2,7 +2,6 @@
 // Created by jun on 8/8/17.
 //
 #include <iostream>
-#include <map>
 
 #include "graph.h"
 #include "max_distance_clustering.h"
@@ -43,52 +42,66 @@ node_value MaxDistanceClustering::find(int value) {
   }
 }
 
-void MaxDistanceClustering::union_(int a, int b) {
-  node_value leader_a = find(a);
-  node_value leader_b = find(b);
-  int rank_a = tracker_[leader_a - 1]->rank;
-  int rank_b = tracker_[leader_b - 1]->rank;
+bool MaxDistanceClustering::union_(const Edge& edge) {
+  node_value leader_src = find(edge.src);
+  node_value leader_dst = find(edge.dst);
+  int rank_a = tracker_[leader_src - 1]->rank;
+  int rank_b = tracker_[leader_dst - 1]->rank;
 
-  if ( leader_a != INVALID_NODE_VALUE && leader_b != INVALID_NODE_VALUE
-       && leader_a != leader_b ) {
+  if ( leader_src != INVALID_NODE_VALUE && leader_dst != INVALID_NODE_VALUE
+       && leader_src != leader_dst ) {
     if ( rank_a > rank_b ) {
-      tracker_[leader_b - 1]->parent = leader_a;
+      tracker_[leader_dst - 1]->parent = leader_src;
     } else {
-      tracker_[leader_a - 1]->parent = leader_b;
+      tracker_[leader_src - 1]->parent = leader_dst;
       // rank changes after union operation only when the original two
       // sets have the same rank.
       if (rank_a == rank_b ) {
-        ++tracker_[leader_b - 1]->rank;
+        ++tracker_[leader_dst - 1]->rank;
       }
     }
     n_sets_ -= 1;
+    return true;
+  } else {
+    return false;
   }
 }
 
 void MaxDistanceClustering::fit(Graph& graph, int n_clusters) {
+  Edge* edge;
   while ( n_sets_ > n_clusters ) {
-    Edge* edge = graph.popEdge();
-    union_(edge->src, edge->dst);
+    edge = graph.popEdge();
+    union_(*edge);
+  }
+
+  for ( const auto& v : tracker_ ) {
+    disjoint_sets_.push_back(find(v->value));
+  }
+
+  // The "spacing" is defined as the minimum distance between any of
+  // the two clusters
+  while ( !graph.isEdgeEmpty() ) {
+    edge = graph.popEdge();
+    node_value leader_src = find(edge->src);
+    node_value leader_dst = find(edge->dst);
+    if ( leader_src != INVALID_NODE_VALUE && leader_dst != INVALID_NODE_VALUE
+         && leader_src != leader_dst ) {
+      min_spacing_ = edge->weight;
+      return;
+    }
   }
 }
 
 void MaxDistanceClustering::print() {
-  std::map<node_value, std::vector<node_value >> disjoint_sets;
-  for ( const auto& v : tracker_ ) {
-    node_value leader_value = find(v->value);
-    auto found = disjoint_sets.find(leader_value);
-    if ( found != disjoint_sets.end() ) {
-      found->second.push_back(v->value);
-    } else {
-      std::vector<node_value> this_set_values = {v->value};
-      disjoint_sets.insert(std::make_pair(leader_value, this_set_values));
-    }
+  std::cout<< "The remaining number of clusters is: " << n_sets_ << std::endl;
+  for ( const auto& v : disjoint_sets_ ) {
+    std::cout << v << ", ";
   }
+  std::cout << std::endl;
 
-  for ( const auto& s : disjoint_sets ) {
-    for ( const auto& v : s.second ) {
-      std::cout << v << ", ";
-    }
-    std::cout << std::endl;
-  }
+  std::cout << "The maximum spacing is: " << min_spacing_ << std::endl;
 }
+
+double MaxDistanceClustering::getMinSpacing() { return min_spacing_; }
+
+std::vector<node_value> MaxDistanceClustering::getDisjointSets() { return disjoint_sets_; }
