@@ -12,6 +12,8 @@
 MaxDistanceClustering::MaxDistanceClustering(int size) {
   n_sets_ = size;
   makeNewSet(size);
+
+  use_path_compression_ = true;
 };
 
 MaxDistanceClustering::~MaxDistanceClustering() {
@@ -34,11 +36,21 @@ node_value MaxDistanceClustering::find(int value) {
     return INVALID_NODE_VALUE;
   } else {
     // path compression
-    if ( tracker_[value - 1]->parent != value ) {
-      tracker_[value - 1]->parent = find(tracker_[value - 1]->parent);
-    }
+    if ( use_path_compression_ ) {
+      if ( tracker_[value - 1]->parent != value ) {
+        tracker_[value - 1]->parent = find(tracker_[value - 1]->parent);
+      }
 
-    return tracker_[value - 1]->parent;
+      return tracker_[value - 1]->parent;
+    } else {
+      node_value parent = tracker_[value - 1]->parent;
+      while ( parent != value ) {
+        value = tracker_[parent - 1]->value;
+        parent = tracker_[parent - 1]->parent;
+      }
+
+      return parent;
+    }
   }
 }
 
@@ -105,3 +117,5 @@ void MaxDistanceClustering::print() {
 double MaxDistanceClustering::getMinSpacing() { return min_spacing_; }
 
 std::vector<node_value> MaxDistanceClustering::getDisjointSets() { return disjoint_sets_; }
+
+void MaxDistanceClustering::setUsePathCompression(bool value) { use_path_compression_ = value; }

@@ -28,6 +28,8 @@ private:
   int n_sets_; // number of remaining sets
   double min_spacing_; // maximum spacing between clusters
 
+  bool use_path_compression_; //
+
   //
   // Initialize the disjoint sets. Each node forms a set.
   //
@@ -80,6 +82,8 @@ public:
   double getMinSpacing();
 
   std::vector<node_value> getDisjointSets();
+
+  void setUsePathCompression(bool value);
 };
 
 

@@ -12,7 +12,7 @@
 #include "max_distance_clustering.h"
 
 
-void runClusteringAssignmentSmall() {
+void runClusteringAssignmentSmall(bool path_compression) {
   std::cout << "\n" << std::string(80, '-') << "\n"
             << "This is the clustring assignment (small data set) \n"
             << "in the Stanford's Algorithm course at Coursera"
@@ -48,11 +48,14 @@ void runClusteringAssignmentSmall() {
 
   clock_t t0 = clock();
   MaxDistanceClustering cluster(n_pts);
+  cluster.setUsePathCompression(path_compression);
   cluster.fit(graph, 4);
   std::cout << "Run time: " << 1.0e-6*(clock() - t0)*CLOCKS_PER_SEC
             << " ms" << std::endl;
-
+//  cluster.print();
   assert(cluster.getMinSpacing() == 106);
+
+
   std::cout << "Passed!" << std::endl;
 }
 
@@ -78,7 +81,7 @@ void testMaxDistanceClustering() {
 int main() {
   testMaxDistanceClustering();
 
-  runClusteringAssignmentSmall();
+  runClusteringAssignmentSmall(true);
 
   return 0;
 }
