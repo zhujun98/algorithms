@@ -1,7 +1,6 @@
 //
 // Created by jun on 8/8/17.
 //
-
 #ifndef CLUSTERING_GRAPH_H
 #define CLUSTERING_GRAPH_H
 
@@ -9,35 +8,33 @@
 #include <vector>
 
 
-template <class T>
 struct Node {
-  T value; // value of the node
-  T parent; // value of the parent node
+  int index; // index of the node
+  int parent; // index of the parent node
   int rank; // rank of the node
 };
 
-template <class T>
+
 struct Edge {
-  T src; // value of source node
-  T dst; // value of destination node
+  int src; // index of source node
+  int dst; // index of destination node
   double weight; // weight of the edge
 };
 
+
 // pointer comparator
-template <class T>
 struct CompareEdgePtr {
-  bool operator()(Edge<T>* a, Edge<T>* b) {return a->weight > b->weight;}
+  bool operator()(Edge* a, Edge* b) {return a->weight > b->weight;}
 };
 
 
-template <class T>
 class Graph {
 
 private:
-  typedef std::vector<Node<T>*> graph_nodes;
+  typedef std::vector<Node*> graph_nodes;
   graph_nodes nodes_; // graph nodes
 
-  typedef std::priority_queue<Edge<T>*, std::vector<Edge<T>*>, CompareEdgePtr<T>> graph_edges;
+  typedef std::priority_queue<Edge*, std::vector<Edge*>, CompareEdgePtr> graph_edges;
   graph_edges edges_; // unprocessed edges
   graph_edges removed_edges_; // processed edges
 
@@ -62,42 +59,42 @@ public:
   //
   // Add an edge
   //
-  // @param src: value of source node
-  // @param dst: value of destination node
+  // @param src: index of source node
+  // @param dst: index of destination node
   // @param weight: weight of the edge
   //
-  void setEdge(T src, T dst, double weight);
+  void setEdge(int src, int dst, double weight);
 
   //
   // Pop an edge from the priority queue
   //
-  // @return: pointer to the poped edge
+  // @return: pointer to the popped edge
   //
-  Edge<T>* popEdge();
+  Edge* popEdge();
 
   //
   // Set parent node of a node
   //
-  // @param value: node value
-  // @param parent: parent node value
+  // @param index: index of the node
+  // @param parent_index: index of the parent node
   //
-  void setParent(T value, T parent);
+  void setParent(int index, int parent_index);
 
   //
   // Increase the rank of a node by 1
   //
-  // @param value: node value
+  // @param value: node index
   //
-  void increaseRank(T value);
+  void increaseRank(int index);
 
+  //
   // Check whether all the edges have been processed
+  //
   bool isEdgeEmpty();
 
   size_t size() const;
 
-  const Node<T>* getNode(T value) const;
+  const Node* getNode(int index) const;
 };
-
-template class Graph<int>;
 
 #endif //CLUSTERING_GRAPH_H

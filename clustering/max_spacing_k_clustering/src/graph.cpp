@@ -5,38 +5,36 @@
 
 #include "graph.h"
 
-template <class T>
-Graph<T>::Graph(int size) {
+
+Graph::Graph(int size) {
   for ( int i=0; i<size; ++i ) {
-    Node<T>* node = new Node<T>;
-    node->value = i + 1;
-    node->parent = node->value;
+    Node* node = new Node;
+    node->index = i;
+    node->parent = i;
     node->rank = 0;
     nodes_.push_back(node);
   }
 };
 
-template <class T>
-Graph<T>::~Graph() {
+Graph::~Graph() {
   for ( auto& v : nodes_ ) { delete v; }
 
   while ( !edges_.empty() ) {
-    Edge<T>* edge = edges_.top();
+    Edge* edge = edges_.top();
     edges_.pop();
     delete edge;
   }
 
   while ( !removed_edges_.empty() ) {
-    Edge<T>* edge = removed_edges_.top();
+    Edge* edge = removed_edges_.top();
     removed_edges_.pop();
     delete edge;
   }
 };
 
-template <class T>
-void Graph<T>::resetGraph() {
+void Graph::resetGraph() {
   for ( auto& v : nodes_ ) {
-    v->parent = v->value;
+    v->parent = v->index;
     v->rank = 0;
   }
 
@@ -46,9 +44,15 @@ void Graph<T>::resetGraph() {
   }
 }
 
-template <class T>
-void Graph<T>::setEdge(T src, T dst, double weight) {
-  Edge<T>* edge = new Edge<T>;
+void Graph::setEdge(int src, int dst, double weight) {
+  if ( src >= nodes_.size() ) {
+    throw std::invalid_argument("index out of range");
+  }
+  if ( dst >= nodes_.size() ) {
+    throw std::invalid_argument("index out of range");
+  }
+
+  Edge* edge = new Edge;
   edge->src = src;
   edge->dst = dst;
   edge->weight = weight;
@@ -56,29 +60,22 @@ void Graph<T>::setEdge(T src, T dst, double weight) {
   edges_.push(edge);
 }
 
-template <class T>
-Edge<T>* Graph<T>::popEdge() {
-  Edge<T>* edge = edges_.top();
+Edge* Graph::popEdge() {
+  Edge* edge = edges_.top();
   edges_.pop();
   removed_edges_.push(edge); // additional work to avoid memory leak
 
   return edge;
 }
 
-template <class T>
-bool Graph<T>::isEdgeEmpty() {
+bool Graph::isEdgeEmpty() {
   return edges_.empty();
 }
 
-template <class T>
-const Node<T>* Graph<T>::getNode(T value) const { return nodes_[value-1]; }
+const Node* Graph::getNode(int index) const { return nodes_[index]; }
 
-template <class T>
-void Graph<T>::increaseRank(T value) { ++nodes_[value-1]->rank; }
+void Graph::increaseRank(int index) { ++nodes_[index]->rank; }
 
-template <class T>
-void Graph<T>::setParent(T value, T parent) { nodes_[value-1]->parent = parent; }
+void Graph::setParent(int index, int parent_index) { nodes_[index]->parent = parent_index; }
 
-template <class T>
-size_t Graph<T>::size() const { return nodes_.size(); }
-
+size_t Graph::size() const { return nodes_.size(); }

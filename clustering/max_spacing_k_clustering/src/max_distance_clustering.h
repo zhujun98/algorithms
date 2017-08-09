@@ -16,14 +16,13 @@
 #include "graph.h"
 
 
-template<class T>
 class MaxDistanceClustering {
 
 private:
 
-  // A vector which stores the leader node value of each node.
+  // A vector which stores the leader node index of each node.
   // This is only used for visualization of the final result.
-  std::vector<T> disjoint_sets_;
+  std::vector<int> disjoint_sets_;
   size_t n_sets_; // No. of remaining sets
   double min_spacing_; // maximum spacing between clusters
 
@@ -33,19 +32,19 @@ private:
   // Find the leader node of the node with the given value
   //
   // @param graph: Graph object
-  // @param value: node value
-  // @return: value of the leader node
+  // @param index: index of the node
+  // @return: index of the leader node
   //
-  T find(Graph<T>& graph, T value);
+  int find(Graph& graph, int index);
 
   //
   // Fuse two nodes belong to an edge (union-by-rank)
   //
   // @param graph: Graph object
-  // @param src: source node value
-  // @param dst: destination node value
+  // @param src: source node index
+  // @param dst: destination node index
   //
-  bool lazyUnion(Graph<T>& graph, T src, T dst);
+  bool lazyUnion(Graph& graph, int src, int dst);
 
 public:
   //
@@ -69,7 +68,7 @@ public:
   // @param edges: a priority queue of edges
   // @param n_clusters: No. of clusters to make
   //
-  void fit(Graph<T>& graph, int n_clusters);
+  void fit(Graph& graph, int n_clusters);
 
   //
   // Print the result
@@ -78,9 +77,7 @@ public:
 
   double getMinSpacing();
 
-  std::vector<T> getDisjointSets();
+  std::vector<int> getDisjointSets();
 };
-
-template class MaxDistanceClustering<int>;
 
 #endif //CLUSTERING_UNION_FIND_H
