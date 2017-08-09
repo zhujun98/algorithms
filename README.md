@@ -43,6 +43,10 @@ See [here](./sorting_and_selection)
  
 See [here](./graph)
 
+## Clustering
+
+* Max-spacing k-clustering (single-linkage clustering) using union-find data structure with union-by-rank and path-compression. see [here](./clustering/max_spacing_k_clustering)
+
 ## Hash table
 
 * A relatively large 2-sum problem
