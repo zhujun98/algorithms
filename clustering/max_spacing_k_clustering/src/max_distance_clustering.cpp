@@ -59,6 +59,12 @@ void MaxDistanceClustering::fit(Graph& graph, int n_clusters) {
 
   Edge* edge;
   while ( n_sets_ > n_clusters ) {
+    if ( graph.isEdgeEmpty() ) {
+      std::cout << "Run out of edges!" << std::endl;
+      std::cout << "The current number of disjoint sets is "
+                << n_sets_ << std::endl;
+      break;
+    }
     edge = graph.popEdge();
     lazyUnion(graph, edge->src, edge->dst);
   }

@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <assert.h>
 
 #include "graph.h"
@@ -64,37 +65,36 @@ void runClusteringAssignmentSmall() {
   std::cout << "Finish reading data!" << std::endl;
   ifs.close();
 
-  std::cout << "With pass compression algorithm" << std::endl;
+  std::cout << "\nUsing path compression algorithm" << std::endl;
   clock_t t0 = clock();
   MaxDistanceClustering cluster;
   cluster.setUsePathCompression(true);
   cluster.fit(graph, 4);
-  std::cout << "Run time: " << 1.0e-6*(clock() - t0)*CLOCKS_PER_SEC
+  std::cout << "Run time: " << 1.0e3*(clock() - t0)/CLOCKS_PER_SEC
             << " ms" << std::endl;
 //  cluster.print();
   assert(cluster.getMinSpacing() == 106);
 
-  std::cout << "Without pass compression algorithm" << std::endl;
+  std::cout << "\nNot using path compression algorithm" << std::endl;
   t0 = clock();
   graph.resetGraph();
   cluster.setUsePathCompression(false);
   cluster.fit(graph, 4);
-  std::cout << "Run time: " << 1.0e-6*(clock() - t0)*CLOCKS_PER_SEC
-            << " ms" << std::endl;
   assert(cluster.getMinSpacing() == 106);
+  std::cout << "Run time: " << 1.0e3*(clock() - t0)/CLOCKS_PER_SEC
+            << " ms" << std::endl;
 
-  std::cout << "Passed!" << std::endl;
+  std::cout << "\nPassed!" << std::endl;
 }
 
-int hummingDistance(std::vector<char> src, std::vector<char> dst) {
-  assert( src.size() == dst.size() );
+void flipStringAt(std::string& input, int i) {
+  if ( i >= input.size() ) { return; }
 
-  int distance = 0;
-  for ( size_t i=0; i<src.size(); ++i ) {
-    if ( src[i] != dst[i] ) { ++distance; }
+  if ( input[i] == '0' ) {
+    input[i] = '1';
+  } else {
+    input[i] = '0';
   }
-
-  return distance;
 }
 
 /*
@@ -128,7 +128,7 @@ int hummingDistance(std::vector<char> src, std::vector<char> dst) {
  */
 void runClusteringAssignmentBig() {
   std::cout << "\n" << std::string(80, '-') << "\n"
-            << "This is the clustring assignment (big data set) \n"
+            << "This is the clustring assignment (big data set with 200000 nodes) \n"
             << "in the Stanford's Algorithm course at Coursera"
             << "\n" << std::string(80, '-')
             << std::endl;
@@ -146,8 +146,10 @@ void runClusteringAssignmentBig() {
   iss0 >> number;
   int n_bits = std::stoi(number);
 
-  typedef std::vector<char> node_value;
-  std::vector<node_value> node_values(n_pts);
+  typedef std::string node_value;
+  // Hash table that a key can have multiple mapped values!
+  std::unordered_multimap<node_value, int> node_values;
+  node_values.max_load_factor(0.8);
   Graph graph(n_pts);
 
   int count = 0;
@@ -158,12 +160,73 @@ void runClusteringAssignmentBig() {
     while ( iss >> bit ) {
       value.push_back(bit);
     }
-    node_values[count] = value;
+    node_values.insert(std::make_pair(value, count));
     ++count;
   }
-
+  assert ( node_values.size() == n_pts );
   std::cout << "Finish reading data!" << std::endl;
   ifs.close();
+
+  /*
+   * Set edges with distance <=2, complexity O(24*24*200000)
+   */
+  for ( const auto& v : node_values ) {
+    typedef node_value::iterator nodeIter;
+
+    // Add all edges with distance 0
+    for ( int i=0; i<n_bits; ++i ) {
+      node_value tmp (v.first.begin(), v.first.end());
+      auto found_dst = node_values.equal_range(tmp);
+
+      for ( auto it = found_dst.first; it != found_dst.second; ++it ) {
+        graph.setEdge(v.second, it->second, 0);
+      }
+    }
+
+    // Add all edges with distance 1
+    for ( int i=0; i<n_bits; ++i ) {
+      node_value tmp (v.first.begin(), v.first.end());
+      flipStringAt(tmp, i);
+      auto found_dst = node_values.equal_range(tmp);
+      for ( auto it = found_dst.first; it != found_dst.second; ++it ) {
+        graph.setEdge(v.second, it->second, 1);
+      }
+    }
+
+    // Add all edges with distance 2
+    for ( int i=0; i<n_bits-1; ++i ) {
+      for ( int j=1; j<n_bits; ++j ) {
+        if ( j > i ) {
+          node_value tmp (v.first.begin(), v.first.end());
+          flipStringAt(tmp, i);
+          flipStringAt(tmp, j);
+          auto found_dst = node_values.equal_range(tmp);
+          for ( auto it = found_dst.first; it != found_dst.second; ++it ) {
+            graph.setEdge(v.second, it->second, 2);
+          }
+        }
+      }
+    }
+  }
+
+  std::cout << "Total number of edges with weights less than 3: "
+            << graph.edgeSize() << std::endl;
+
+  std::cout << "\nUsing path compression algorithm" << std::endl;
+  clock_t t0 = clock();
+  MaxDistanceClustering cluster;
+  cluster.setUsePathCompression(true);
+  cluster.fit(graph, 2);
+  std::cout << "Run time: " << 1.0e3*(clock() - t0)/CLOCKS_PER_SEC
+            << " ms" << std::endl;
+
+  std::cout << "\nNot using path compression algorithm" << std::endl;
+  graph.resetGraph();
+  t0 = clock();
+  cluster.setUsePathCompression(false);
+  cluster.fit(graph, 2);
+  std::cout << "Run time: " << 1.0e3*(clock() - t0)/CLOCKS_PER_SEC
+            << " ms" << std::endl;
 }
 
 
@@ -192,8 +255,10 @@ void testMaxDistanceClustering() {
   std::vector<int> correct_disjoint_sets1 = {1, 1, 1, 3};
   assert(cluster.getMinSpacing() == 2);
   assert(cluster.getDisjointSets() == correct_disjoint_sets1);
-  std::cout << "Test passed!" << std::endl;
+
+  std::cout << "\nTest passed!" << std::endl;
 }
+
 
 int main() {
   testMaxDistanceClustering();

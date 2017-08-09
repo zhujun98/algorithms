@@ -61,6 +61,7 @@ void Graph::setEdge(int src, int dst, double weight) {
 }
 
 Edge* Graph::popEdge() {
+  if ( edges_.empty() ) { throw std::runtime_error("Empty container"); }
   Edge* edge = edges_.top();
   edges_.pop();
   removed_edges_.push(edge); // additional work to avoid memory leak
@@ -79,3 +80,5 @@ void Graph::increaseRank(int index) { ++nodes_[index]->rank; }
 void Graph::setParent(int index, int parent_index) { nodes_[index]->parent = parent_index; }
 
 size_t Graph::size() const { return nodes_.size(); }
+
+size_t Graph::edgeSize() const { return edges_.size(); }

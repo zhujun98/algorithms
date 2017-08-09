@@ -94,6 +94,8 @@ public:
 
   size_t size() const;
 
+  size_t edgeSize() const;
+
   const Node* getNode(int index) const;
 };
 
