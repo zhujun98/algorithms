@@ -6,11 +6,11 @@
 #include "graph.h"
 
 
-Graph::Graph(int size) {
-  for ( int i=0; i<size; ++i ) {
+Graph::Graph(size_t size) {
+  for ( size_t i=0; i<size; ++i ) {
     Node* node = new Node;
-    node->index = i;
-    node->parent = i;
+    node->index = int(i);
+    node->parent = int(i);
     node->rank = 0;
     nodes_.push_back(node);
   }

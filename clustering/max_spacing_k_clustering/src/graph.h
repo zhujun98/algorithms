@@ -44,7 +44,7 @@ public:
   //
   // @param size: total No. of nodes
   //
-  Graph(int size);
+  Graph(size_t size);
 
   //
   // destructor
