@@ -1,8 +1,11 @@
 //
 // Created by jun on 8/8/17.
 //
-// Union-find (disjoint-set) data structure implemented
-// using union-by-rank and path compression.
+// Max-spacing k-clustering (single-linkage clustering) utilizing
+// union-find (disjoint-set) data structure.
+//
+// Lazy union: union-by-rank and path compression.
+// TODO:: implement eager union
 //
 #ifndef CLUSTERING_UNION_FIND_H
 #define CLUSTERING_UNION_FIND_H
@@ -11,60 +14,53 @@
 #include <vector>
 
 class Graph;
-typedef int node_value;
 
-
-struct Node {
-  node_value value; // value of the node
-  node_value parent; // value of the parent node
-  int rank; // rank of the node
-};
 
 class MaxDistanceClustering {
+
 private:
 
-  std::vector<Node*> tracker_;
+  // A vector which stores the leader node value of each node.
+  // This is only used for visualization of the final result.
   std::vector<node_value> disjoint_sets_;
-  int n_sets_; // number of remaining sets
+  size_t n_sets_; // No. of remaining sets
   double min_spacing_; // maximum spacing between clusters
 
   bool use_path_compression_; //
 
   //
-  // Initialize the disjoint sets. Each node forms a set.
-  //
-  // @param size: total No. of nodes
-  //
-  void makeNewSet(int size);
-
-  //
   // Find the leader node of the node with the given value
   //
+  // @param graph: Graph object
   // @param value: node value
   // @return: value of the leader node
   //
-  node_value find(node_value value);
+  node_value find(Graph& graph, node_value value);
 
   //
-  // Fuse two nodes belong to an edge
+  // Fuse two nodes belong to an edge (union-by-rank)
   //
-  // @param edge: Edge object
+  // @param graph: Graph object
+  // @param src: source node value
+  // @param dst: destination node value
   //
-  bool union_(const Edge& edge);
+  bool lazyUnion(Graph& graph, node_value src, node_value dst);
 
 public:
-
   //
   // constructor
   //
-  // @param: total No. of nodes
-  //
-  MaxDistanceClustering(int size);
+  MaxDistanceClustering();
 
   //
   // destructor
   //
   ~MaxDistanceClustering();
+
+  //
+  // set whether to use the path compression algorithm
+  //
+  void setUsePathCompression(bool value);
 
   //
   // Fit the nodes into disjoint set with minimum total edge weights
@@ -82,8 +78,6 @@ public:
   double getMinSpacing();
 
   std::vector<node_value> getDisjointSets();
-
-  void setUsePathCompression(bool value);
 };
 
 

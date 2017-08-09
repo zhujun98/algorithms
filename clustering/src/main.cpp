@@ -12,7 +12,7 @@
 #include "max_distance_clustering.h"
 
 
-void runClusteringAssignmentSmall(bool path_compression) {
+void runClusteringAssignmentSmall() {
   std::cout << "\n" << std::string(80, '-') << "\n"
             << "This is the clustring assignment (small data set) \n"
             << "in the Stanford's Algorithm course at Coursera"
@@ -29,7 +29,7 @@ void runClusteringAssignmentSmall(bool path_compression) {
   std::istringstream iss0(line);
   iss0 >> number;
   int n_pts = std::stoi(number);
-  Graph graph;
+  Graph graph(n_pts);
 
   while (std::getline(ifs, line)) {
     std::istringstream iss(line);
@@ -46,21 +46,30 @@ void runClusteringAssignmentSmall(bool path_compression) {
   std::cout << "Finish reading data!" << std::endl;
   ifs.close();
 
+  std::cout << "With pass compression algorithm" << std::endl;
   clock_t t0 = clock();
-  MaxDistanceClustering cluster(n_pts);
-  cluster.setUsePathCompression(path_compression);
+  MaxDistanceClustering cluster;
+  cluster.setUsePathCompression(true);
   cluster.fit(graph, 4);
   std::cout << "Run time: " << 1.0e-6*(clock() - t0)*CLOCKS_PER_SEC
             << " ms" << std::endl;
 //  cluster.print();
   assert(cluster.getMinSpacing() == 106);
 
+  std::cout << "Without pass compression algorithm" << std::endl;
+  t0 = clock();
+  graph.resetGraph();
+  cluster.setUsePathCompression(false);
+  cluster.fit(graph, 4);
+  std::cout << "Run time: " << 1.0e-6*(clock() - t0)*CLOCKS_PER_SEC
+            << " ms" << std::endl;
+  assert(cluster.getMinSpacing() == 106);
 
   std::cout << "Passed!" << std::endl;
 }
 
 void testMaxDistanceClustering() {
-  Graph graph;
+  Graph graph(4);
 
   graph.setEdge(1, 2, 1);
   graph.setEdge(1, 3, 2);
@@ -69,19 +78,27 @@ void testMaxDistanceClustering() {
   graph.setEdge(2, 4, 4);
   graph.setEdge(3, 4, 2);
 
-  MaxDistanceClustering cluster(4);
+  MaxDistanceClustering cluster;
   cluster.fit(graph, 2);
   cluster.print();
-  std::vector<int> correct_disjoint_sets = {2, 2, 4, 4};
+  std::vector<int> correct_disjoint_sets0 = {2, 2, 4, 4};
   assert(cluster.getMinSpacing() == 2);
-  assert(cluster.getDisjointSets() == correct_disjoint_sets);
+  assert(cluster.getDisjointSets() == correct_disjoint_sets0);
+
+  graph.resetGraph();
+  cluster.setUsePathCompression(false);
+  cluster.fit(graph, 2);
+  cluster.print();
+  std::vector<int> correct_disjoint_sets1 = {2, 2, 2, 4};
+  assert(cluster.getMinSpacing() == 2);
+  assert(cluster.getDisjointSets() == correct_disjoint_sets1);
   std::cout << "Test passed!" << std::endl;
 }
 
 int main() {
   testMaxDistanceClustering();
 
-  runClusteringAssignmentSmall(true);
+  runClusteringAssignmentSmall();
 
   return 0;
 }
