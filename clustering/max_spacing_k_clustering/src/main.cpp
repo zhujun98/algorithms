@@ -29,14 +29,14 @@ void runClusteringAssignmentSmall() {
   std::istringstream iss0(line);
   iss0 >> number;
   int n_pts = std::stoi(number);
-  Graph graph(n_pts);
+  Graph<int> graph(n_pts);
 
   while (std::getline(ifs, line)) {
     std::istringstream iss(line);
     iss >> number;
-    node_value src = std::stoi(number);
+    int src = std::stoi(number);
     iss >> number;
-    node_value dst = std::stoi(number);
+    int dst = std::stoi(number);
     iss >> number;
     double weight = std::stod(number);
 
@@ -48,7 +48,7 @@ void runClusteringAssignmentSmall() {
 
   std::cout << "With pass compression algorithm" << std::endl;
   clock_t t0 = clock();
-  MaxDistanceClustering cluster;
+  MaxDistanceClustering<int> cluster;
   cluster.setUsePathCompression(true);
   cluster.fit(graph, 4);
   std::cout << "Run time: " << 1.0e-6*(clock() - t0)*CLOCKS_PER_SEC
@@ -68,8 +68,9 @@ void runClusteringAssignmentSmall() {
   std::cout << "Passed!" << std::endl;
 }
 
+
 void testMaxDistanceClustering() {
-  Graph graph(4);
+  Graph<int> graph(4);
 
   graph.setEdge(1, 2, 1);
   graph.setEdge(1, 3, 2);
@@ -78,7 +79,7 @@ void testMaxDistanceClustering() {
   graph.setEdge(2, 4, 4);
   graph.setEdge(3, 4, 2);
 
-  MaxDistanceClustering cluster;
+  MaxDistanceClustering<int> cluster;
   cluster.fit(graph, 2);
   cluster.print();
   std::vector<int> correct_disjoint_sets0 = {2, 2, 4, 4};

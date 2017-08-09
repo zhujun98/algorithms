@@ -13,16 +13,17 @@
 #include <queue>
 #include <vector>
 
-class Graph;
+#include "graph.h"
 
 
+template<class T>
 class MaxDistanceClustering {
 
 private:
 
   // A vector which stores the leader node value of each node.
   // This is only used for visualization of the final result.
-  std::vector<node_value> disjoint_sets_;
+  std::vector<T> disjoint_sets_;
   size_t n_sets_; // No. of remaining sets
   double min_spacing_; // maximum spacing between clusters
 
@@ -35,7 +36,7 @@ private:
   // @param value: node value
   // @return: value of the leader node
   //
-  node_value find(Graph& graph, node_value value);
+  T find(Graph<T>& graph, T value);
 
   //
   // Fuse two nodes belong to an edge (union-by-rank)
@@ -44,7 +45,7 @@ private:
   // @param src: source node value
   // @param dst: destination node value
   //
-  bool lazyUnion(Graph& graph, node_value src, node_value dst);
+  bool lazyUnion(Graph<T>& graph, T src, T dst);
 
 public:
   //
@@ -68,7 +69,7 @@ public:
   // @param edges: a priority queue of edges
   // @param n_clusters: No. of clusters to make
   //
-  void fit(Graph& graph, int n_clusters);
+  void fit(Graph<T>& graph, int n_clusters);
 
   //
   // Print the result
@@ -77,8 +78,9 @@ public:
 
   double getMinSpacing();
 
-  std::vector<node_value> getDisjointSets();
+  std::vector<T> getDisjointSets();
 };
 
+template class MaxDistanceClustering<int>;
 
 #endif //CLUSTERING_UNION_FIND_H

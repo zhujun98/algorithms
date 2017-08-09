@@ -6,12 +6,14 @@
 #include "graph.h"
 #include "max_distance_clustering.h"
 
+template <class T>
+MaxDistanceClustering<T>::MaxDistanceClustering() {};
 
-MaxDistanceClustering::MaxDistanceClustering() {};
+template <class T>
+MaxDistanceClustering<T>::~MaxDistanceClustering() {};
 
-MaxDistanceClustering::~MaxDistanceClustering() {};
-
-node_value MaxDistanceClustering::find(Graph& graph, int value) {
+template<class T>
+T MaxDistanceClustering<T>::find(Graph<T>& graph, T value) {
 
   if ( use_path_compression_ ) {
     // path compression
@@ -22,7 +24,7 @@ node_value MaxDistanceClustering::find(Graph& graph, int value) {
     return graph.getNode(value)->parent;
   } else {
     // without path compression
-    node_value parent = graph.getNode(value)->parent;
+    T parent = graph.getNode(value)->parent;
     while ( parent != value ) {
       value = graph.getNode(parent)->value;
       parent = graph.getNode(parent)->parent;
@@ -32,9 +34,10 @@ node_value MaxDistanceClustering::find(Graph& graph, int value) {
   }
 }
 
-bool MaxDistanceClustering::lazyUnion(Graph& graph, node_value src, node_value dst) {
-  node_value leader_src = find(graph, src);
-  node_value leader_dst = find(graph, dst);
+template <class T>
+bool MaxDistanceClustering<T>::lazyUnion(Graph<T>& graph, T src, T dst) {
+  T leader_src = find(graph, src);
+  T leader_dst = find(graph, dst);
   int rank_src = graph.getNode(leader_src)->rank;
   int rank_dst = graph.getNode(leader_dst)->rank;
 
@@ -54,11 +57,12 @@ bool MaxDistanceClustering::lazyUnion(Graph& graph, node_value src, node_value d
   }
 }
 
-void MaxDistanceClustering::fit(Graph& graph, int n_clusters) {
+template <class T>
+void MaxDistanceClustering<T>::fit(Graph<T>& graph, int n_clusters) {
 
   n_sets_ = graph.size();
 
-  Edge* edge;
+  Edge<T>* edge;
   while ( n_sets_ > n_clusters ) {
     edge = graph.popEdge();
     lazyUnion(graph, edge->src, edge->dst);
@@ -73,8 +77,8 @@ void MaxDistanceClustering::fit(Graph& graph, int n_clusters) {
   // the two clusters
   while ( !graph.isEdgeEmpty() ) {
     edge = graph.popEdge();
-    node_value leader_src = find(graph, edge->src);
-    node_value leader_dst = find(graph, edge->dst);
+    T leader_src = find(graph, edge->src);
+    T leader_dst = find(graph, edge->dst);
     if ( leader_src != leader_dst ) {
       min_spacing_ = edge->weight;
       return;
@@ -82,15 +86,19 @@ void MaxDistanceClustering::fit(Graph& graph, int n_clusters) {
   }
 }
 
-void MaxDistanceClustering::print() {
+template <class T>
+void MaxDistanceClustering<T>::print() {
   std::cout<< "The remaining number of clusters is: " << n_sets_ << std::endl;
   for ( const auto& v : disjoint_sets_ ) { std::cout << v << ", "; }
   std::cout << std::endl;
   std::cout << "The minimum spacing is: " << min_spacing_ << std::endl;
 }
 
-double MaxDistanceClustering::getMinSpacing() { return min_spacing_; }
+template <class T>
+double MaxDistanceClustering<T>::getMinSpacing() { return min_spacing_; }
 
-std::vector<node_value> MaxDistanceClustering::getDisjointSets() { return disjoint_sets_; }
+template <class T>
+std::vector<T> MaxDistanceClustering<T>::getDisjointSets() { return disjoint_sets_; }
 
-void MaxDistanceClustering::setUsePathCompression(bool value) { use_path_compression_ = value; }
+template <class T>
+void MaxDistanceClustering<T>::setUsePathCompression(bool value) { use_path_compression_ = value; }

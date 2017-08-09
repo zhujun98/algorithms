@@ -5,10 +5,10 @@
 
 #include "graph.h"
 
-
-Graph::Graph(int size) {
+template <class T>
+Graph<T>::Graph(int size) {
   for ( int i=0; i<size; ++i ) {
-    Node* node = new Node;
+    Node<T>* node = new Node<T>;
     node->value = i + 1;
     node->parent = node->value;
     node->rank = 0;
@@ -16,23 +16,25 @@ Graph::Graph(int size) {
   }
 };
 
-Graph::~Graph() {
+template <class T>
+Graph<T>::~Graph() {
   for ( auto& v : nodes_ ) { delete v; }
 
   while ( !edges_.empty() ) {
-    Edge* edge = edges_.top();
+    Edge<T>* edge = edges_.top();
     edges_.pop();
     delete edge;
   }
 
   while ( !removed_edges_.empty() ) {
-    Edge* edge = removed_edges_.top();
+    Edge<T>* edge = removed_edges_.top();
     removed_edges_.pop();
     delete edge;
   }
 };
 
-void Graph::resetGraph() {
+template <class T>
+void Graph<T>::resetGraph() {
   for ( auto& v : nodes_ ) {
     v->parent = v->value;
     v->rank = 0;
@@ -44,8 +46,9 @@ void Graph::resetGraph() {
   }
 }
 
-void Graph::setEdge(node_value src, node_value dst, double weight) {
-  Edge* edge = new Edge;
+template <class T>
+void Graph<T>::setEdge(T src, T dst, double weight) {
+  Edge<T>* edge = new Edge<T>;
   edge->src = src;
   edge->dst = dst;
   edge->weight = weight;
@@ -53,22 +56,29 @@ void Graph::setEdge(node_value src, node_value dst, double weight) {
   edges_.push(edge);
 }
 
-Edge* Graph::popEdge() {
-  Edge* edge = edges_.top();
+template <class T>
+Edge<T>* Graph<T>::popEdge() {
+  Edge<T>* edge = edges_.top();
   edges_.pop();
   removed_edges_.push(edge); // additional work to avoid memory leak
 
   return edge;
 }
 
-bool Graph::isEdgeEmpty() {
+template <class T>
+bool Graph<T>::isEdgeEmpty() {
   return edges_.empty();
 }
 
-const Node* Graph::getNode(int value) const { return nodes_[value-1]; }
+template <class T>
+const Node<T>* Graph<T>::getNode(T value) const { return nodes_[value-1]; }
 
-void Graph::increaseRank(int value) { ++nodes_[value-1]->rank; }
+template <class T>
+void Graph<T>::increaseRank(T value) { ++nodes_[value-1]->rank; }
 
-void Graph::setParent(int value, int parent) { nodes_[value-1]->parent = parent; }
+template <class T>
+void Graph<T>::setParent(T value, T parent) { nodes_[value-1]->parent = parent; }
 
-size_t Graph::size() const { return nodes_.size(); }
+template <class T>
+size_t Graph<T>::size() const { return nodes_.size(); }
+

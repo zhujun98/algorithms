@@ -9,33 +9,35 @@
 #include <vector>
 
 
-typedef int node_value;
-
+template <class T>
 struct Node {
-  node_value value; // value of the node
-  node_value parent; // value of the parent node
+  T value; // value of the node
+  T parent; // value of the parent node
   int rank; // rank of the node
 };
 
+template <class T>
 struct Edge {
-  node_value src; // value of source node
-  node_value dst; // value of destination node
+  T src; // value of source node
+  T dst; // value of destination node
   double weight; // weight of the edge
 };
 
 // pointer comparator
+template <class T>
 struct CompareEdgePtr {
-  bool operator()(Edge* a, Edge* b) {return a->weight > b->weight;}
+  bool operator()(Edge<T>* a, Edge<T>* b) {return a->weight > b->weight;}
 };
 
 
+template <class T>
 class Graph {
 
 private:
-  typedef std::vector<Node*> graph_nodes;
+  typedef std::vector<Node<T>*> graph_nodes;
   graph_nodes nodes_; // graph nodes
 
-  typedef std::priority_queue<Edge*, std::vector<Edge*>, CompareEdgePtr> graph_edges;
+  typedef std::priority_queue<Edge<T>*, std::vector<Edge<T>*>, CompareEdgePtr<T>> graph_edges;
   graph_edges edges_; // unprocessed edges
   graph_edges removed_edges_; // processed edges
 
@@ -64,14 +66,14 @@ public:
   // @param dst: value of destination node
   // @param weight: weight of the edge
   //
-  void setEdge(node_value src, node_value dst, double weight);
+  void setEdge(T src, T dst, double weight);
 
   //
   // Pop an edge from the priority queue
   //
   // @return: pointer to the poped edge
   //
-  Edge* popEdge();
+  Edge<T>* popEdge();
 
   //
   // Set parent node of a node
@@ -79,22 +81,23 @@ public:
   // @param value: node value
   // @param parent: parent node value
   //
-  void setParent(int value, int parent);
+  void setParent(T value, T parent);
 
   //
   // Increase the rank of a node by 1
   //
   // @param value: node value
   //
-  void increaseRank(int value);
+  void increaseRank(T value);
 
   // Check whether all the edges have been processed
   bool isEdgeEmpty();
 
   size_t size() const;
 
-  const Node* getNode(int value) const;
+  const Node<T>* getNode(T value) const;
 };
 
+template class Graph<int>;
 
 #endif //CLUSTERING_GRAPH_H
