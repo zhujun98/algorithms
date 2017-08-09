@@ -5,5 +5,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES
         src/main.cpp
-        src/max_distance_clustering.cpp src/graph.cpp src/graph.h)
+        src/max_distance_clustering.cpp
+        src/graph.cpp)
 add_executable(clustering ${SOURCE_FILES})
