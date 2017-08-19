@@ -5,7 +5,6 @@
 #ifndef GRAPH_PRIM_H
 #define GRAPH_PRIM_H
 
-#include <set>
 
 #include "breath_first_search.h"
 #include "../graph.h"

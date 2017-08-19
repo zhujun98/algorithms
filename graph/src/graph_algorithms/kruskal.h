@@ -6,7 +6,6 @@
 #define GRAPH_KRUSKAL_H
 
 #include <algorithm>
-#include <map>
 
 #include "breath_first_search.h"
 #include "../ud_graph.h"
