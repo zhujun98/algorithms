@@ -17,12 +17,12 @@
 
 ## Sorting and selection
 
-* rSort() -- random sort -- O(nlog(n))
-* quickSort() -- random sort using median-of-three as pivot -- O(nlog(n))
-* heapSort() -- O(nlog(n))
-* mergeSort() -- O(nlog(n))
-* rSelect() -- random selection, both in place and out of place -- O(n)
-* m3Select() -- random selection using median-of-three as pivot -- O(n)
+* rSort() -- random sort
+* quickSort() -- random sort using median-of-three as pivot
+* heapSort()
+* mergeSort()
+* rSelect() -- random selection, both in place and out of place
+* m3Select() -- random selection using median-of-three as pivot
 
 See [here](./sorting_and_selection)
 
@@ -39,7 +39,7 @@ See [here](./sorting_and_selection)
 * Prim's algorithm
   - Implementation utilizing std::priority_queue()
 * Kruskal's algorithm
-  - Implementation utilizing a primitive union-find (disjoint-set) data structure
+  - Implementation utilizing the disjoint-set data structure (union-by-rank)
  
 See [here](./graph)
 
