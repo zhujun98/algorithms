@@ -29,6 +29,11 @@ struct edgeGreater {
 //
 // Implementation of the Prim's minimum spanning tree algorithm
 //
+// The time complexity is O(ElogE) = O(ElogV), E <= V^2
+// If decrease_key is implemented, the time complexity will become
+// O(2ElogV) = O(ElogV), which is almost the same. But
+// the decrease_key operation has its overhead.
+//
 // @param graph: undirected graph object
 //
 // @return: a pair in which the first element is the total cost of
@@ -38,10 +43,9 @@ struct edgeGreater {
 //
 template <class T>
 inline std::pair<double, std::vector<std::pair<T, T>>>
-prim(const UdGraph<T>& graph, int source_index = 0) {
+prim(const UdGraph<T>& graph, int src_index = 0) {
 
-  auto bfs_search = breathFirstSearch(graph, graph.indexToValue(source_index));
-
+  auto bfs_search = breathFirstSearch(graph, graph.indexToValue(src_index));
   if ( bfs_search.size() != graph.size() ) {
     throw std::invalid_argument("Input graph is not connected!");
   }
@@ -61,14 +65,14 @@ prim(const UdGraph<T>& graph, int source_index = 0) {
   // A min priority queue store the graph edge information
   std::priority_queue<graph_edge, std::vector<graph_edge>, edgeGreater<T>> remain;
 
-  T source_vertex_value = graph.indexToValue(source_index);
-  processed.insert(source_vertex_value);
+  T src_vertex_value = graph.indexToValue(src_index);
+  processed.insert(src_vertex_value);
 
   // Initialize the priority queue.
-  graph::Edge<T>* current_edge = graph.getVertex(source_vertex_value)->next;
+  graph::Edge<T>* current_edge = graph.getVertex(src_vertex_value)->next;
   while ( current_edge ) {
     remain.push(std::make_pair(current_edge->weight,
-                               std::make_pair(source_vertex_value,
+                               std::make_pair(src_vertex_value,
                                               current_edge->value)));
     current_edge = current_edge->next;
   }
@@ -80,7 +84,8 @@ prim(const UdGraph<T>& graph, int source_index = 0) {
     remain.pop();
     auto insertion = processed.insert(pick.second.second);
     // Skip if it is an old copy of a processed vertex left in the
-    // priority queue
+    // priority queue. (insert operate will return 'false' if the
+    // element is already in the set)
     if ( !insertion.second ) { continue; }
 
     mst.push_back(pick.second);
@@ -88,11 +93,14 @@ prim(const UdGraph<T>& graph, int source_index = 0) {
 
     // New edges due to one vertex is moved from the unprocessed
     // vertices set to the processed vertices set. We do not need
-    // to remove the edges which are consist of two processed
+    // to remove the edges which consist of two processed
     // vertices but are still in the remain set, since we can
     // screen it out when it pops out.
     current_edge = graph.getVertex(pick.second.second)->next;
+    // Since each edge will only be visited once, so the total time
+    // complexity of the two loops is only O(E)
     while ( current_edge ) {
+      // O(ElogE)
       remain.push(std::make_pair(current_edge->weight,
                                  std::make_pair(pick.second.second,
                                                 current_edge->value)));
@@ -106,10 +114,13 @@ prim(const UdGraph<T>& graph, int source_index = 0) {
 //
 // Appointing a source vertex in Prim's algorithm
 //
+// @param graph: undirected graph object
+// @param src: source vertex value
+
 template <class T>
 inline std::pair<double, std::vector<std::pair<T, T>>>
-prim(const UdGraph<T>& graph, T source) {
-  return prim(graph, graph.valueToIndex(source));
+prim(const UdGraph<T>& graph, T src) {
+  return prim(graph, graph.valueToIndex(src));
 }
 
 
