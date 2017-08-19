@@ -8,7 +8,8 @@
 
 #include <string>
 
-#include "../graph_adj.h"
+#include "../graph.h"
+#include "../ud_graph.h"
 
 
 namespace graph_test {
@@ -23,8 +24,8 @@ namespace graph_test {
   //
   // @param return: an undirected graph
   //
-  UdGraphAdj<std::string> simpleUdGraph() {
-    UdGraphAdj<std::string> graph;
+  UdGraph<std::string> simpleUdGraph() {
+    UdGraph<std::string> graph;
     graph.connect("a", "b");
     graph.connect("b", "c");
     graph.connect("c", "d");
@@ -55,8 +56,8 @@ namespace graph_test {
   //     7  *----    8             9         12
   // @param return: a directed graph
   //
-  GraphAdj<int> simpleGraph() {
-    GraphAdj<int> graph;
+  Graph<int> simpleGraph() {
+    Graph<int> graph;
 
     graph.connect(1, 4);
     graph.connect(4, 7);
@@ -93,8 +94,8 @@ namespace graph_test {
   //
   // @param return: a directed graph
   //
-  GraphAdj<std::string> distanceGraph() {
-    GraphAdj<std::string> graph;
+  Graph<std::string> distanceGraph() {
+    Graph<std::string> graph;
 
     graph.connect("a", "b", 1);
     graph.connect("b", "d", 6);
@@ -130,8 +131,8 @@ namespace graph_test {
   //
   // @param return: a directed graph
   //
-  UdGraphAdj<std::string> distanceUdGraph() {
-    UdGraphAdj<std::string> graph;
+  UdGraph<std::string> distanceUdGraph() {
+    UdGraph<std::string> graph;
 
     graph.connect("a", "b", 1);
     graph.connect("a", "c", 4);
@@ -154,14 +155,14 @@ namespace graph_test {
   void testGraphCopy() {
     std::cout << "\nTesting graph copy constructor..." << std::endl;
 
-    GraphAdj<int> graph = simpleGraph();
+    Graph<int> graph = simpleGraph();
 //    graph.display();
-    GraphAdj<int> graph_copy(graph);
+    Graph<int> graph_copy(graph);
 //    graph_copy.display();
 
-    UdGraphAdj<std::string> ud_graph = simpleUdGraph();
+    UdGraph<std::string> ud_graph = simpleUdGraph();
 //    ud_graph.display();
-    UdGraphAdj<std::string> ud_graph_copy(ud_graph);
+    UdGraph<std::string> ud_graph_copy(ud_graph);
 //    ud_graph_copy.display();
   }
 
@@ -171,8 +172,8 @@ namespace graph_test {
   void testReverseGraph() {
     std::cout << "\nTesting function reverseGraph()..." << std::endl;
 
-    GraphAdj<int> graph = simpleGraph();
-    GraphAdj<int> graph_reversed = graph::reverseGraph(graph);
+    Graph<int> graph = simpleGraph();
+    Graph<int> graph_reversed = graph::reverseGraph(graph);
   }
 
 
@@ -183,7 +184,7 @@ namespace graph_test {
     std::cout << "\nTesting BFS algorithm..." << std::endl;
 
     // test on directed graph
-    GraphAdj<int> graph = simpleGraph();
+    Graph<int> graph = simpleGraph();
 
     std::vector<int> result = graph::breathFirstSearch(graph, 1);
     std::vector<int> expected_result({1, 4, 2, 7, 5, 8, 3, 6, 9});
@@ -199,7 +200,7 @@ namespace graph_test {
     }
 
     // test on undirected graph
-    UdGraphAdj<std::string> ud_graph = simpleUdGraph();
+    UdGraph<std::string> ud_graph = simpleUdGraph();
     std::string source = "a";
     std::vector<std::string> result_ud = graph::breathFirstSearch(ud_graph, source);
     std::vector<std::string> expected_result_ud({"a", "b", "c", "d", "e", "h", "f", "g"});
@@ -223,7 +224,7 @@ namespace graph_test {
     std::cout << "\nTesting DFS algorithm..." << std::endl;
 
     // test on directed graph
-    GraphAdj<int> graph = simpleGraph();
+    Graph<int> graph = simpleGraph();
 
     std::vector<int> result = graph::depthFirstSearch(graph, 1);
     std::vector<int> expected_result = {9, 6, 3, 8, 5, 2, 7, 4, 1};
@@ -239,7 +240,7 @@ namespace graph_test {
     }
 
     // test on undirected graph
-    UdGraphAdj<std::string> ud_graph = simpleUdGraph();
+    UdGraph<std::string> ud_graph = simpleUdGraph();
     std::string source = "a";
 
     std::vector<std::string> result_ud = graph::depthFirstSearch(ud_graph, source);

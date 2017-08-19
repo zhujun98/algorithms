@@ -9,7 +9,8 @@
 
 #include <string>
 
-#include "../graph_adj.h"
+#include "../graph.h"
+#include "../ud_graph.h"
 #include "../graph_utilities.h"
 #include "unittest_graph.h"
 #include "../graph_algorithms.h"
@@ -22,7 +23,7 @@ namespace graph_test {
   void testKosaraju() {
 
     std::cout << "\nTesting Kosaraju's algorithm..." << std::endl;
-    GraphAdj<int> graph = graph_test::simpleGraph();
+    Graph<int> graph = graph_test::simpleGraph();
 
     std::vector<std::vector<int>> scc = graph::kosaraju(graph);
 
@@ -47,7 +48,7 @@ namespace graph_test {
 
     std::cout << "\nTesting Karger's algorithm..." << std::endl;
 
-    UdGraphAdj<std::string> graph = graph_test::simpleUdGraph();
+    UdGraph<std::string> graph = graph_test::simpleUdGraph();
 
     int min_cut = graph::karger(graph, 1000);
 
@@ -74,7 +75,7 @@ namespace graph_test {
   void testDijkstra() {
     std::cout << "\nTesting Dijkstra's algorithm..." << std::endl;
 
-    GraphAdj<std::string> graph = graph_test::distanceGraph();
+    Graph<std::string> graph = graph_test::distanceGraph();
 
     std::string source = "a";
     std::vector<std::pair<double, std::string>> shortest_path =
@@ -133,7 +134,7 @@ namespace graph_test {
   void testPrim() {
     std::cout << "\nTesting Prim's algorithm..." << std::endl;
 
-    UdGraphAdj<std::string> graph = graph_test::distanceUdGraph();
+    UdGraph<std::string> graph = graph_test::distanceUdGraph();
 
     typedef std::pair<double, std::vector<std::pair<std::string, std::string>>> mst_tree;
 
@@ -178,7 +179,7 @@ namespace graph_test {
   void testKruskal() {
     std::cout << "\nTesting Kruskal's algorithm..." << std::endl;
 
-    UdGraphAdj<std::string> graph = graph_test::distanceUdGraph();
+    UdGraph<std::string> graph = graph_test::distanceUdGraph();
 
     typedef std::pair<double, std::vector<std::pair<std::string, std::string>>> mst_tree;
 

@@ -16,7 +16,8 @@
 #include <sstream>
 #include <string>
 
-#include "graph_adj.h"
+#include "graph.h"
+#include "ud_graph.h"
 #include "graph_algorithms.h"
 
 
@@ -48,7 +49,7 @@ namespace assignment {
               << "\n" << std::string(80, '-')
               << std::endl;
 
-    UdGraphAdj<int> graph;
+    UdGraph<int> graph;
 
     std::ifstream ifs("../data/edges.txt", std::ifstream::in);
     std::string line;
@@ -131,7 +132,7 @@ namespace assignment {
               << "\n" << std::string(80, '-')
               << std::endl;
 
-    GraphAdj<int> graph;
+    Graph<int> graph;
 
     std::ifstream ifs("../data/dijkstraData.txt", std::ifstream::in);
     std::string line;
@@ -203,7 +204,7 @@ namespace assignment {
               << "\n" << std::string(80, '-')
               << std::endl;
 
-    UdGraphAdj<int> graph;
+    UdGraph<int> graph;
 
     std::string line;
     // create an input file stream
@@ -255,7 +256,7 @@ namespace assignment {
               << "\n" << std::string(80, '-')
               << std::endl;
 
-    GraphAdj<int> graph;
+    Graph<int> graph;
 
     std::string line;
     std::ifstream ifs("../data/SCC.txt", std::ifstream::in);

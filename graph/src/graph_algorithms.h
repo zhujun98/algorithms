@@ -24,7 +24,8 @@
 #include <algorithm>
 #include <functional>
 
-#include "graph_adj.h"
+#include "graph.h"
+#include "ud_graph.h"
 #include "graph_utilities.h"
 
 
@@ -70,7 +71,7 @@ namespace graph {
   //
   template <class G, class T>
   std::vector<T> breathFirstSearch(const G& graph, T value) {
-    graph::GraphAdjVertex<T> const* v = graph.getVertex(value);
+    graph::Vertex<T> const* v = graph.getVertex(value);
     if ( !v ) { return {}; }
 
     // the container for visited vertices in finding sequence
@@ -82,7 +83,7 @@ namespace graph {
     search.push_back(value);
     visited[graph.valueToIndex(value)] = true;
     while (!track.empty()) {
-      graph::GraphAdjVertex<T> const* current_head = graph.getVertex(track.front());
+      graph::Vertex<T> const* current_head = graph.getVertex(track.front());
       track.pop();
 
       graph::Edge<T>* current_node = current_head->next;
@@ -114,7 +115,7 @@ namespace graph {
   std::vector<T> depthFirstSearch(const G& graph, T value, std::vector<bool>& visited) {
     assert( graph.size() == visited.size() );
 
-    graph::GraphAdjVertex<T> const* v = graph.getVertex(value);
+    graph::Vertex<T> const* v = graph.getVertex(value);
     if ( !v ) { return {}; }
 
     // the container for sink vertices in finding sequence
@@ -164,7 +165,7 @@ namespace graph {
   //
   template <class G, class T>
   bool checkConnectivity(const G&graph, T source, T destination) {
-    graph::GraphAdjVertex<T> const* v = graph.getVertex(source);
+    graph::Vertex<T> const* v = graph.getVertex(source);
     if ( !v ) { return false; }
 //    TODO::finish
 
@@ -178,7 +179,7 @@ namespace graph {
   // @return: the number of edges in the contracted graph
   //
   template <class T>
-  inline int graphContract(UdGraphAdj<T>& graph, bool display=false) {
+  inline int graphContract(UdGraph<T>& graph, bool display=false) {
 
     // Distribution on which to apply the generator
     std::vector<T> connected_vertices = graph.getConnectedVertices();
@@ -212,14 +213,14 @@ namespace graph {
   // @return: the number of min cut
   //
   template <class T>
-  inline int karger(const UdGraphAdj<T>& graph, unsigned int n) {
+  inline int karger(const UdGraph<T>& graph, unsigned int n) {
 
     int min_cut = graph.countWeightedEdge();
     int cut;
 
     // apply Karger's algorithm to find the minimum cut in the graph
     for (int i = 0; i < n; ++i) {
-      UdGraphAdj<T> graph_copy(graph);
+      UdGraph<T> graph_copy(graph);
 
       cut = graphContract(graph_copy);
       if (cut < min_cut) { min_cut = cut; }
@@ -236,10 +237,10 @@ namespace graph {
   // @return: the strongly connected components
   //
   template <class T>
-  inline std::vector<std::vector<T>> kosaraju(GraphAdj<T>& graph) {
+  inline std::vector<std::vector<T>> kosaraju(Graph<T>& graph) {
     std::vector<std::vector<T>> scc;
     // reverse the directed graph
-    GraphAdj<T> graph_reversed = graph::reverseGraph(graph);
+    Graph<T> graph_reversed = graph::reverseGraph(graph);
 
     //
     // First pass, recursively run DFS on the original graph.
@@ -522,7 +523,7 @@ namespace graph {
   //
   template <class T>
   inline std::pair<double, std::vector<std::pair<T, T>>>
-  prim(const UdGraphAdj<T>& graph, int source_index = 0) {
+  prim(const UdGraph<T>& graph, int source_index = 0) {
 
     auto bfs_search = breathFirstSearch(graph, graph.indexToValue(source_index));
 
@@ -593,7 +594,7 @@ namespace graph {
   //
   template <class T>
   inline std::pair<double, std::vector<std::pair<T, T>>>
-  prim(const UdGraphAdj<T>& graph, T source) {
+  prim(const UdGraph<T>& graph, T source) {
     return prim(graph, graph.valueToIndex(source));
   }
 
@@ -618,7 +619,7 @@ namespace graph {
   //
   template <class T>
   inline std::pair<double, std::vector<std::pair<T, T>>>
-  kruskal(const UdGraphAdj<T>& graph) {
+  kruskal(const UdGraph<T>& graph) {
     // check the connectivity of the graph
     auto bfs_search = breathFirstSearch(graph, graph.indexToValue(0));
 
