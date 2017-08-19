@@ -15,10 +15,9 @@
 //
 // Comparator for edge: greater
 //
-template <class T>
 struct edgeGreater {
-  // <weight, <from vertex, to vertex>>
-  typedef std::pair<double, std::pair<T, T>> graph_edge;
+  // <weight, <from vertex index, to vertex index>>
+  typedef std::pair<double, std::pair<int, int>> graph_edge;
 
   bool operator()(const graph_edge& e1, const graph_edge& e2) {
     return e1.first > e2.first;
@@ -50,9 +49,6 @@ prim(const UdGraph<T>& graph, int src_index = 0) {
     throw std::invalid_argument("Input graph is not connected!");
   }
 
-  // <weight, <tail vertex, head vertex>>
-  typedef std::pair<double, std::pair<T, T>> graph_edge;
-
   // Minimum spanning tree:
   // Store the <from, to> vertices of edges (leaves) in the minimum
   // spanning tree in sequence, where "from" is the vertex in the
@@ -60,35 +56,44 @@ prim(const UdGraph<T>& graph, int src_index = 0) {
   // un-processed (remain) vertices set.
   std::vector<std::pair<T, T>> mst;
   double cost = 0.0;  // total cost of the minimum spanning tree
-  // A set which records processed vertices.
-  std::set<T> processed;
-  // A min priority queue store the graph edge information
-  std::priority_queue<graph_edge, std::vector<graph_edge>, edgeGreater<T>> remain;
 
-  T src_vertex_value = graph.indexToValue(src_index);
-  processed.insert(src_vertex_value);
+  // <weight, <tail vertex index, head vertex index>>
+  typedef std::pair<double, std::pair<int, int>> graph_edge;
+  // A min priority queue store the graph edge information
+  std::priority_queue<graph_edge, std::vector<graph_edge>, edgeGreater> remain;
+
+  // An indicator. 0 for unprocessed vertex and 1 for processed vertex.
+  std::vector<int> processed(graph.size());
+  processed[src_index] = 1;
 
   // Initialize the priority queue.
-  graph::Edge<T>* current_edge = graph.getVertex(src_vertex_value)->next;
+  graph::Edge<T>* current_edge = graph.getVertexByIndex(src_index)->next;
   while ( current_edge ) {
-    remain.push(std::make_pair(current_edge->weight,
-                               std::make_pair(src_vertex_value,
-                                              current_edge->value)));
+    remain.push(std::make_pair(
+        current_edge->weight,
+        std::make_pair(src_index, graph.valueToIndex(current_edge->value))));
     current_edge = current_edge->next;
   }
 
   // Run until there is no vertex in the remain set or all the vertices
   // have been processed.
-  while ( (processed.size() < graph.size()) && !remain.empty() ) {
+  int n_processed = 1;
+  while ( n_processed < graph.size() && !remain.empty() ) {
     graph_edge pick = remain.top();
     remain.pop();
-    auto insertion = processed.insert(pick.second.second);
-    // Skip if it is an old copy of a processed vertex left in the
-    // priority queue. (insert operate will return 'false' if the
-    // element is already in the set)
-    if ( !insertion.second ) { continue; }
 
-    mst.push_back(pick.second);
+    // Skip if it is an old copy of a processed vertex left in the
+    // priority queue. This is a critical step! It ensures that each
+    // vertex will only be processed once!
+    if ( processed[pick.second.second] == 1 ) {
+      continue;
+    } else {
+      processed[pick.second.second] = 1;
+      ++n_processed;
+    }
+
+    mst.push_back(std::make_pair(graph.indexToValue(pick.second.first),
+                                 graph.indexToValue(pick.second.second)));
     cost += pick.first;
 
     // New edges due to one vertex is moved from the unprocessed
@@ -96,14 +101,15 @@ prim(const UdGraph<T>& graph, int src_index = 0) {
     // to remove the edges which consist of two processed
     // vertices but are still in the remain set, since we can
     // screen it out when it pops out.
-    current_edge = graph.getVertex(pick.second.second)->next;
+    current_edge = graph.getVertexByIndex(pick.second.second)->next;
     // Since each edge will only be visited once, so the total time
     // complexity of the two loops is only O(E)
     while ( current_edge ) {
       // O(ElogE)
-      remain.push(std::make_pair(current_edge->weight,
-                                 std::make_pair(pick.second.second,
-                                                current_edge->value)));
+      remain.push(std::make_pair(
+          current_edge->weight,
+          std::make_pair(pick.second.second,
+                         graph.valueToIndex(current_edge->value))));
       current_edge = current_edge->next;
     }
   }
