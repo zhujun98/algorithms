@@ -13,7 +13,13 @@
 #include "../ud_graph.h"
 #include "../graph_utilities.h"
 #include "unittest_graph.h"
-#include "../graph_algorithms.h"
+#include "../graph_algorithms/breath_first_search.h"
+#include "../graph_algorithms/depth_first_search.h"
+#include "../graph_algorithms/dijkstra.h"
+#include "../graph_algorithms/karger.h"
+#include "../graph_algorithms/kosaraju.h"
+#include "../graph_algorithms/kruskal.h"
+#include "../graph_algorithms/prim.h"
 
 
 namespace graph_test {
@@ -25,7 +31,7 @@ namespace graph_test {
     std::cout << "\nTesting Kosaraju's algorithm..." << std::endl;
     Graph<int> graph = graph_test::simpleGraph();
 
-    std::vector<std::vector<int>> scc = graph::kosaraju(graph);
+    std::vector<std::vector<int>> scc = kosaraju(graph);
 
     std::vector<std::vector<int>> expected_scc = {{11, 12, 10}, {4, 7, 1}, {5, 8, 2}, {6, 9, 3}};
 
@@ -50,7 +56,7 @@ namespace graph_test {
 
     UdGraph<std::string> graph = graph_test::simpleUdGraph();
 
-    int min_cut = graph::karger(graph, 1000);
+    int min_cut = karger(graph, 1000);
 
     if ( min_cut == 2 ) {
       std::cout << "Passed!" << std::endl;
@@ -79,9 +85,9 @@ namespace graph_test {
 
     std::string source = "a";
     std::vector<std::pair<double, std::string>> shortest_path =
-        graph::dijkstra(graph, source);
+        dijkstra(graph, source);
     std::vector<std::pair<double, std::string>> shortest_path_1 =
-        graph::dijkstra_base_tree(graph, source, source);
+        dijkstra_base_tree(graph, source, source);
     assert(shortest_path == shortest_path_1);
 
     std::vector<std::pair<double, std::string>> expected_shortest_path =
@@ -100,9 +106,9 @@ namespace graph_test {
 
     std::string destination = "f";
     std::vector<std::pair<double, std::string>> shortest_path_dst =
-        graph::dijkstra(graph, source, destination);
+        dijkstra(graph, source, destination);
     std::vector<std::pair<double, std::string>> shortest_path_dst_1 =
-        graph::dijkstra_base_tree(graph, source, destination);
+        dijkstra_base_tree(graph, source, destination);
     assert(shortest_path_dst == shortest_path_dst_1);
 
     // remove the untouched vertices
@@ -117,7 +123,7 @@ namespace graph_test {
 
     if ( shortest_path_dst_filtered == expected_shortest_path_dst ) {
       std::cout << "Passed!" << std::endl;
-      graph::showDijkstraPath(graph, shortest_path_dst, source, destination);
+      showDijkstraPath(graph, shortest_path_dst, source, destination);
     } else {
       std::cout << "Failed!!!" << std::endl;
       std::cout << "The output is: " << std::endl;
@@ -139,7 +145,7 @@ namespace graph_test {
     typedef std::pair<double, std::vector<std::pair<std::string, std::string>>> mst_tree;
 
     // starting from the first vertex by default
-    mst_tree mst = graph::prim(graph);
+    mst_tree mst = prim(graph);
     mst_tree expected_mst =
         {-13, {{"a", "e"}, {"e", "d"}, {"d", "b"}, {"e", "c"}, {"e", "f"}}};
 
@@ -156,7 +162,7 @@ namespace graph_test {
     }
 
     // starting from an appointing vertex
-    mst = graph::prim(graph, std::string("c"));
+    mst = prim(graph, std::string("c"));
     expected_mst =
         {-13, {{"c", "e"}, {"e", "a"}, {"e", "d"}, {"d", "b"}, {"e", "f"}}};
 
@@ -184,7 +190,7 @@ namespace graph_test {
     typedef std::pair<double, std::vector<std::pair<std::string, std::string>>> mst_tree;
 
     // starting from an appointing vertex
-    mst_tree mst = graph::kruskal(graph);
+    mst_tree mst = kruskal(graph);
     mst_tree expected_mst =
         {-13, {{"b", "d"}, {"a", "e"}, {"e", "d"}, {"e", "c"}, {"f", "e"}}};
 

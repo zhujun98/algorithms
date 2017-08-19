@@ -10,6 +10,7 @@
 
 #include "../graph.h"
 #include "../ud_graph.h"
+#include "../graph_utilities.h"
 
 
 namespace graph_test {
@@ -186,7 +187,7 @@ namespace graph_test {
     // test on directed graph
     Graph<int> graph = simpleGraph();
 
-    std::vector<int> result = graph::breathFirstSearch(graph, 1);
+    std::vector<int> result = breathFirstSearch(graph, 1);
     std::vector<int> expected_result({1, 4, 2, 7, 5, 8, 3, 6, 9});
 
     if ( result == expected_result ) {
@@ -202,7 +203,7 @@ namespace graph_test {
     // test on undirected graph
     UdGraph<std::string> ud_graph = simpleUdGraph();
     std::string source = "a";
-    std::vector<std::string> result_ud = graph::breathFirstSearch(ud_graph, source);
+    std::vector<std::string> result_ud = breathFirstSearch(ud_graph, source);
     std::vector<std::string> expected_result_ud({"a", "b", "c", "d", "e", "h", "f", "g"});
 
     if ( result_ud == expected_result_ud ) {
@@ -226,7 +227,7 @@ namespace graph_test {
     // test on directed graph
     Graph<int> graph = simpleGraph();
 
-    std::vector<int> result = graph::depthFirstSearch(graph, 1);
+    std::vector<int> result = depthFirstSearch(graph, 1);
     std::vector<int> expected_result = {9, 6, 3, 8, 5, 2, 7, 4, 1};
 
     if ( result == expected_result ) {
@@ -243,7 +244,7 @@ namespace graph_test {
     UdGraph<std::string> ud_graph = simpleUdGraph();
     std::string source = "a";
 
-    std::vector<std::string> result_ud = graph::depthFirstSearch(ud_graph, source);
+    std::vector<std::string> result_ud = depthFirstSearch(ud_graph, source);
     std::vector<std::string> expected_result_ud = {"d", "g", "f", "e", "h", "c", "b", "a"};
 
     if ( result_ud == expected_result_ud ) {

@@ -18,7 +18,11 @@
 
 #include "graph.h"
 #include "ud_graph.h"
-#include "graph_algorithms.h"
+#include "graph_algorithms/dijkstra.h"
+#include "graph_algorithms/karger.h"
+#include "graph_algorithms/kosaraju.h"
+#include "graph_algorithms/kruskal.h"
+#include "graph_algorithms/prim.h"
 
 
 namespace assignment {
@@ -82,7 +86,7 @@ namespace assignment {
     assert( graph.countEdge() == 2184 );
 
     clock_t t0 = clock();
-    std::pair<double, std::vector<std::pair<int, int>>> mst = graph::prim(graph);
+    std::pair<double, std::vector<std::pair<int, int>>> mst = prim(graph);
 
     std::cout << "Run time: " << 1000.0*(clock() - t0)/CLOCKS_PER_SEC
               << " ms" << std::endl;
@@ -93,7 +97,7 @@ namespace assignment {
     std::cout << "Compare with the Kurlskar's algorithm implementation!" << std::endl;
     t0 = clock();
 
-    mst = graph::kruskal(graph);
+    mst = kruskal(graph);
     std::cout << "Run time: " << 1000.0*(clock() - t0)/CLOCKS_PER_SEC
               << " ms" << std::endl;
     assert(int(mst.first) == -3612829);
@@ -155,17 +159,17 @@ namespace assignment {
     ifs.close();
     std::cout << "Finished reading data!" << std::endl;
 
-    std::vector<std::pair<double, int>> shortest_path = graph::dijkstra(graph, 1);
+    std::vector<std::pair<double, int>> shortest_path = dijkstra(graph, 1);
 
     // compare speeds of different implementations
     clock_t t0;
 
     t0 = clock();
-    graph::dijkstra_base_tree(graph, 1, 1);
+    dijkstra_base_tree(graph, 1, 1);
     std::cout << "Run time using the tree-based implementation: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
     t0 = clock();
-    graph::dijkstra_base_priority_queue(graph, 1, 1);
+    dijkstra_base_priority_queue(graph, 1, 1);
     std::cout << "Run time using the heap-based implementation: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
 
@@ -230,7 +234,7 @@ namespace assignment {
     std::cout << "Finished reading data!" << std::endl;
 
     clock_t t0 = clock();
-    assert(graph::karger(graph, repeated_times) == 20);
+    assert(karger(graph, repeated_times) == 20);
     std::cout << "Run time: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
     std::cout << "Passed!" << std::endl;
@@ -283,7 +287,7 @@ namespace assignment {
 
     std::cout << "Searching strongly connected components...!" << std::endl;
     clock_t t0 = clock();
-    std::vector<std::vector<int>> scc = graph::kosaraju(graph);
+    std::vector<std::vector<int>> scc = kosaraju(graph);
     std::cout << "Run time: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
 

@@ -10,11 +10,17 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 set(sources
         src/main.cpp
         src/graph_utilities.h
-        src/graph_algorithms.h
         src/test/unittest_graph.h
         src/test/unittest_algorithms.h
         src/assignments.h
         src/ud_graph.cpp
-        src/graph.cpp)
+        src/graph.cpp
+        src/graph_algorithms/breath_first_search.h
+        src/graph_algorithms/depth_first_search.h
+        src/graph_algorithms/karger.h
+        src/graph_algorithms/kosaraju.h
+        src/graph_algorithms/dijkstra.h
+        src/graph_algorithms/prim.h
+        src/graph_algorithms/kruskal.h)
 
 add_executable(run ${sources})
