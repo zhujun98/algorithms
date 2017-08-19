@@ -180,11 +180,13 @@ std::vector<std::pair<double, T>> dijkstra_base_priority_queue(
       return distances;
     }
 
+    // Critical step!!!
+    // Ensure that each vertex will only be visited once!
+    //
     // Since we leave old copies of the vertex in the priority queue
     // (with outdated higher distances), we should ignore it when we
-    // come across it again in order to speed up. Otherwise, it still
-    // works. However, the speed will be much slower since it will
-    // traverse its children vertices again.
+    // come across it again in order to speed up. Otherwise, the time
+    // complexity will increase to O(EVlogV).
     if (selected_distance > distances[selected_index].first) { continue; }
 
     // Loop the neighbors of the "selected_index" which is still in the
