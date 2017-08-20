@@ -19,10 +19,11 @@ int main() {
   graph_test::testKosaraju();
   graph_test::testDijkstra();
   graph_test::testPrim();
+  graph_test::testBellmanFord();
 
   assignment::runPrimAssignment();
-  assignment::runKargerAssignment();
-  assignment::runSccAssignment();
+//  assignment::runKargerAssignment();
+//  assignment::runSccAssignment();
   assignment::runDijkstraAssignment();
 
   return 0;

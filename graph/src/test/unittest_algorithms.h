@@ -20,6 +20,7 @@
 #include "../graph_algorithms/kosaraju.h"
 #include "../graph_algorithms/kruskal.h"
 #include "../graph_algorithms/prim.h"
+#include "../graph_algorithms/bellman_ford.h"
 
 
 namespace graph_test {
@@ -132,6 +133,33 @@ namespace graph_test {
       graph_utilities::printContainer(expected_shortest_path_dst);
     }
 
+  }
+
+  //
+  // test the implementation of Bellman-Ford's algorithm
+  //
+  void testBellmanFord() {
+    std::cout << "\nTesting Bellman-Ford's algorithm..." << std::endl;
+
+    Graph<std::string> graph = graph_test::distanceGraph();
+
+    std::string source = "a";
+    std::vector<std::pair<double, std::string>> shortest_path =
+        bellmanFord(graph, source);
+
+    std::vector<std::pair<double, std::string>> expected_shortest_path =
+        {{0, "a"}, {1, "a"}, {6, "c"}, {3, "b"}, {5, "c"}, {7, "f"}};
+
+
+    if ( shortest_path == expected_shortest_path ) {
+      std::cout << "Passed!" << std::endl;
+    } else {
+      std::cout << "Failed!!!" << std::endl;
+      std::cout << "The output is: " << std::endl;
+      graph_utilities::printContainer(shortest_path);
+      std::cout << "The correct result is: " << std::endl;
+      graph_utilities::printContainer(expected_shortest_path);
+    }
   }
 
   //

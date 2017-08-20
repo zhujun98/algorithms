@@ -21,6 +21,7 @@ set(sources
         src/graph_algorithms/kosaraju.h
         src/graph_algorithms/dijkstra.h
         src/graph_algorithms/prim.h
-        src/graph_algorithms/kruskal.h)
+        src/graph_algorithms/kruskal.h
+        src/graph_algorithms/bellman_ford.h)
 
 add_executable(run ${sources})

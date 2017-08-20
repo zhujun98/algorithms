@@ -23,6 +23,7 @@
 #include "graph_algorithms/kosaraju.h"
 #include "graph_algorithms/kruskal.h"
 #include "graph_algorithms/prim.h"
+#include "graph_algorithms/bellman_ford.h"
 
 
 namespace assignment {
@@ -168,10 +169,17 @@ namespace assignment {
     dijkstraTreeBase(graph, 1, 1);
     std::cout << "Run time using the tree-based implementation: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
+
     t0 = clock();
     dijkstraPriorityQueueBase(graph, 1, 1);
     std::cout << "Run time using the heap-based implementation: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
+
+    t0 = clock();
+    auto shortest_path_bf = bellmanFord(graph, 1);
+    std::cout << "Run time using the Bellman-Ford's algorithm: "
+              << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
+    assert(shortest_path_bf == shortest_path);
 
     assert(shortest_path[graph.valueToIndex(7)].first == 2599);
     assert(shortest_path[graph.valueToIndex(37)].first == 2610);
