@@ -165,11 +165,11 @@ namespace assignment {
     clock_t t0;
 
     t0 = clock();
-    dijkstra_base_tree(graph, 1, 1);
+    dijkstraTreeBase(graph, 1, 1);
     std::cout << "Run time using the tree-based implementation: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
     t0 = clock();
-    dijkstra_base_priority_queue(graph, 1, 1);
+    dijkstraPriorityQueueBase(graph, 1, 1);
     std::cout << "Run time using the heap-based implementation: "
               << 1000.0*(clock() - t0)/CLOCKS_PER_SEC << " ms" << std::endl;
 

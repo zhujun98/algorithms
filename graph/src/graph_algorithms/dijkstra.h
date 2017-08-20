@@ -14,6 +14,8 @@
 #include "../graph.h"
 
 
+const double kMaxDistance = std::numeric_limits<double>::max();
+
 //
 // implementation of the Dijkstra's shorted path algorithm
 // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
@@ -31,28 +33,23 @@
 // However, the overhead (memory) of a self-balanced RB-tree is much higher.
 //
 // @param graph: a directed graph
-// @param source: the starting vertex value
-// @param destination: the destination vertex value. The entire graph
-//                     will be searched if destination == source.
-// @param max_distance: maximum distance from the source. If there is
-//                      no connection between two vertices, the distance
-//                      between them will be represented by "max_distance".
+// @param src: the source vertex value
+// @param dst: the destination vertex value. The entire graph
+//                     will be searched if dst == src.
 //
 // @param return: a vector containing a pair of the shortest distance
 //                between each vertex to the source as well as the
 //                parent vertex of each vertex in the shortest path.
 //
 template <class G, class T>
-std::vector<std::pair<double, T>> dijkstra_base_tree(
-    const G& graph, T source, T destination,
-    double max_distance=std::numeric_limits<double>::max()) {
-
-  if ( !graph.getVertex(source) ) {
-    std::cout << source << " is not a vertex of the graph!" << std::endl;
+std::vector<std::pair<double, T>>
+dijkstraTreeBase(const G& graph, T src, T dst) {
+  if ( !graph.getVertex(src) ) {
+    std::cout << src << " is not a vertex of the graph!" << std::endl;
     return {};
   }
-  if ( !graph.getVertex(destination) ) {
-    std::cout << destination << " is not a vertex of the graph!" << std::endl;
+  if ( !graph.getVertex(dst) ) {
+    std::cout << dst << " is not a vertex of the graph!" << std::endl;
     return {};
   }
 
@@ -62,13 +59,14 @@ std::vector<std::pair<double, T>> dijkstra_base_tree(
   std::vector<std::pair<double, T>> distances(graph.size());
   // O(VlogV)
   for (int i = 0; i < graph.size(); ++i) {
-    if (graph.indexToValue(i) != source) {
-      remain.insert(std::make_pair(max_distance, i));
-      distances[i].first = max_distance;
+    if (graph.indexToValue(i) != src) {
+      remain.insert(std::make_pair(kMaxDistance, i));
+      distances[i].first = kMaxDistance;
+      // parent vertex is not initialized
     } else {
       remain.insert(std::make_pair(0, i));
       distances[i].first = 0;
-      distances[i].second = source;
+      distances[i].second = src;
     }
   }
 
@@ -80,8 +78,8 @@ std::vector<std::pair<double, T>> dijkstra_base_tree(
     // O(1)*V = O(V), V is the outer loops
     remain.erase(remain.begin());
 
-    if ( source != destination &&
-         selected_index == graph.valueToIndex(destination) ) {
+    if ( src != dst &&
+         selected_index == graph.valueToIndex(dst) ) {
       return distances;
     }
 
@@ -133,37 +131,45 @@ std::vector<std::pair<double, T>> dijkstra_base_tree(
 // The speed is comparable with the implementation using self-balanced
 // RB-tree.
 //
+// @param graph: a directed graph
+// @param src: the source vertex value
+// @param dst: the destination vertex value. The entire graph
+//                     will be searched if dst == src.
+//
+// @param return: a vector containing a pair of the shortest distance
+//                between each vertex to the source as well as the
+//                parent vertex of each vertex in the shortest path.
+//
 template <class G, class T>
-std::vector<std::pair<double, T>> dijkstra_base_priority_queue(
-    const G& graph, T source, T destination,
-    double max_distance=std::numeric_limits<double>::max()) {
-  if ( !graph.getVertex(source) ) {
-    std::cout << source << " is not a vertex of the graph!" << std::endl;
+std::vector<std::pair<double, T>>
+dijkstraPriorityQueueBase(const G& graph, T src, T dst) {
+  if ( !graph.getVertex(src) ) {
+    std::cout << src << " is not a vertex of the graph!" << std::endl;
     return {};
   }
-  if ( !graph.getVertex(destination) ) {
-    std::cout << destination << " is not a vertex of the graph!" << std::endl;
+  if ( !graph.getVertex(dst) ) {
+    std::cout << dst << " is not a vertex of the graph!" << std::endl;
     return {};
   }
 
   // A set of vertex <current shortest distance, index>.
-  typedef std::pair<double, int> distance_index_pair_t ;
+  typedef std::pair<double, int> distance_index_pair_t;
   std::priority_queue<distance_index_pair_t,
-  std::vector<distance_index_pair_t>,
-  std::greater<distance_index_pair_t>> remain;
+                      std::vector<distance_index_pair_t>,
+                      std::greater<distance_index_pair_t>> remain;
   // Store the shortest distance and its parent vertex for each vertex.
   // The index in the vector is the same as the index of the vertex in
   // the graph.
   std::vector<std::pair<double, T>> distances(graph.size());
   // O(VlogV)
   for (int i = 0; i < graph.size(); ++i) {
-    if (graph.indexToValue(i) != source) {
-      remain.push(std::make_pair(max_distance, i));
-      distances[i].first = max_distance;
+    if (graph.indexToValue(i) != src) {
+      remain.push(std::make_pair(kMaxDistance, i));
+      distances[i].first = kMaxDistance;
     } else {
       remain.push(std::make_pair(0, i));
       distances[i].first = 0;
-      distances[i].second = source;
+      distances[i].second = src;
     }
   }
 
@@ -175,8 +181,8 @@ std::vector<std::pair<double, T>> dijkstra_base_priority_queue(
     // O(1)*E = O(E), E is the outer loops
     remain.pop();
 
-    if ( source != destination &&
-         selected_index == graph.valueToIndex(destination) ) {
+    if ( src != dst &&
+         selected_index == graph.valueToIndex(dst) ) {
       return distances;
     }
 
@@ -228,49 +234,45 @@ std::vector<std::pair<double, T>> dijkstra_base_priority_queue(
 // Explore the entire graph using dijkstra's algorithm
 //
 template <class G, class T>
-inline std::vector<std::pair<double, T>> dijkstra(
-    const G& graph, T source,
-    double max_distance=std::numeric_limits<double>::max()) {
-
-  return dijkstra_base_priority_queue(graph, source, source, max_distance);
+inline std::vector<std::pair<double, T>>
+dijkstra(const G& graph, T src) {
+  return dijkstraPriorityQueueBase(graph, src, src);
 }
 
 //
 // Explore the graph until reaching the destination vertex
 //
 template <class G, class T>
-inline std::vector<std::pair<double, T>> dijkstra(
-    const G& graph, T source, T destination,
-    double max_distance=std::numeric_limits<double>::max()) {
-
-  return dijkstra_base_priority_queue(graph, source, destination, max_distance);
+inline std::vector<std::pair<double, T>>
+dijkstra(const G& graph, T src, T dst) {
+  return dijkstraPriorityQueueBase(graph, src, dst);
 }
 
 //
-// Visualize the shortest path between source and destination vertices
+// Visualize the shortest path between src and dst vertices
 //
 // @param graph: directed graph object
 // @param distances: search result from function Dijkstra()
-// @param source: value of source vertex
-// @param destination: value of destination vertex
+// @param src: value of source vertex
+// @param dst: value of destination vertex
 //
 template <class G, class T>
 inline void showDijkstraPath(const G& graph,
                              const std::vector<std::pair<double, T>>& distances,
-                             T source, T destination) {
+                             T src, T dst) {
   std::stack<T> path;
-  T current_vertex = destination;
+  T current_vertex = dst;
   while ( true ) {
     current_vertex = distances[graph.valueToIndex(current_vertex)].second;
     path.push(current_vertex);
-    if ( current_vertex == source ) { break; }
+    if ( current_vertex == src ) { break; }
   }
 
   while ( !path.empty() ) {
     std::cout << path.top() << " -> ";
     path.pop();
   }
-  std::cout << destination << std::endl;
+  std::cout << dst << std::endl;
 };
 
 
