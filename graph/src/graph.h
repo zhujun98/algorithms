@@ -6,271 +6,218 @@
 
 
 #include <iostream>
-#include <assert.h>
 #include <list>
-#include <forward_list>
 #include <vector>
 #include <stack>
 #include <queue>
-#include <unordered_map>
-
 
 namespace graph {
-  //
+  class DirectedGraph;
+
   // node in a linked list, which represents edges
-  //
   template <class T>
   struct Edge {
-    T value;  // value of the head vertex of the edge
-    double weight;  // weight (length) of the edge
-    Edge<T>* next;  // pointer to the next edge in the same linked list
+    size_t dst; // destination vertex
+    T weight; // edge weight
+    Edge* next; // pointer to the next edge
   };
 
-  //
-  // vertex of the graph, containing head node of the linked list
-  //
+  /**
+   * construct a new Edge
+   *
+   * @param dst: desintation vertex
+   * @param weight: edge weight
+   * @return: pointer to the new edge
+   */
   template <class T>
-  struct Vertex {
-    T value;  // value of the vertex
-    Edge<T>* next;  // head node of the linked list
-  };
-
-  //
-  // construct a new Edge
-  //
-  // @param value: value of the head vertex of the edge
-  // @param weight: weight (length) of the edge
-  //
-  // @return: pointer to the new edge
-  //
-  template <class T>
-  Edge<T>* newEdge(T value, double weight=1.0){
-
-    Edge<T>* new_edge =new Edge<T>;
-    new_edge->value = value;
+  Edge<T>* newEdge(size_t dst, T weight=1) {
+    auto* new_edge =new Edge<T>;
+    new_edge->dst = dst;
     new_edge->weight = weight;
-    new_edge->next = NULL;
+    new_edge->next = nullptr;
 
     return new_edge;
   }
-
-  //
-  // construct a new Vertex
-  //
-  // @param value: value of the vertex
-  //
-  // @return: pointer to the new vertex
-  //
-  template <class T>
-  Vertex<T>* newVertex(T value) {
-
-    Vertex<T>* new_vertex = new Vertex<T>;
-    new_vertex->value = value;
-    new_vertex->next = NULL;
-
-    return new_vertex;
-  }
-
-  //
-  // reverse the directed graph
-  // Note:: the value->index hash table is usually different from the
-  //        one in the original graph, which is affected by the sequence
-  //        of the edges being added.
-  //
-  // @param graph: a graph object
-  //
-  template <class G>
-  G reverseGraph(G const &graph) {
-    G graph_reversed;
-
-    for (auto i = 0; i < graph.size(); ++i) {
-      auto value = graph.getVertexByIndex(i)->value;
-      auto current_node = graph.getVertexByIndex(i)->next;
-      while ( current_node ) {
-        graph_reversed.connect(current_node->value, value);
-        current_node = current_node->next;
-      }
-    }
-
-    return graph_reversed;
-  }
 }
-
 
 template <class T>
 class Graph {
 
 protected:
-  // hash table that converts the vertex value to the vector index
-  std::unordered_map<T, int> valueToIndex_;
+  std::vector<graph::Edge<T>*> vertices_;  // a vector of linked lists
 
-  // vector of vertices
-  std::vector<graph::Vertex<T>*> vertices_;
+  /**
+   * clear (release memory) the linked list belong to a vertex
+   *
+   * @param src: the source vertex
+   */
+  void clearList(size_t src) {
+    graph::Edge<T>* current_edge = vertices_[src];
+    while (current_edge != nullptr) {
+      graph::Edge<T>* previous_edge = current_edge;
+      current_edge = previous_edge->next;
 
-  //
-  // get the pointer to a vertex
-  //
-  // @param value: the vertex value
-  //
-  // @return: pointer to the vertex
-  //
-  graph::Vertex<T>* getVtx(T value);
+      delete previous_edge;
+    }
+  }
 
-  //
-  // clear (release memory) the linked list belong to a vertex
-  //
-  // @param vertex: the vertex value
-  //
-  void clearList(T value);
+  /**
+   * Add an edge (src->dst) at the head of the linked list
+   *
+   * @param src: source vertex
+   * @param dst: destination vertex
+   * @param weight: edge weight
+   */
+  bool addEdge(size_t src, size_t dst, T weight) {
+    if ( src < 0 || src >= vertices_.size() ) {
+      throw std::invalid_argument("Out of range: src vertex");
+    }
 
-  //
-  // Add an edge from tail to head. The nodes in the linked
-  // list are sorted in ascending order.
-  //
-  // Public method connect() is implemented to add an edge for both
-  // directed graph and undirected graph
-  //
-  // Note: the sorting will not increase the complexity since it is
-  //       anyhow necessary to traverse the list to check the existence
-  //       of the identical node. For the identical node, we only
-  //       increase the weight.
-  //
-  // @param tail: the tail vertex value
-  // @param head: the head vertex value
-  // @param weight: the weight of edge
-  //
-  void addEdge(T tail, T head, double weight);
+    if ( dst < 0 || dst >= vertices_.size() ) {
+      throw std::invalid_argument("Out of range: dst vertex");
+    }
 
-  //
-  // Delete the edge from tail to head
-  //
-  // Public method disconnect() is implemented to delete an edge for both
-  // directed graph and undirected graph
-  //
-  // @param tail: the tail vertex value
-  // @param head: the head vertex value
-  //
-  // @return: weight of the removed node
-  //
-  double delEdge(T tail, T head);
+    if ( src == dst ) { return false; }
+
+    // check existence of the edge
+    graph::Edge<T>* current_edge = vertices_[src];
+    while (current_edge != nullptr) {
+      if (current_edge->dst == dst) { return false; }
+      current_edge = current_edge->next;
+    }
+
+    // add new edge to the head of the linked list
+    graph::Edge<T>* new_edge = graph::newEdge(dst, weight);
+    new_edge->next = vertices_[src];
+    vertices_[src] = new_edge;
+    return true;
+  }
+
+  /**
+   * Delete an edge (src->dst)
+   *
+   * @param src: source vertex
+   * @param dst: destination vertex
+   * @return: weight of the deleted edge
+   */
+  T delEdge(size_t src, size_t dst) {
+    if ( src < 0 || src >= vertices_.size() ) {
+      throw std::invalid_argument("Out of range: src vertex");
+    }
+
+    if ( dst < 0 || dst >= vertices_.size() ) {
+      throw std::invalid_argument("Out of range: dst vertex");
+    }
+
+    graph::Edge<T>* current_edge = vertices_[src];
+    while (current_edge != nullptr) {
+      if (current_edge->dst == dst) {
+        return current_edge->weight;
+      }
+
+      current_edge = current_edge->next;
+    }
+
+    // src and dst are not connected
+    return 0;
+  }
 
 public:
-  //
-  // constructor
-  //
-  Graph();
 
-  //
+  /**
+   * constructor
+   *
+   * @param size
+   */
+  explicit Graph(size_t size) : vertices_(size) {}
+
   // copy constructor
-  //
-  Graph(const Graph<T>& g);
+  Graph(const Graph& g) : vertices_(g.size()) {
+    for (size_t i=0; i < vertices_.size(); ++i) {
+      graph::Edge<T>* current_edge_cp = g.vertices_[i];
+      graph::Edge<T>* previous_edge = nullptr;
+      graph::Edge<T>* current_edge = nullptr;
+      while (current_edge_cp != nullptr) {
+        current_edge = new graph::Edge<T>(*current_edge_cp);
+        if (!vertices_[i]) {
+          vertices_[i] = current_edge;
+        } else {
+          previous_edge->next = current_edge;
+        }
+        previous_edge = current_edge;
+        current_edge_cp = current_edge_cp->next;
+      }
+    }
+  }
 
-  //
   // destructor
-  //
-  virtual ~Graph();
+  virtual ~Graph() {
+    for (size_t i = 0; i < vertices_.size() ; ++i) {
+      clearList(i);
+    }
+  }
 
-  //
+  // display the graph
+  void display() const {
+    std::cout << "------------------------------" << std::endl;
+
+    for (int i = 0; i < vertices_.size(); ++i ) {
+      std::cout << "Vertex [" << i << "] ";
+
+      graph::Edge<T>* current_edge = vertices_[i];
+      while (current_edge != nullptr) {
+        std::cout << " -> " << current_edge->dst
+                  << " (" << current_edge->weight << ")";
+        current_edge = current_edge->next;
+      }
+
+      std::cout << std::endl;
+    }
+  }
   // get No. of vertices in the graph
-  //
-  std::size_t size() const;
+  std::size_t size() const { return vertices_.size(); }
 
-  //
-  // get the index of a vertex by value
-  //
-  // @param value: the vertex value
-  //
-  // @return: the vertex index
-  //
-  int const valueToIndex(T value) const;
-
-  //
-  // get the value of a vertex by index
-  //
-  // @param value: the vertex index
-  //
-  // @return: the vertex value
-  //
-  T const indexToValue(int idx) const;
-
-  //
-  // get the pointer to a const vertex by vertex value
-  //
-  // @param value: the vertex value
-  //
-  // @return: pointer to the const vertex
-  //
-  graph::Vertex<T> const* getVertex(T value) const;
-
-  //
-  // get the pointer to a const vertex by index of the vertex vector
-  //
-  // @param value: the index
-  //
-  // @return: pointer to the const vertex
-  //
-  graph::Vertex<T> const* getVertexByIndex(int index) const;
-
-  //
   // get No. of edges in the graph
-  //
-  virtual int countEdge() const;
+  virtual size_t countEdge() const = 0;
 
-  //
   // get the sum of weights of all the edges in the graph
-  //
-  virtual double countWeightedEdge() const;
+  virtual T countWeight() const = 0;
 
-  //
-  // get a vector of vertices with at least one edge
-  //
-  std::vector<T> getConnectedVertices() const;
+  /**
+   * connect two vertecies (add one edge for directed graph and two
+   * for undirected graph)
+   *
+   * @param src: source vertex
+   * @param dst: destination vertex
+   * @param weight: edge weight
+   * @return: true for new edge(s) is(are) added.
+   */
+  virtual bool connect(size_t src, size_t dst) = 0;
+  virtual bool connect(size_t src, size_t dst, T weight) = 0;
 
-  //
-  // check whether two vertices are connected
-  //
-  // @param tail: the tail vertex value
-  // @param head: the head vertex value
-  //
-  // @return: true for connected and false for unconnected. Throw an error
-  //          if the two vertices are only partially connected.
-  //
-  virtual bool isConnected(T tail, T head);
-
-  //
-  // connect two vertices
-  //
-  // @param tail: the tail vertex value
-  // @param head: the head vertex value
-  // @param weight: the weight of the edge
-  //
-  // @return: true for success and false for already connected vertices
-  //
-  virtual bool connect(T tail, T head, double weight=1.0);
-
-  //
-  // disconnect two vertices
-  //
-  // @param tail: the tail vertex value
-  // @param head: the head vertex value
-  //
-  // @return: number of edges between the two vertices
-  //
-  virtual double disconnect(T tail, T head);
+  /**
+   * disconnect two vertices
+   *
+   * @param src: source vertex
+   * @param dst: destination vertex
+   * @return: weight of the edge removed
+   */
+  virtual T disconnect(size_t src, size_t dst) = 0;
 
   //
   // collapse the vertex src to the vertex dst and empty the linked list for src
   //
-  // @param src: the value of the source vertex
-  // @param dst: the value of the destination vertex
+  // @param src: the source vertex
+  // @param dst: the destination vertex
   //
-  virtual void collapse(T src, T dst);
+  virtual void collapse(size_t src, size_t dst) {};
 
-  //
-  // display the graph
-  //
-  void display() const;
-
-};
+  graph::Edge<T>* getList(size_t src) const {
+    if ( src < 0 || src >= vertices_.size() ) {
+      throw std::invalid_argument("Out of range: src");
+    } else {
+      return vertices_[src];
+    }
+  }};
 
 #endif //GRAPH_GRAPH_H

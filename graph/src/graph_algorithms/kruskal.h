@@ -8,53 +8,48 @@
 #include <algorithm>
 
 #include "breath_first_search.h"
-#include "../ud_graph.h"
+#include "../undirected_graph.h"
 
 
-// a union-find data structure composed of the head vertex (index) of
+// a union-find data structure composed of the head vertex of
 // each union and its rank
-typedef std::vector<std::pair<int, int>> union_find;
+typedef std::vector<std::pair<size_t, size_t>> union_find;
 
-//
-// Comparator for edge: less
-//
+// Comparator
 template <class T>
 struct edgeLess {
-  // <weight, <from vertex index, to vertex index>>
-  typedef std::pair<double, std::pair<int, int>> graph_edge;
+  // <weight, <src, dst>>
+  typedef std::pair<T, std::pair<size_t, size_t>> graph_edge;
 
   bool operator()(const graph_edge& e1, const graph_edge& e2) {
     return e1.first < e2.first;
   }
 };
 
-
-//
-// Find the head vertex of a vertex
-//
-// @param vertex: index of the vertex
-// @param union_: union-find data structure
-//
-// @return: index of the head vertex
-//
-int find(int vertex, const union_find& union_) {
-  int head(union_[vertex].first);
-  while ( vertex != head ) {
-    vertex = head;
-    head = union_[vertex].first;
+/**
+ * Find the head vertex of a vertex.
+ *
+ * @param src: source vertex
+ * @param union_: union-find data structure
+ * @return: head vertex
+ */
+size_t find(size_t src, const union_find& union_) {
+  size_t head(union_[src].first);
+  while ( src != head ) {
+    src = head;
+    head = union_[src].first;
   }
   return head;
 }
 
-
-//
-// Fuse the two unions by rank
-//
-// @param head1: index of the head vertex 1
-// @param head2: index of the head vertex 2
-// @param union_: union-find data structure
-//
-void unionByRank(int head1, int head2, union_find& union_) {
+/**
+ * Fuse the two unions by rank
+ *
+ * @param head1: head vertex 1
+ * @param head2: head vertex 2
+ * @param union_: union-find data structure
+ */
+void unionByRank(size_t head1, size_t head2, union_find& union_) {
 
   if ( union_[head1].second > union_[head2].second ) {
     union_[head2].first = union_[head1].first;
@@ -83,59 +78,54 @@ void unionByRank(int head1, int head2, union_find& union_) {
 //          vector of the leaves (<from vertex, to vertex>) in the
 //          tree in sequence.
 //
-template <class T>
-inline std::pair<double, std::vector<std::pair<T, T>>>
-kruskal(const UdGraph<T>& graph) {
+template <class T> std::pair<T, std::vector<std::pair<size_t, size_t>>>
+kruskal(const UndirectedGraph<T>& graph) {
   // check the connectivity of the graph
-  auto bfs_search = breathFirstSearch(graph, graph.indexToValue(0));
-
+  auto bfs_search = breathFirstSearch(graph, 0);
   if ( bfs_search.size() != graph.size() ) {
     throw std::invalid_argument("Input graph is not connected!");
   }
 
-  // <weight, <tail vertex index, head vertex index>>
-  typedef std::pair<double, std::pair<int, int>> graph_edge;
+  // <weight, <src, dst>>
+  typedef std::pair<T, std::pair<size_t, size_t>> graph_edge;
   // store all the edges in a vector
   std::vector<graph_edge> edges;
   // read out all the edges
-  for ( int i=0; i<graph.size(); ++i ) {
-    graph::Edge<T>* current_edge = graph.getVertexByIndex(i)->next;
+  for ( size_t i=0; i<graph.size(); ++i ) {
+    graph::Edge<T>* current_edge = graph.getList(i);
     while ( current_edge ) {
       edges.push_back(std::make_pair(
-          current_edge->weight,
-          std::make_pair(i, graph.valueToIndex(current_edge->value))));
+          current_edge->weight, std::make_pair(i, current_edge->dst)));
       current_edge = current_edge->next;
     }
   }
-  // sort the edges in descending order, O(ElogE)
+  // sort the edges in descending order
   std::sort(edges.begin(), edges.end(), edgeLess<T>());
 
   union_find union_;
 
   // initialization
-  for ( int i=0; i<graph.size(); ++i ) {
+  for ( size_t i=0; i<graph.size(); ++i ) {
     union_.push_back(std::make_pair(i, 0));
   }
 
-  // (tail, head) vertices in the minimum spanning tree
-  std::vector<std::pair<T, T>> mst;
+  // edges (src, dst) in the minimum spanning tree in sequence
+  std::vector<std::pair<size_t, size_t>> mst;
   // total cost of the minimum spanning tree
-  double cost = 0;
+  T cost = 0;
   for ( auto v : edges ) {
-    if ( mst.size() == graph.size() ) { break; }
+    if (mst.size() == graph.size()) { break; }
 
     // O(ElogV) in worst case for union-by-rank
-    int head_of_tail_vertex = find(v.second.first, union_);
+    size_t head_src = find(v.second.first, union_);
     // O(ElogV) in worst case for union-by-rank
-    int head_of_head_vertex = find(v.second.second, union_);
+    size_t head_dst = find(v.second.second, union_);
 
     // if they are in different unions
-    if ( head_of_tail_vertex != head_of_head_vertex ) {
-      mst.push_back(std::make_pair(graph.indexToValue(v.second.first),
-                                   graph.indexToValue(v.second.second)));
+    if ( head_src != head_dst ) {
+      mst.push_back(v.second);
       cost += v.first;
-
-      unionByRank(head_of_tail_vertex, head_of_head_vertex, union_);
+      unionByRank(head_src, head_dst, union_);
     }
   }
   return std::make_pair(cost, mst);

@@ -10,40 +10,39 @@
 #include "../graph.h"
 
 
-//
-// Breath-first-search (BFS) starting from a vertex
-//
-// @param graph: graph object
-// @param vertex: the starting vertex value
-//
-// @return: a vector of visited vertices, ordered by finding time
-//
-template <class G, class T>
-std::vector<T> breathFirstSearch(const G& graph, T value) {
-  graph::Vertex<T> const* v = graph.getVertex(value);
-  if ( !v ) { return {}; }
+/**
+ * Breadth-first-search (DFS) starting from a vertex
+ *
+ * @param graph: graph object
+ * @param src: the source vertex
+ * @return: a vector of visited vertices, ordered by finding time
+ */
+template <class T>
+std::vector<size_t> breathFirstSearch(const Graph<T>& graph, size_t src) {
+  if ( src < 0 || src >= graph.size() ) {
+    throw std::out_of_range("Out of range: src");
+  }
 
   // the container for visited vertices in finding sequence
-  std::vector<T> search;
-  std::queue<T> track;
+  std::vector<size_t> search;
+
+  std::queue<size_t> track;
   std::vector<bool> visited (graph.size(), false);
 
-  track.push(value);
-  search.push_back(value);
-  visited[graph.valueToIndex(value)] = true;
+  track.push(src);
+  search.push_back(src);
+  visited[src] = true;
   while (!track.empty()) {
-    graph::Vertex<T> const* current_head = graph.getVertex(track.front());
+    graph::Edge<T>* current_edge = graph.getList(track.front());
     track.pop();
-
-    graph::Edge<T>* current_node = current_head->next;
     // find all children vertices which have not been visited yet
-    while (current_node) {
-      if ( !visited[graph.valueToIndex(current_node->value)] ) {
-        track.push(current_node->value);
-        search.push_back(current_node->value);
-        visited[graph.valueToIndex(current_node->value)] = true;
+    while (current_edge) {
+      if ( !visited[current_edge->dst] ) {
+        track.push(current_edge->dst);
+        search.push_back(current_edge->dst);
+        visited[current_edge->dst] = true;
       }
-      current_node = current_node->next;
+      current_edge = current_edge->next;
     }
   }
 

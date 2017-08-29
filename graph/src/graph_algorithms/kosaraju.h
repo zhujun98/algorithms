@@ -5,50 +5,48 @@
 #ifndef GRAPH_KOSARAJU_H
 #define GRAPH_KOSARAJU_H
 
-#include <vector>
+#include <deque>
 
-#include "../graph.h"
+#include "../directed_graph.h"
 #include "depth_first_search.h"
 
 
-//
-// Apply the Kosaraju's algorithm to find the strongly connected components (SCC)
-//
-// @param graph: a directed graph
-//
-// @return: the strongly connected components
-//
+/**
+ * Kosaraju's algorithm to find the strongly connected components (SCC)
+ *
+ * @param graph: a directed graph
+ * @return: the strongly connected components
+ */
 template <class T>
-inline std::vector<std::vector<T>> kosaraju(Graph<T>& graph) {
-  std::vector<std::vector<T>> scc;
-  // reverse the directed graph
-  Graph<T> graph_reversed = graph::reverseGraph(graph);
+std::deque<std::deque<size_t>> kosaraju(DirectedGraph<T>& graph) {
+  std::deque<std::deque<size_t>> scc;
 
-  //
   // First pass, recursively run DFS on the original graph.
   // The finish time of each vertex will be store in a stack
-  //
+  graph.reverse();
+
   std::vector<bool> visited (graph.size(), false);
-  std::stack<T> finish_time;
+  std::stack<size_t> finish_time;
   for (std::size_t i = 0; i < graph.size(); ++i) {
     if (!visited[i]) {
-      std::vector<T> search = depthFirstSearch(graph, graph.indexToValue(i), visited);
+      std::vector<size_t> search = depthFirstSearch(graph, i, visited);
       for ( auto j=0; j < search.size(); ++j) {
         finish_time.push(search[j]);
       }
     }
   }
 
-  //
   // Second pass, recursively run DFS using each vertex stored in
   // the stack. The last finished vertex will be tracked first!
-  //
-  std::vector<bool> reversed_visited (graph_reversed.size(), false);
+  graph.reverse();
+
+  std::vector<bool> reversed_visited (graph.size(), false);
   while (!finish_time.empty()) {
-    if (!reversed_visited[graph_reversed.valueToIndex(finish_time.top())]) {
-      std::vector<T> search = depthFirstSearch(
-          graph_reversed, finish_time.top(), reversed_visited);
-      scc.push_back(search);
+    if (!reversed_visited[finish_time.top()]) {
+      std::vector<size_t> search = depthFirstSearch(
+          graph, finish_time.top(), reversed_visited);
+      std::deque<size_t> sub_scc {search.begin(), search.end()};
+      scc.push_back(sub_scc);
     }
     finish_time.pop();
   }

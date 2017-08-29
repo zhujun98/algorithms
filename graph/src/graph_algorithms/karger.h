@@ -8,19 +8,20 @@
 #include <random>
 #include <vector>
 
-#include "../ud_graph.h"
+#include "../undirected_graph.h"
 
 
-//
-// contract an undirected graph until only two non-empty linked lists remain
-//
-// @param graph: an undirected graph
-//
-// @return: the number of edges in the contracted graph
-//
+/**
+ * Contract an undirected graph until only two non-empty linked lists remain
+ *
+ * @param graph: UndirectedGraph object
+ * @param display
+ * @return: the number of edges in the contracted graph
+ *
+ * TODO: finish
+ */
 template <class T>
-inline int graphContract(UdGraph<T>& graph, bool display=false) {
-
+inline size_t graphContract(UndirectedGraph<T>& graph, bool display=false) {
   // Distribution on which to apply the generator
   std::vector<T> connected_vertices = graph.getConnectedVertices();
 
@@ -45,23 +46,21 @@ inline int graphContract(UdGraph<T>& graph, bool display=false) {
   return int(graph.countWeightedEdge());
 }
 
-
-//
-// implementation of the Karger's mini-cut algorithm on an undirected graph
-//
-// @param n: the number of random contractions
-//
-// @return: the number of min cut
-//
+/**
+ * Karger's mini-cut algorithm on an undirected graph
+ *
+ * @param graph: UndirectedGraph object
+ * @param n: the number of random contractions
+ * @return: the number of min cut
+ */
 template <class T>
-inline int karger(const UdGraph<T>& graph, unsigned int n) {
+size_t karger(const UndirectedGraph<T>& graph, size_t n) {
 
-  int min_cut = graph.countWeightedEdge();
-  int cut;
+  size_t min_cut = graph.countEdge();
+  size_t cut;
 
-  // apply Karger's algorithm to find the minimum cut in the graph
-  for (int i = 0; i < n; ++i) {
-    UdGraph<T> graph_copy(graph);
+  for (unsigned int i = 0; i < n; ++i) {
+    auto graph_copy(graph);
 
     cut = graphContract(graph_copy);
     if (cut < min_cut) { min_cut = cut; }

@@ -10,64 +10,60 @@
 #include "../graph.h"
 
 
-//
-// Depth-first-search (DFS) starting from a vertex
-//
-// @param graph: graph object
-// @param value: starting vertex value
-// @param visited: An indicator which indicates whether a vertex has
-//                 been visited.
-//
-// @return: a vector of sink vertices, ordered by finding time
-//
-template <class G, class T>
-std::vector<T> depthFirstSearch(const G& graph, T value, std::vector<bool>& visited) {
-  assert( graph.size() == visited.size() );
+/**
+ * Depth-first-search (DFS) starting from a vertex
+ *
+ * @param graph: graph object
+ * @param src: source vertex
+ * @param visited: indicator
+ * @return: a vector of sink vertices, ordered by finding time
+ */
+template <class T>
+std::vector<size_t> depthFirstSearch(const Graph<T>& graph, size_t src,
+                                     std::vector<bool>& visited) {
+  if (graph.size() != visited.size()) {
+    throw std::invalid_argument("Invalid argument: different sizes of graph and indicator");
+  }
 
-  graph::Vertex<T> const* v = graph.getVertex(value);
-  if ( !v ) { return {}; }
+  if ( src < 0 || src >= graph.size() ) {
+    throw std::out_of_range("Out of range: src");
+  }
 
   // the container for sink vertices in finding sequence
-  std::vector<T> sink;
-  std::stack<T> tracker;
+  std::vector<size_t> sink;
 
-  tracker.push(value);
-  T current_vertex_value;
-  // search the vertex reachable from the current vertex
+  std::stack<size_t> tracker;
+  tracker.push(src);
+  visited[src] = true;
+
   while ( !tracker.empty() ) {
-    current_vertex_value = tracker.top();
-    visited[graph.valueToIndex(current_vertex_value)] = true;
-
-    bool retreat = true;  // a flag indicating whether to retreat to the last vertex
-    graph::Edge<T>* current_node = graph.getVertex(current_vertex_value)->next;
+    graph::Edge<T>* current_edge = graph.getList(tracker.top());
     // find the next reachable vertex which has not been visited
-    while ( current_node ) {
-      if ( !visited[graph.valueToIndex(current_node->value)] ) {
-        tracker.push(current_node->value);
-        retreat = false;
-        break;
+    while (current_edge) {
+      if (!visited[current_edge->dst]) {
+        visited[current_edge->dst] = true;
+        tracker.push(current_edge->dst);
+        current_edge = graph.getList(current_edge->dst);
+      } else {
+        current_edge = current_edge->next;
       }
-      current_node = current_node->next;
     }
     // if a sink vertex is found
-    if ( retreat ) {
-      sink.push_back(current_vertex_value);
-      tracker.pop();
-    }
-
+    auto vertex = tracker.top();
+    sink.push_back(vertex);
+    tracker.pop();
   }
 
   return sink;
 }
 
-
 //
 // Use internal generated indicator for depth-first-search
 //
-template <class G, class T>
-std::vector<T> depthFirstSearch(const G& graph, T value) {
+template <class T>
+std::vector<size_t> depthFirstSearch(const Graph<T>& graph, size_t src) {
   std::vector<bool> visited (graph.size(), false);
-  return depthFirstSearch(graph, value, visited);
+  return depthFirstSearch(graph, src, visited);
 }
 
 
