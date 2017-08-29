@@ -37,6 +37,19 @@ namespace graph_test {
       graph_utilities::printContainer(expected_cost);
       graph_utilities::printContainer(expected_came_from);
     }
+
+    graph.connect(3, 0, 2);
+    try
+    {
+      bellmanFord(graph, src);
+      std::cerr << "Failed to detect negative cycle!" << std::endl;
+      exit (EXIT_FAILURE);
+    }
+    catch (const std::exception& ia)
+    {
+//      std::cout << ia.what() << "\n";
+      std::cout << "Passed!" << std::endl;
+    }
   }
 
 }

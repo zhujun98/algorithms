@@ -13,13 +13,13 @@
 
 
 /**
- * implementation of the Bellman-Ford's shorted path algorithm
+ * Bellman-Ford's shorted path algorithm
  *
  * Time complexity O(VE)
  *
  * @param graph: a directed graph
  * @param src: the source vertex
- * @return: a pair of two deque: the first one stores the shortest
+ * @return: a pair of two deques: the first one stores the smallest
  *          cost of each vertex; the second one stores the previous
  *          vertex of each vertex in the shortest path.
  */
@@ -42,8 +42,8 @@ bellmanFord(const DirectedGraph<T>& graph, size_t src) {
 
   // If there is no negative directed cycle, the minimum path from vertex
   // u to v will contain at most [V - 1] edges.
-  for ( size_t count = 0; count < graph.size() - 1; ++count ) {
-    for ( size_t edge_src=0; edge_src < graph.size(); ++edge_src ) {
+  for (size_t count = 0; count < graph.size() - 1; ++count) {
+    for (size_t edge_src=0; edge_src < graph.size(); ++edge_src) {
       graph::Edge<T>* current_edge = graph.getList(edge_src);
       while (current_edge != nullptr) {
         size_t edge_dst = current_edge->dst;
@@ -56,6 +56,20 @@ bellmanFord(const DirectedGraph<T>& graph, size_t src) {
 
         current_edge = current_edge->next;
       }
+    }
+  }
+
+  // check negative cycles
+  for (size_t edge_src=0; edge_src < graph.size(); ++edge_src) {
+    graph::Edge<T>* current_edge = graph.getList(edge_src);
+    while (current_edge != nullptr) {
+      T weight = current_edge->weight;
+
+      if (costs[edge_src] + weight < costs[current_edge->dst]) {
+        throw std::invalid_argument("Found negative cycle in the graph!");
+      }
+
+      current_edge = current_edge->next;
     }
   }
 
