@@ -20,7 +20,7 @@ namespace graph_test {
 
     // starting from an appointing vertex
     mst_tree mst = kruskal(graph);
-    mst_tree expected_mst = {-13, {{1, 3}, {4, 0}, {4, 3}, {2, 4}, {4, 5}}};
+    mst_tree expected_mst = {-13, {{1, 3}, {4, 0}, {4, 3}, {4, 2}, {4, 5}}};
 
     if (mst == expected_mst) {
       std::cout << "Passed!" << std::endl;

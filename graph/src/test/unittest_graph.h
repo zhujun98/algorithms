@@ -94,12 +94,12 @@ namespace graph_test {
   // The annotation "0 *- 1" means from 0 to 1.
   //
   //    (1)    (-6)      (5)
-  // a ---- b ---- d -------- f
-  // | \    |    /   \       /
+  // a *--- b *--- d *------- f
+  // * *    *    /   *       /
   // |  \   |(2)/     \(-3) / (2)
   // |(4)\  |  / (3)   \   /
-  // |    \ | /         \ /
-  // |      c  --------  e
+  // |    \ | *         \ *
+  // |      c  *-------  e
   // |           (-2)    |
   // |------- (-4) ------|
   //
@@ -112,6 +112,7 @@ namespace graph_test {
 
     graph.connect(a, b, 1);
     graph.connect(a, c, 4);
+    graph.connect(a, e, -4);
     graph.connect(b, d, -6);
     graph.connect(b, c, 2);
     graph.connect(c, d, 3);
@@ -119,7 +120,7 @@ namespace graph_test {
     graph.connect(d, e, -3);
     graph.connect(d, f, 5);
     graph.connect(e, f, 2);
-    graph.connect(a, e, -4);
+
 
     assert(graph.countEdge() == 10);
     assert(graph.countWeight() == 2);
@@ -151,6 +152,7 @@ namespace graph_test {
 
     graph.connect(a, b, 1);
     graph.connect(a, c, 4);
+    graph.connect(a, e, -4);
     graph.connect(b, d, -6);
     graph.connect(b, c, 2);
     graph.connect(c, d, 3);
@@ -158,7 +160,6 @@ namespace graph_test {
     graph.connect(d, e, -3);
     graph.connect(d, f, 5);
     graph.connect(e, f, 2);
-    graph.connect(a, e, -4);
 
     assert(graph.countEdge() == 10);
     assert(graph.countWeight() == 2);
