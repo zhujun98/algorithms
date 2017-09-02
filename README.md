@@ -37,6 +37,8 @@ See [here](./sorting_and_selection)
   - Implementation utilizing std::priority_queue()
   - Implementation utilizing std::set()
 * Bellman-Ford's algorithm
+* Floyd-Marshall's algorithm
+* Johnson's algorithm
 * Prim's algorithm
   - Implementation utilizing std::priority_queue()
 * Kruskal's algorithm

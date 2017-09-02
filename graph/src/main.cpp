@@ -9,9 +9,12 @@
 #include "test/test_prim.h"
 #include "test/test_kruskal.h"
 #include "test/test_bellman_ford.h"
+#include "test/test_floyd_warshall.h"
+#include "test/test_johnson.h"
 #include "assignments/assignment_shortest_path.h"
 #include "assignments/assignment_MST.h"
 #include "assignments/assignment_SCC.h"
+#include "assignments/assignment_all_pair_shortest_path.h"
 
 
 int main() {
@@ -30,10 +33,14 @@ int main() {
   graph_test::testPrim();
   graph_test::testKruskal();
   graph_test::testBellmanFord();
+  graph_test::testFloydWarshall();
+  graph_test::testJohnson();
 //  graph_test::testKarger();
+
   runShortestPathAssignment();
   runPrimAssignment();
   runSccAssignment();
+  runAllPairShortestPathAssignment();
 //  assignment::runKargerAssignment();
 
   return 0;

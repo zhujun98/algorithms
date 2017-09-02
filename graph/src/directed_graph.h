@@ -13,6 +13,7 @@ class DirectedGraph : public Graph<T> {
 protected:
 
   using Graph<T>::vertices_;
+  using Graph<T>::clearList;
 
 public:
 
@@ -57,6 +58,32 @@ public:
     return (this->delEdge(src, dst));
   }
 
+  // increase the number of vertices by one
+  void increaseVertex() {
+    vertices_.push_back(nullptr);
+  }
+
+  // decrease the number of vertices by one
+  void decreaseVertex() {
+    clearList(vertices_.size() - 1);
+    vertices_.pop_back();
+  }
+
+  // increase the weight of an edge
+  bool increaseWeight(size_t src, size_t dst, T weight) {
+    auto current_edge = vertices_[src];
+    while (current_edge != nullptr) {
+      if (current_edge->dst == dst) {
+        current_edge->weight += weight;
+        return true;
+      }
+      current_edge = current_edge->next;
+    }
+
+    return false;
+  }
+
+  // reverse a directed graph
   void reverse() {
     size_t n_vertices = this->size();
     std::vector<graph::Edge<T>*> new_vertices_(n_vertices);

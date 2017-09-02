@@ -110,11 +110,13 @@ protected:
     }
 
     graph::Edge<T>* current_edge = vertices_[src];
+    graph::Edge<T>* previous_edge = current_edge;
     while (current_edge != nullptr) {
       if (current_edge->dst == dst) {
+        previous_edge->next = current_edge->next;
         return current_edge->weight;
       }
-
+      previous_edge = current_edge;
       current_edge = current_edge->next;
     }
 
