@@ -27,7 +27,7 @@ inline T euclideanDist(std::pair<T, T> p1, std::pair<T, T> p2) {
  * possible path. However, there exist many specially arranged city
  * distributions which make the NN algorithm give the worst route.
  *
- * Time complexity O(V+E)
+ * Time complexity O(V^2)
  *
  * @param graph: a vector contains the (x, y) coordinates of each vertex
  * @param src: source vertex
