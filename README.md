@@ -59,3 +59,8 @@ See [here](./graph)
 See [here](./hash_table)
 
 ## Binary search tree
+
+## NP-Complete problems
+
+* Travelling sales man (TSP) problem
+  - Nearest neighbor heuristic implementation
