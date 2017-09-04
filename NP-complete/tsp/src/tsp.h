@@ -53,6 +53,7 @@ tspNN(std::vector<std::pair<T, T>> xy, size_t src = 0) {
     size_t next_vertex = current_vertex;
     for (size_t j = 0; j < xy.size(); ++j) {
       if (!visited[j] && j != current_vertex) {
+        //TODO:: can be faster without calculating sqrt
         T dist = euclideanDist(xy[current_vertex], xy[j]);
         if (dist < min_dist) {
           min_dist = dist;
