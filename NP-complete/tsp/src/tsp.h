@@ -176,8 +176,8 @@ size_t getBitPosition(size_t num) {
 
 
 /**
- * Implementation of Travelling sales man problem using the
- * dynamic programming algorithm which yields the exact correct result.
+ * Implementation of Travelling sales man problem with dynamic
+ * programming. This implementation yields the exact optimal solution.
  *
  * Time complexity O(V^2*2^V)
  *
@@ -206,12 +206,12 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
     }
   }
 
+  // there are 2^V sub-sets in S = {0, 1, 2, ... , V - 1}/
   size_t n_subsets = ((size_t)1 << xy.size());
 
-  // 2^(V - 1) costs for all sub-sets of S = {0, 1, 2, ... , n-1}/src
   std::vector<std::vector<T>> costs(xy.size(), std::vector<T>(n_subsets, kINF));
   // costs[i][s] is the shortest path length from src to i and only
-  // pass each vertex in set s only once
+  // pass each vertex in subset s only once, where i belongs to s
   for (size_t i = 0; i < xy.size(); ++i) {
     for (size_t j = 0; j < xy.size(); ++j) {
       if (i == j) {
@@ -224,18 +224,17 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
     // src must not belong to s
     if (((size_t)1 << src) & s) { continue; }
 
+    // the last vertex is i
     for (size_t i = 0; i < xy.size(); ++i) {
-      // i must be included in the set s
-      if (!(((size_t)1 << i) & s) || i == src) { continue; }
+      // i must belong to set s
+      if (!(((size_t)1 << i) & s)) { continue; }
 
-      // find costs[i][s]
       T min_dist = costs[i][s];
-
       // mask is used to unset one bit in s
       size_t mask = ((size_t)1 << xy.size()) - 1 - ((size_t)1 << i);
       size_t masked = s & mask;
       for (size_t j = 0; j < xy.size(); ++j) {
-        // j must belong to set s
+        // j must belong to set s and j != i and j != src
         if (!(((size_t)1 << j) & masked) || j == i || j == src) { continue; }
 
         T dist = costs[j][masked] + dists[j][i];
@@ -245,6 +244,10 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
     }
   }
 
+  // For all V - 1 options of costs[i][s],
+  // where i = 0, 1, ..., V - 1 where i != src, and
+  // s = {1, 2, ..., V - 1}/src, add the last path i -> src
+  // and find the minimum distance using brute force search.
   T min_dist = kINF;
   size_t s = ((size_t)1 << xy.size()) - 1 - ((size_t)1 << src);
   for (size_t i = 0; i < xy.size(); ++i) {

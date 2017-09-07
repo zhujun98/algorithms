@@ -57,10 +57,9 @@ void runTspAssignment() {
   auto result = tspDP(city_coordinates);
   std::cout << "Time consumption: "
             << 1000.0 * (clock() - t0) / CLOCKS_PER_SEC << " ms" << std::endl;
-  std::cout << std::fixed << std::setprecision(4) << result << std::endl;
-//  assert((long)result.first == 1203406);
 
-//  std::cout << "Passed" << std::endl;
+  assert((long)result == 26442);
+  std::cout << "Passed" << std::endl;
 }
 
 
@@ -120,9 +119,8 @@ void runTspNNAssignment() {
   ifs.close();
 
   auto result = tspNN(city_coordinates);
-//  std::cout << std::fixed << std::setprecision(4) << result.first << std::endl;
-  assert((long)result.first == 1203406);
 
+  assert((long)result.first == 1203406);
   std::cout << "Passed" << std::endl;
 }
 
@@ -134,7 +132,7 @@ int main() {
 
   runTspAssignment();
 
-//  runTspNNAssignment();
+  runTspNNAssignment();
 
   return 0;
 }
