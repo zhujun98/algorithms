@@ -172,14 +172,15 @@ tspNN(std::vector<std::pair<T, T>> xy, size_t src = 0) {
  * Space complexity O(2^V)
  *
  * @param xy: a vector contains the (x, y) coordinates of each vertex
- * @param src: source vertex
+ * @param src: source vertex. Use type 'unsigned int' to indicate that
+ *             this algorithm only works for small problems.
  * @return: a pair with first element being the distance of the TSP
  *          path and the second element being a deque of the vertices
  *          along the TSP path in sequence.
  */
 template <class T>
-std::pair<T, std::vector<size_t>>
-tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
+std::pair<T, std::vector<unsigned int>>
+tspDP(std::vector<std::pair<T, T>> xy, unsigned int src = 0) {
   if (xy.size() > 25) {
     throw std::invalid_argument("The problem size is too larger!");
   }
@@ -208,11 +209,11 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
     }
   }
 
-  // the second to last visited vertex in costs[i][s]
-  std::vector<std::vector<size_t>>
-      prevs(xy.size(), std::vector<size_t>(n_subsets, xy.size()));
-  for (size_t i = 0; i < xy.size(); ++i) {
-    for (size_t j = 0; j < xy.size(); ++j) {
+  // The second to last visited vertex in costs[i][s]
+  std::vector<std::vector<unsigned int>>
+      prevs(xy.size(), std::vector<unsigned int>(n_subsets, xy.size()));
+  for (unsigned int i = 0; i < xy.size(); ++i) {
+    for (unsigned int j = 0; j < xy.size(); ++j) {
       if (i == j) {
         prevs[i][(size_t)1 << i] = src;
       }
@@ -224,16 +225,16 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
     if (((size_t)1 << src) & s) { continue; }
 
     // the last vertex is i
-    for (size_t i = 0; i < xy.size(); ++i) {
+    for (unsigned int i = 0; i < xy.size(); ++i) {
       // i must belong to set s
       if (!(((size_t)1 << i) & s)) { continue; }
 
       T min_dist = costs[i][s];
-      size_t prev_vtx = i;
+      unsigned int prev_vtx = i;
       // mask is used to unset one bit in s
       size_t mask = ((size_t)1 << xy.size()) - 1 - ((size_t)1 << i);
       size_t masked = s & mask;
-      for (size_t j = 0; j < xy.size(); ++j) {
+      for (unsigned int j = 0; j < xy.size(); ++j) {
         // j must belong to set s and j != i and j != src
         if (!(((size_t)1 << j) & masked) || j == i || j == src) { continue; }
 
@@ -254,7 +255,7 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
   // and find the minimum distance using brute force search.
   size_t s_src = ((size_t)1 << xy.size()) - 1 - ((size_t)1 << src);
   size_t s_total = ((size_t)1 << xy.size()) - 1;
-  for (size_t i = 0; i < xy.size(); ++i) {
+  for (unsigned int i = 0; i < xy.size(); ++i) {
     if (i != src) {
       T dist = dists[i][src] + costs[i][s_src];
       if (dist < costs[src][s_total]) {
@@ -264,14 +265,14 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
     }
   }
 
+  // visiting sequence of the TSP path
+  std::vector<unsigned int> sequence(xy.size()+1);
   // reconstruct the path
-  std::vector<size_t> sequence(xy.size()+1); // visiting sequence of the TSP path
-
   size_t prev_s = s_total;
-  size_t prev_vtx = src;
-  size_t count = 0;
+  unsigned int prev_vtx = src;
+  unsigned int count = 0;
   while (prev_s) {
-    size_t vtx = prev_vtx;
+    unsigned int vtx = prev_vtx;
     sequence[count] = vtx;
     ++count;
 
