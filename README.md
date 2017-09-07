@@ -64,5 +64,7 @@ See [here](./hash_table)
 
 * Travelling sales man (TSP) problem
   - Nearest neighbor heuristic implementation
+  - Dynamic programming implementation
+  - Brute force implementation
   
 See [here](./NP-complete)
