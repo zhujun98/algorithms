@@ -58,7 +58,7 @@ void runTspAssignment() {
   std::cout << "Time consumption: "
             << 1000.0 * (clock() - t0) / CLOCKS_PER_SEC << " ms" << std::endl;
 
-  assert((long)result == 26442);
+  assert((long)result.first == 26442);
   std::cout << "Passed" << std::endl;
 }
 

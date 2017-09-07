@@ -40,8 +40,8 @@ int testTSPDP() {
 
   auto result = tspDP(xy);
 
-  assert(std::abs(result - min_dist) < 1e-4);
-//  assert(result.second == tsp_path);
+  assert(std::abs(result.first - min_dist) < 1e-4);
+  assert(result.second == tsp_path);
 
   std::cout << "Passed" << std::endl;
 }

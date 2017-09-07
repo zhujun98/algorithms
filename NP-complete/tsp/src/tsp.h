@@ -163,23 +163,13 @@ tspNN(std::vector<std::pair<T, T>> xy, size_t src = 0) {
   return std::make_pair(total_dist, sequence);
 }
 
-size_t getBitPosition(size_t num) {
-  size_t count = 0;
-  size_t mask = 1;
-  while ( !(mask & num) ) {
-    mask = mask << 1;
-    ++count;
-  }
-
-  return count;
-}
-
 
 /**
  * Implementation of Travelling sales man problem with dynamic
  * programming. This implementation yields the exact optimal solution.
  *
  * Time complexity O(V^2*2^V)
+ * Space complexity O(2^V)
  *
  * @param xy: a vector contains the (x, y) coordinates of each vertex
  * @param src: source vertex
@@ -188,10 +178,8 @@ size_t getBitPosition(size_t num) {
  *          along the TSP path in sequence.
  */
 template <class T>
-//std::pair<T, std::vector<size_t>>
-T
+std::pair<T, std::vector<size_t>>
 tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
-
   if (xy.size() > 25) {
     throw std::invalid_argument("The problem size is too larger!");
   }
@@ -215,7 +203,18 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
   for (size_t i = 0; i < xy.size(); ++i) {
     for (size_t j = 0; j < xy.size(); ++j) {
       if (i == j) {
-        costs[i][(size_t)1 << j] = dists[src][j];
+        costs[i][(size_t)1 << i] = dists[src][j];
+      }
+    }
+  }
+
+  // the second to last visited vertex in costs[i][s]
+  std::vector<std::vector<size_t>>
+      prevs(xy.size(), std::vector<size_t>(n_subsets, xy.size()));
+  for (size_t i = 0; i < xy.size(); ++i) {
+    for (size_t j = 0; j < xy.size(); ++j) {
+      if (i == j) {
+        prevs[i][(size_t)1 << i] = src;
       }
     }
   }
@@ -230,6 +229,7 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
       if (!(((size_t)1 << i) & s)) { continue; }
 
       T min_dist = costs[i][s];
+      size_t prev_vtx = i;
       // mask is used to unset one bit in s
       size_t mask = ((size_t)1 << xy.size()) - 1 - ((size_t)1 << i);
       size_t masked = s & mask;
@@ -238,9 +238,13 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
         if (!(((size_t)1 << j) & masked) || j == i || j == src) { continue; }
 
         T dist = costs[j][masked] + dists[j][i];
-        if (dist < min_dist) { min_dist = dist; }
+        if (dist < min_dist) {
+          min_dist = dist;
+          prev_vtx = j;
+        }
       }
       costs[i][s] = min_dist;
+      prevs[i][s] = prev_vtx;
     }
   }
 
@@ -248,16 +252,35 @@ tspDP(std::vector<std::pair<T, T>> xy, size_t src = 0) {
   // where i = 0, 1, ..., V - 1 where i != src, and
   // s = {1, 2, ..., V - 1}/src, add the last path i -> src
   // and find the minimum distance using brute force search.
-  T min_dist = kINF;
-  size_t s = ((size_t)1 << xy.size()) - 1 - ((size_t)1 << src);
+  size_t s_src = ((size_t)1 << xy.size()) - 1 - ((size_t)1 << src);
+  size_t s_total = ((size_t)1 << xy.size()) - 1;
   for (size_t i = 0; i < xy.size(); ++i) {
     if (i != src) {
-      T dist = dists[i][src] + costs[i][s];
-      if (dist < min_dist) { min_dist = dist; }
+      T dist = dists[i][src] + costs[i][s_src];
+      if (dist < costs[src][s_total]) {
+        costs[src][s_total] = dist;
+        prevs[src][s_total] = i;
+      }
     }
   }
 
-  return min_dist;
+  // reconstruct the path
+  std::vector<size_t> sequence(xy.size()+1); // visiting sequence of the TSP path
+
+  size_t prev_s = s_total;
+  size_t prev_vtx = src;
+  size_t count = 0;
+  while (prev_s) {
+    size_t vtx = prev_vtx;
+    sequence[count] = vtx;
+    ++count;
+
+    prev_vtx = prevs[prev_vtx][prev_s];
+    prev_s -= ((size_t)1 << vtx);
+  }
+  sequence[count] = src;
+
+  return std::make_pair(costs[src][s_total], sequence);
 }
 
 
