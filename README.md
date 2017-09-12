@@ -11,6 +11,8 @@
 * Maximum weight independent set of a path graph. See [here](./dynamic_programming/max_weight_independent_set)
 * Knapsack problem. See [here](./dynamic_programming/knapsack)
 
+## Local search
+
 ## Heap
 
 * Median maintenance. See [here](./median_maintenance) 
@@ -59,6 +61,10 @@ See [here](./graph)
 See [here](./hash_table)
 
 ## Binary search tree
+
+* Binary search tree
+
+See [here](./binary_search_tree)
 
 ## NP-Complete problems
 
