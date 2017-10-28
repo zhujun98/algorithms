@@ -16,45 +16,31 @@ namespace string_arithmetic
   //
   // add two strings arithmetically
   //
-  std::string strAdd(std::string a, std::string b) {
-    // calculate the difference of the length
-    long diff = a.size() - b.size();
-
-    // Add a '0' to the longer string on the left
-    // Add '0' to make the two strings have the same length
-    if (diff >= 0) {
-      a = '0' + a;
-      for (std::size_t i=0; i<=diff; ++i) { b = '0' + b; }
-    } else {
-      b = '0' + b;
-      diff = -diff;
-      for (std::size_t i=0; i<=diff; ++i) { a = '0' + a; }
-    }
-
+  std::string strAdd(std::string a, std::string b)
+  {
     std::string result;
-    int sum = 0;
     int carry = 0;
-
     // add chars in the two strings one by one from right to left
-    for (long i = a.size() - 1; i >= 0; --i) {
-      // Subtract '0' from the encoding to get the numeric value.
-      // All chars are represented by a number and '0' is the first of them.
-      sum = a[i] - '0' + b[i] - '0' + carry;
+    for (int i=a.size()-1, j=b.size()-1; i>=0 || j>=0 || carry>0; --i, --j)
+    {
+      int x = (i >= 0 ? a[i] - '0' : 0);
+      int y = (j >= 0 ? b[j] - '0' : 0);
+      int sum = x + y + carry;
 
-      // we do not want a zero in the highest position, which will cause
-      // infinite loop
-      if (sum == 0 && i == 0) { break; }
-
-      if (sum > 9) {
+      if (sum > 9)
+      {
         sum -= 10;
         carry = 1;
-      } else {
+      }
+      else
+      {
         carry = 0;
       }
 
-      // cannot use += here since it will append this_sum to sum
-      result = std::to_string(sum) + result;
+      result.push_back(static_cast<char>(sum + '0'));
     }
+    // reverse string
+    for (int i=0, j=result.size()-1; i<j; ++i, --j) std::swap(result[i], result[j]);
 
     return result;
   }
