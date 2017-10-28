@@ -8,11 +8,8 @@
 
 int main()
 {
-  std::cout << "Hello" << std::endl;
-
   testStrAdd();
   testStrSub();
-  testStrAddZero();
   testStringMul();
 
   //

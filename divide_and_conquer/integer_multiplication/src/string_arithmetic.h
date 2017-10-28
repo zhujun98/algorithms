@@ -14,6 +14,13 @@
 namespace string_arithmetic
 {
   //
+  // reverse a string
+  //
+  void reverse(std::string& s) {
+    for (int i=0, j=s.size()-1; i<j; ++i, --j) std::swap(s[i], s[j]);
+  }
+
+  //
   // add two strings arithmetically
   //
   std::string strAdd(std::string a, std::string b)
@@ -39,8 +46,8 @@ namespace string_arithmetic
 
       result.push_back(static_cast<char>(sum + '0'));
     }
-    // reverse string
-    for (int i=0, j=result.size()-1; i<j; ++i, --j) std::swap(result[i], result[j]);
+
+    reverse(result);
 
     return result;
   }
@@ -49,47 +56,43 @@ namespace string_arithmetic
   // subtract two strings arithmetically ( a - b )
   // We assume a >= b
   //
+  // Note used here, just for fun:)
+  //
   std::string strSub(std::string a, std::string b) {
-    // calculate the difference of the length
-    long diff = a.size() - b.size();
-
-    // Add a number of "0" to make the strings have the same length
-    if ( diff > 0 ) {
-      for (std::size_t i=0; i<diff; ++i) { b = '0' + b; }
-    } else if ( diff < 0 ) {
-      throw std::invalid_argument("a is smaller than b!");
-    }
-
     std::string result;
-    int difference = 0;
     int carry = 0;
 
-    // subtract chars in the two strings one by one from right to left
-    for (long i = a.size() - 1; i >= 0; --i) {
-      // Subtract '0' from the encoding to get the numeric value.
-      // All chars are represented by a number and '0' is the first of them.
-      difference = (a[i] - '0') - (b[i] - '0') + carry;
+    for (int i=a.size()-1, j=b.size()-1; i>=0 || j>=0 || carry<0; --i, --j) {
+      if (i < 0 && carry < 0) throw std::invalid_argument("a is less than b!\n");
 
-      if (difference < 0) {
-        difference += 10;
+      int x = (i >= 0 ? a[i] - '0' : 0);
+      int y = (j >= 0 ? b[j] - '0': 0);
+
+      int diff = x - y + carry;
+
+      if (diff < 0) {
+        diff += 10;
         carry = -1;
       } else {
         carry = 0;
       }
-      // cannot use += here since it will append this_sum to sum
-      result = std::to_string(difference) + result;
+
+      result.push_back(static_cast<char>(diff + '0'));
     }
+
+    reverse(result);
 
     return result;
   }
 
   //
-  // add a number of "0" to the end of a string
+  // check is a string is all 0
   //
-  std::string strAddZero(std::string a, long n) {
-    for (int i=0; i < n; ++i) { a += "0"; }
-
-    return a;
+  bool isZero(const std::string& a) {
+    for (auto c : a) {
+      if (c != '0') return false;
+    }
+    return true;
   }
 
   //
@@ -97,60 +100,48 @@ namespace string_arithmetic
   //
   std::string strMul(std::string a, std::string b)
   {
+    if (isZero(a) || isZero(b)) return std::to_string(0);
+
     std::string result;
 
-    // do the arithmetic multiplication if the lengths of bot strings are 1.
-    if ( a.size() == 1 && b.size() == 1 ) {
-      long int_a;
-      long int_b;
-
-      std::stringstream(a) >> int_a;
-      std::stringstream(b) >> int_b;
-
-      std::stringstream ss;
-      ss << int_a*int_b;
-
-      return ss.str();
+    if (a.size() == 1 && b.size() == 1) {
+      auto num = std::stoi(a) * std::stoi(b);
+      return std::to_string(num);
     }
 
-    // calculate the difference of the length
-    long diff = a.size() - b.size();
+    // add '0' to the tail of both strings until they have equal length
+    // and the length is even number
+    size_t length = std::max(a.size(), b.size());
+    if (length%2 == 1) ++length;
 
-    // Add '0' to the left of the shorter string to make both the strings have
-    // the same length
-    if (diff > 0) {
-      for (std::size_t i=0; i<diff; ++i) { b = '0' + b; }
-    } else if ( diff < 0 ) {
-      diff = - diff;
-      for (std::size_t i=0; i<diff; ++i) { a = '0' + a; }
-    }
+    // we will remove the added '0' in the end
+    size_t diff = length - a.size();
+    diff += length - b.size();
 
-    unsigned long size = a.size();
-    // make the size of the string an even number
-    if ( size % 2 == 1) {
-      a = '0' + a;
-      b = '0' + b;
-      size += 1;
-    }
+    while (a.size() < length) a.push_back('0');
+    while (b.size() < length) b.push_back('0');
 
-    unsigned long divide = size/2;
+    size_t divide = length/2;
 
     std::string a1 = a.substr(0, divide);
-    std::string a2 = a.substr(divide, size);
+    std::string a2 = a.substr(divide, length);
 
     std::string b1 = b.substr(0, divide);
-    std::string b2 = b.substr(divide, size);
+    std::string b2 = b.substr(divide, length);
 
     std::string a1b1 = strMul(a1, b1);
     std::string a2b2 = strMul(a2, b2);
     std::string a1b2 = strMul(a1, b2);
     std::string b1a2 = strMul(b1, a2);
 
-    result = strAdd(strAdd(strAddZero(a1b1, size), a2b2),
-                    strAddZero(strAdd(a1b2, b1a2), divide));
+    for (int i=0; i<length; ++i) a1b1.push_back('0');
+    auto tmp1 = strAdd(a1b1, a2b2);
+    auto tmp2 = strAdd(a1b2, b1a2);
+    for (int i=0; i<divide; ++i) tmp2.push_back('0');
+    result = strAdd(tmp1, tmp2);
 
-    // remove all the '0's on the left side
-    while ( result[0] == '0' && result.size() > 1 ) { result.erase(0, 1); }
+    // remove place-holder '0' in the tail
+    for (size_t i=0; i<diff; ++i) result.pop_back();
 
     return result;
   }

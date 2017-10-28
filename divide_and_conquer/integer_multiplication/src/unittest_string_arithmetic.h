@@ -74,24 +74,16 @@ inline void testStrSub() {
   output = string_arithmetic::strSub(a, b);
   if ( not compareResult(output, expected) ) { return; };
 
-  std::cout << "Passed!" << std::endl;
-}
-
-
-//
-// string_arithmetic::strShift()
-//
-inline void testStrAddZero() {
-  std::cout << "\nTesting function strAddZero()..." << std::endl;
-
-  std::string a = "184";
-  std::string expected = "1840000";
-  std::string output = string_arithmetic::strAddZero(a, 4);
-  if ( not compareResult(output, expected) ) { return; };
+  a = "100";
+  b = "10000";
+  try {
+    output = string_arithmetic::strSub(a, b);
+    std::cout << "failed!" << std::endl;
+    std::exit(EXIT_FAILURE);
+  } catch (const std::exception& ia) {}
 
   std::cout << "Passed!" << std::endl;
 }
-
 
 //
 // string_arithmetic::strMul()
@@ -112,7 +104,13 @@ inline void testStringMul()
   output = string_arithmetic::strMul(a, b);
   if ( not compareResult(output, expected) ) { return; };
 
-  a = "0";
+  a = "123";
+  b = "12345";
+  expected = "1518435";
+  output = string_arithmetic::strMul(a, b);
+  if ( not compareResult(output, expected) ) { return; };
+
+  a = "00";
   b = "847";
   expected = "0";
   output = string_arithmetic::strMul(a, b);
