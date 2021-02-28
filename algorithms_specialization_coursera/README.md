@@ -1,3 +1,8 @@
+# Solutions for Algorithms Specialization at Coursera
+
+Jun Zhu
+___
+
 ## Divide and conquer
 
 * Integer multipliction using Karasuba algorithm. See [here](./divide_and_conquer/integer_multiplication)
