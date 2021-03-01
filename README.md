@@ -28,10 +28,16 @@ ___
 
 - Algorithms, [Part 1](https://www.coursera.org/learn/algorithms-part1) and [Part 2](https://www.coursera.org/learn/algorithms-part2)
 
-  [WIP] Implementations (Java) can be found [here](./algorithms_princeton_coursera). 
+  [WIP] Implementations (Java) can be found [here](./algorithms_princeton_coursera).
+
+## Coding interview
+
+- **Cracking the Coding Interview, 6th Edition** (Authors: Gayle L. McDowell)
+
+### [LeetCode](https://leetcode.com/)
+  
+- [WIP] Solutions (C++) can be found [here](./leetcode/cpp)
 
 ## Special topics
 
 ### [Sensor fusion](https://github.com/zhujun98/sensor-fusion)
-
-### [A star search](./A_star_search)
