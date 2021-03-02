@@ -17,7 +17,6 @@ TEST(Test344, Generaltest) {
 
 
 int main(int argc, char **argv) {
-//  ::testing::GTEST_FLAG(filter) = "Test*List.*";
   ::testing::InitGoogleTest(&argc, argv);
 
   return RUN_ALL_TESTS();

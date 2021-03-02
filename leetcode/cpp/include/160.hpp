@@ -5,6 +5,8 @@
 #ifndef LEETCODE_ALGORITHMS_CPP_160_HPP
 #define LEETCODE_ALGORITHMS_CPP_160_HPP
 
+#include "linked_list.hpp"
+
 /**
  * 160. Intersection of Two Linked Lists.
  *

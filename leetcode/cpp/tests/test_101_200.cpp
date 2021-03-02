@@ -1,9 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "linked_list.hpp"
-#include "binary_tree.hpp"
-
 #include "121.hpp"
 #include "125.hpp"
 #include "127.hpp"
@@ -65,7 +62,6 @@ TEST(Test168, TestGeneral) {
 }
 
 int main(int argc, char **argv) {
-//  ::testing::GTEST_FLAG(filter) = "Test*List.*";
   ::testing::InitGoogleTest(&argc, argv);
 
   return RUN_ALL_TESTS();

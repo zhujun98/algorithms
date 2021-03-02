@@ -49,25 +49,22 @@ TEST(Test001, GeneralTest) {
 }
 
 TEST(Test002, GeneralTest) {
-  using list = LinkedList<int>;
+  using List = LinkedList<int>;
   
-  auto l0a = list({2, 4, 3});
-  auto l0b = list({5, 6, 4});
+  auto l0a = List({2, 4, 3});
+  auto l0b = List({5, 6, 4});
   auto head0 = addTwoNumbers(l0a.head(), l0b.head());
-  EXPECT_THAT(listToVector<int>(head0), ElementsAre(7, 0, 8));
-  free_list(head0);
-  
-  auto l1a = list({2, 4, 6});
-  auto l1b = list({5, 6, 4});
-  auto head1 = addTwoNumbers(l1a.head(), l1b.head());
-  EXPECT_THAT(listToVector<int>(head1), ElementsAre(7, 0, 1, 1));
-  free_list(head1);
+  EXPECT_THAT(toVector<int>(head0), ElementsAre(7, 0, 8));
 
-  auto l2a = list({});
-  auto l2b = list({});
+  auto l1a = List({2, 4, 6});
+  auto l1b = List({5, 6, 4});
+  auto head1 = addTwoNumbers(l1a.head(), l1b.head());
+  EXPECT_THAT(toVector<int>(head1), ElementsAre(7, 0, 1, 1));
+
+  auto l2a = List({});
+  auto l2b = List({});
   auto head2 = addTwoNumbers(l2a.head(), l2b.head());
-  EXPECT_THAT(listToVector<int>(head2), ElementsAre());
-  free_list(head2);
+  EXPECT_THAT(toVector<int>(head2), ElementsAre());
 }
 
 TEST(Test003, GeneralTest) {
@@ -201,19 +198,19 @@ TEST(Test018, GeneralTest) {
 }
 
 TEST(Test019, GeneralTest) {
-  using list = LinkedList<int>;
+  using List = LinkedList<int>;
 
-  list l0 {0, 1, 2, 3, 4};
+  List l0 {0, 1, 2, 3, 4};
   auto head0 = removeNthFromEnd(l0.head(), 1);
-  EXPECT_THAT(listToVector(head0), ElementsAre(0, 1, 2, 3));
+  EXPECT_THAT(toVector(head0), ElementsAre(0, 1, 2, 3));
 
-  list l1 {0, 1, 2, 3};
+  List l1 {0, 1, 2, 3};
   auto head1 = removeNthFromEnd(l1.head(), 0);
-  EXPECT_THAT(listToVector(head1), ElementsAre(0, 1, 2, 3));
+  EXPECT_THAT(toVector(head1), ElementsAre(0, 1, 2, 3));
 
-  list l2 {0, 1, 2, 3};
+  List l2 {0, 1, 2, 3};
   auto head2 = removeNthFromEnd(l2.head(), 4);
-  EXPECT_THAT(listToVector(head2), ElementsAre(1, 2, 3));
+  EXPECT_THAT(toVector(head2), ElementsAre(1, 2, 3));
 }
 
 TEST(Test020, GeneralTest) {
@@ -235,33 +232,23 @@ TEST(Test022, GeneralTest) {
 TEST(Test024, GeneralTest) {
   LinkedList<int> l0;
   auto head0 = swapPairs(l0.head());
-  EXPECT_THAT(listToVector(head0), ElementsAre());
-  free_list(head0);
-  l0.nullify();
+  EXPECT_THAT(toVector(head0), ElementsAre());
 
   LinkedList<int> l1 {1};
   auto head1 = swapPairs(l1.head());
-  EXPECT_THAT(listToVector(head1), ElementsAre(1));
-  free_list(head1);
-  l1.nullify();
+  EXPECT_THAT(toVector(head1), ElementsAre(1));
 
   LinkedList<int> l2 {1, 2};
   auto head2 = swapPairs(l2.head());
-  EXPECT_THAT(listToVector(head2), ElementsAre(2, 1));
-  free_list(head2);
-  l2.nullify();
+  EXPECT_THAT(toVector(head2), ElementsAre(2, 1));
 
   LinkedList<int> l3 {1, 2, 3};
   auto head3 = swapPairs(l3.head());
-  EXPECT_THAT(listToVector(head3), ElementsAre(2, 1, 3));
-  free_list(head3);
-  l3.nullify();
+  EXPECT_THAT(toVector(head3), ElementsAre(2, 1, 3));
 
   LinkedList<int> l4 {1, 2, 3, 4};
   auto head4 = swapPairs(l4.head());
-  EXPECT_THAT(listToVector(head4), ElementsAre(2, 1, 4, 3));
-  free_list(head4);
-  l4.nullify();
+  EXPECT_THAT(toVector(head4), ElementsAre(2, 1, 4, 3));
 }
 
 TEST(Test027, GeneralTest) {
@@ -391,39 +378,32 @@ TEST(Test071, TestSimplifyPath) {
 TEST(Test083, GeneralTest) {
   LinkedList<int> l0;
   auto head0 = deleteDuplicates(l0.head());
-  EXPECT_THAT(listToVector(head0), ElementsAre());
+  EXPECT_THAT(toVector(head0), ElementsAre());
 
   LinkedList<int> l1 {1, 1, 2};
   auto head1 = deleteDuplicates(l1.head());
-  EXPECT_THAT(listToVector(head1), ElementsAre(1, 2));
+  EXPECT_THAT(toVector(head1), ElementsAre(1, 2));
 
   LinkedList<int> l2 {1, 1, 2, 3, 3};
   auto head2 = deleteDuplicates(l2.head());
-  EXPECT_THAT(listToVector(head2), ElementsAre(1, 2, 3));
+  EXPECT_THAT(toVector(head2), ElementsAre(1, 2, 3));
 }
 
 TEST(Test086, GeneralTest) {
   LinkedList<int> l0 {};
   auto head0 = partition(l0.head(), 3);
-  EXPECT_THAT(listToVector(head0), ElementsAre());
-  free_list(head0);
-  l0.nullify();
+  EXPECT_THAT(toVector(head0), ElementsAre());
   
   LinkedList<int> l1 {1, 4, 3, 2, 5, 2};
   auto head1 = partition(l1.head(), 3);
-  EXPECT_THAT(listToVector(head1), ElementsAre(1, 2, 2, 4, 3, 5));
-  free_list(head1);
-  l1.nullify();
+  EXPECT_THAT(toVector(head1), ElementsAre(1, 2, 2, 4, 3, 5));
   
   LinkedList<int> l2 {5, 4, 3, 2, 5, 2};
   auto head2 = partition(l2.head(), 5);
-  EXPECT_THAT(listToVector(head2), ElementsAre(4, 3, 2, 2, 5, 5));
-  free_list(head2);
-  l2.nullify();
+  EXPECT_THAT(toVector(head2), ElementsAre(4, 3, 2, 2, 5, 5));
 }
 
 int main(int argc, char **argv) {
-//  ::testing::GTEST_FLAG(filter) = "Test*List.*";
   ::testing::InitGoogleTest(&argc, argv);
 
   return RUN_ALL_TESTS();

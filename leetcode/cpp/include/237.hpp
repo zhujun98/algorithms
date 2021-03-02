@@ -19,12 +19,12 @@
  *
  * @param node: to be deleted node
  */
-//void deleteNode(ListNode* node) {
-//  if (node == nullptr || node->next == nullptr) return;
-//  auto next = node->next.get();
-//  node->val = next->val;
-//  node->next = std::move(next->next);
-//}
-
+void deleteNode(ListNode* node) {
+  if (node == nullptr || node->next == nullptr) return;
+  auto next = node->next;
+  node->val = next->val;
+  node->next = next->next;
+  delete next;
+}
 
 #endif //LEECODE_237_H

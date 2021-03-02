@@ -13,40 +13,41 @@ using ::testing::UnorderedElementsAre;
 using ::testing::ElementsAre;
 
 
-//TEST(Test234, GeneralTest) {
-//  LinkedList l0;
-//  EXPECT_TRUE(isPalindromeStack(l0.head()));
-//  LinkedList234 ll0;
-//  EXPECT_TRUE(ll0.isPalindrome());
-//
-//  LinkedList l1 {1, 2};
-//  EXPECT_FALSE(isPalindromeStack(l1.head()));
-//  LinkedList234 ll1 {1, 2};
-//  EXPECT_FALSE(ll1.isPalindrome());
-//
-//  LinkedList l2 {1, 2, 3, 2, 1};
-//  EXPECT_TRUE(isPalindromeStack(l2.head()));
-//  LinkedList234 ll2 {1, 2, 3, 2, 1};
-//  EXPECT_TRUE(ll2.isPalindrome());
-//  // Test that the linked list has been recovered after reverse.
-//  EXPECT_THAT(ll2.getElements(), ElementsAre(1, 2, 3, 2, 1));
-//
-//  LinkedList l3 {1, 2, 2, 1};
-//  EXPECT_TRUE(isPalindromeStack(l3.head()));
-//  LinkedList234 ll3 {1, 2, 2, 1};
-//  EXPECT_TRUE(ll3.isPalindrome());
-//  EXPECT_THAT(ll3.getElements(), ElementsAre(1, 2, 2, 1));
-//}
+TEST(Test234, GeneralTest) {
+  using List = LinkedList<int>;
 
-//TEST(Test237, GeneralTest) {
-//  LinkedList l0 {0, 1, 2};
-//  deleteNode(l0.nthNode(1));
-//  EXPECT_THAT(l0.getElements(), ElementsAre(0, 2));
-//
-//  LinkedList l1 {0, 1, 2};
-//  deleteNode(l1.nthNode(0));
-//  EXPECT_THAT(l1.getElements(), ElementsAre(1, 2));
-//}
+  List l0;
+  EXPECT_TRUE(isPalindromeStack(l0.head()));
+  EXPECT_TRUE(isPalindrome(l0.head()));
+
+  List l1 {1, 2};
+  EXPECT_FALSE(isPalindromeStack(l1.head()));
+  EXPECT_FALSE(isPalindrome(l1.head()));
+  // Test that the linked list has been recovered after reverse.
+  EXPECT_THAT(l1.toVector(), ElementsAre(1, 2));
+
+  List l2 {1, 2, 3, 2, 1};
+  EXPECT_TRUE(isPalindromeStack(l2.head()));
+  EXPECT_TRUE(isPalindrome(l2.head()));
+  EXPECT_THAT(l2.toVector(), ElementsAre(1, 2, 3, 2, 1));
+
+  List l3 {1, 2, 2, 1};
+  EXPECT_TRUE(isPalindromeStack(l3.head()));
+  EXPECT_TRUE(isPalindrome(l3.head()));
+  EXPECT_THAT(l3.toVector(), ElementsAre(1, 2, 2, 1));
+}
+
+TEST(Test237, GeneralTest) {
+  using List = LinkedList<int>;
+
+  List l0 {0, 1, 2};
+  deleteNode(l0.nthNode(1));
+  EXPECT_THAT(l0.toVector(), ElementsAre(0, 2));
+
+  List l1 {0, 1, 2};
+  deleteNode(l1.nthNode(0));
+  EXPECT_THAT(l1.toVector(), ElementsAre(1, 2));
+}
 
 TEST(Test268, GeneralTest) {
   std::vector<int> nums0 {3, 0, 1};
@@ -75,7 +76,6 @@ TEST(Test283, GeneralTest) {
 
 
 int main(int argc, char **argv) {
-//  ::testing::GTEST_FLAG(filter) = "Test*List.*";
   ::testing::InitGoogleTest(&argc, argv);
 
   return RUN_ALL_TESTS();
