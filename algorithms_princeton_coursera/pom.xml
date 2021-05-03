@@ -4,13 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>zhujun.algopucoursera</groupId>
-    <artifactId>algo-pu-coursera</artifactId>
+    <groupId>zhujun.algopu</groupId>
+    <artifactId>algopu</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-    
+
+    <dependencies>
+        <dependency>
+            <groupId>edu.princeton.cs</groupId>
+            <artifactId>algs4</artifactId>
+            <version>1.0.4</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/algs4.jar</systemPath>
+        </dependency>
+    </dependencies>
+
 </project>
