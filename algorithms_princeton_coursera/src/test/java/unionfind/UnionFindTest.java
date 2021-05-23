@@ -29,4 +29,13 @@ public class UnionFindTest {
         assert(uf.connected(1, 2));
         assert(!uf.connected(1, 4));
     }
+
+    @Test
+    void UnionFind() {
+        UnionFind uf = new UnionFind(10);
+        uf.union(1, 2);
+        uf.union(2, 3);
+        assert(uf.connected(1, 2));
+        assert(!uf.connected(1, 4));
+    }
 }

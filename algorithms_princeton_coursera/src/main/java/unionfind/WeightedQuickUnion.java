@@ -1,8 +1,8 @@
 package unionfind;
 
 public class WeightedQuickUnion {
-    private int[] id;
-    private int[] sz;
+    protected int[] id;
+    protected int[] sz;
 
     public WeightedQuickUnion(int N) {
         id = new int[N];
