@@ -10,10 +10,12 @@ public class QuickFind {
         }
     }
 
+    // Time complexity O(1)
     public boolean connected(int p, int q) {
         return id[p] == id[q];
     }
 
+    // Time complexity O(N^2) for N elements
     public void union(int p, int q) {
         int pid = id[p];
         int qid = id[q];
