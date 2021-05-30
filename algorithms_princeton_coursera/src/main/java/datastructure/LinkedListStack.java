@@ -6,6 +6,11 @@ public class LinkedListStack<T> {
     private class Node {
         T v;
         Node next;
+
+        Node (T item) {
+            v = item;
+            next = null;
+        }
     }
 
     public boolean isEmpty() {
@@ -14,8 +19,7 @@ public class LinkedListStack<T> {
 
     public void push(T item) {
         Node prev = first;
-        first = new Node();
-        first.v = item;
+        first = new Node(item);
         first.next = prev;
     }
 
