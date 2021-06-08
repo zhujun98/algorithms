@@ -32,8 +32,8 @@ std::vector<int> twoSum2Passes(std::vector<int> nums, int target) {
     if (search != hash.end() && search->second != i) {
       // If the answer is a pair of equal numbers, it will be found when the loop
       // is at the second number.
-      ret.push_back(i);
       ret.push_back(search->second);
+      ret.push_back(i);
       break;
     }
   }
@@ -48,8 +48,8 @@ std::vector<int> twoSum(std::vector<int> nums, int target) {
   for (int i=0; i<nums.size(); ++i) {
     auto search = hash.find(target - nums[i]);
     if (search != hash.end()) {
-      ret.push_back(i);
       ret.push_back(search->second);
+      ret.push_back(i);
       break;
     }
     hash[nums[i]] = i;
