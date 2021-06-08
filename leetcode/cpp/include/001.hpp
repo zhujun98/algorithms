@@ -1,7 +1,3 @@
-//
-// Created by jun on 10/23/17.
-//
-
 #ifndef LEECODE_001_H
 #define LEECODE_001_H
 
@@ -30,22 +26,35 @@ std::vector<int> twoSum2Passes(std::vector<int> nums, int target) {
   std::unordered_map<int, int> hash;
   for (int i=0; i<nums.size(); ++i) hash[nums[i]] = i;
 
+  std::vector<int> ret;
   for (int i=0; i<nums.size(); ++i) {
     auto search = hash.find(target - nums[i]);
-    if (search != hash.end() && search->second != i)
-      return std::vector<int>{i, search->second};
+    if (search != hash.end() && search->second != i) {
+      // If the answer is a pair of equal numbers, it will be found when the loop
+      // is at the second number.
+      ret.push_back(i);
+      ret.push_back(search->second);
+      break;
+    }
   }
+  return ret;
 }
 
 // This better implementation has the same time and space complexity.
-// But it only goes throught the hash table once.
+// But it only goes through the hash table once.
 std::vector<int> twoSum(std::vector<int> nums, int target) {
   std::unordered_map<int, int> hash;
+  std::vector<int> ret;
   for (int i=0; i<nums.size(); ++i) {
     auto search = hash.find(target - nums[i]);
-    if (search != hash.end()) return std::vector<int>{i, search->second};
+    if (search != hash.end()) {
+      ret.push_back(i);
+      ret.push_back(search->second);
+      break;
+    }
     hash[nums[i]] = i;
   }
+  return ret;
 }
 
 #endif //LEECODE_001_H

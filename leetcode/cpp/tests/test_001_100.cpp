@@ -43,8 +43,10 @@ using ::testing::ElementsAre;
 
 TEST(Test001, GeneralTest) {
   EXPECT_THAT(twoSum({3, 2, 4}, 6), UnorderedElementsAre(1, 2));
+  EXPECT_THAT(twoSum({3, 3}, 6), UnorderedElementsAre(0, 1));
   EXPECT_THAT(twoSum({2, 7, 11, 15}, 9), UnorderedElementsAre(0, 1));
   EXPECT_THAT(twoSum2Passes({3, 2, 4}, 6), UnorderedElementsAre(1, 2));
+  EXPECT_THAT(twoSum2Passes({3, 3}, 6), UnorderedElementsAre(0, 1));
   EXPECT_THAT(twoSum2Passes({2, 7, 11, 15}, 9), UnorderedElementsAre(0, 1));
 }
 
