@@ -1,7 +1,3 @@
-//
-// Created by jun on 2/15/18.
-//
-
 #ifndef LEECODE_009_H
 #define LEECODE_009_H
 
@@ -19,12 +15,15 @@
  * might overflow. How would you handle such case?
  */
 
+// time complexity O(log10(N))
+// space complexity O(1)
 bool isPalindrome(int x) {
-  if (x < 0 || (x >0 && x%10 == 0)) return false;
+  if (x == 0) return true;
+  if (x < 0 || x % 10 == 0) return false;
 
   int reversed = 0;
   while (reversed < x) {
-    reversed = 10*reversed + x%10;
+    reversed = 10 * reversed + x % 10;
     x /= 10;
   }
 
