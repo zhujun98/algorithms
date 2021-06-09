@@ -36,6 +36,7 @@
 #include "071.hpp"
 #include "083.hpp"
 #include "086.hpp"
+#include "096.hpp"
 
 using ::testing::UnorderedElementsAre;
 using ::testing::ElementsAre;
@@ -403,6 +404,11 @@ TEST(Test086, GeneralTest) {
   LinkedList<int> l2 {5, 4, 3, 2, 5, 2};
   auto head2 = partition(l2.head(), 5);
   EXPECT_THAT(toVector(head2), ElementsAre(4, 3, 2, 2, 5, 5));
+}
+
+TEST(Test096, Generaltest) {
+  ASSERT_EQ(numTrees(1), 1);
+  ASSERT_EQ(numTrees(3), 5);
 }
 
 int main(int argc, char **argv) {

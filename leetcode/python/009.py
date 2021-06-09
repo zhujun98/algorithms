@@ -1,3 +1,7 @@
+"""
+9. Palindrome Number
+"""
+
 def isPalindrome1(x: int) -> bool:
     if x == 0:
         return True

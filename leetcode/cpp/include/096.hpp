@@ -1,7 +1,3 @@
-//
-// Created by jun on 10/28/17.
-//
-
 #ifndef LEECODE_96_H
 #define LEECODE_96_H
 
@@ -25,10 +21,10 @@
 
 // DP solution:
 // We change the root node from 1 to n, then we have two sorted array
-// to form the left and right tree. The numbers of structures for
-// sorted arrays are the same if the length of these sorted arrays are
-// the same. Denoting f(i) as number of structures for an array with
-// length i, then f(i+1) = f(0)*f(i) + f(1)*f(i-1) + ... + f(i)*f(0)
+// to form the left and right trees. Assume the root note is i, then
+// the number of structures is is G(i-1) * G(n-i) since the left tree
+// has i-1 elements and the right tree has n-i elements. And G(n) is
+// sum(G(i-1) * G(n-i)) for i = 1,..,n.
 //
 // time complexity O(N^2), space complexity O(N)
 int numTrees(int n) {
@@ -36,7 +32,9 @@ int numTrees(int n) {
   count[0] = 1;
   count[1] = 1;
   for (int i=2; i<=n; ++i) {
-    for (int j=0; j<i; ++j) count[i] += count[j]*count[i-j-1];
+    for (int j=1; j<=i; ++j) {
+      count[i] += count[j-1] * count[i-j];
+    }
   }
   return count.back();
 }
