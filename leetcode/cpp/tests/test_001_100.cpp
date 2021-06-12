@@ -27,6 +27,7 @@
 #include "031.hpp"
 #include "048.hpp"
 #include "050.hpp"
+#include "055.hpp"
 #include "058.hpp"
 #include "062.hpp"
 #include "063.hpp"
@@ -309,6 +310,15 @@ TEST(Test050, GeneralTest) {
   EXPECT_EQ(myPowRecursive(0.0, 0.0), 1.0);
   EXPECT_EQ(myPowRecursive(3.0, 3), 27);
   EXPECT_EQ(myPowRecursive(3.0, 4), 81);
+}
+
+TEST(Test055, GeneralTest) {
+  std::vector<int> grid1 {2, 3, 1, 1, 4};
+  std::vector<int> grid2 {2, 2, 1, 0, 4};
+  EXPECT_TRUE(canJump(grid1));
+  EXPECT_TRUE(canJumpDP(grid1));
+  EXPECT_FALSE(canJump(grid2));
+  EXPECT_FALSE(canJump(grid2));
 }
 
 TEST(Test058, GeneralTest) {
