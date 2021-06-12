@@ -25,6 +25,7 @@
 #include "027.hpp"
 #include "029.hpp"
 #include "031.hpp"
+#include "045.hpp"
 #include "048.hpp"
 #include "050.hpp"
 #include "055.hpp"
@@ -286,6 +287,13 @@ TEST(Test031, GeneralTest) {
   EXPECT_THAT(nextPermutation({5, 1, 1}), ElementsAre(1, 1, 5));
   EXPECT_THAT(nextPermutation({1, 5, 8, 4, 7, 6, 5, 3, 1}),
       ElementsAre(1, 5, 8, 5, 1, 3, 4, 6, 7));
+}
+
+TEST(Test045, GeneralTest) {
+  std::vector<int> nums1 {2, 3, 1, 1, 4};
+  EXPECT_EQ(jump(nums1), 2);
+  std::vector<int> nums2 {2, 3, 0, 1, 4};
+  EXPECT_EQ(jump(nums2), 2);
 }
 
 TEST(Test048, GeneralTest) {
