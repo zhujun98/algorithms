@@ -1,7 +1,3 @@
-//
-// Created by jun on 11/3/17.
-//
-
 #ifndef LEECODE_020_H
 #define LEECODE_020_H
 
@@ -23,19 +19,17 @@
 // time complexity O(N), space complexity O(N)
 bool isValid(std::string s) {
   std::stack<char> tracker;
-
+  std::unordered_map<char, char> mapping ({{')', '('}, {'}', '{'}, {']', '['}});
   for (auto c : s) {
-    if (c == ')') {
-      if (tracker.empty() || tracker.top() != '(') return false;
-      else tracker.pop();
-    } else if (c == '}') {
-      if (tracker.empty() || tracker.top() != '{') return false;
-      else tracker.pop();
-    } else if (c == ']'){
-      if (tracker.empty() || tracker.top() != '[') return false;
-      else tracker.pop();
-    } else {
+    if (mapping.find(c) == mapping.end()) {
       tracker.push(c);
+    } else {
+      if (tracker.empty()) return false;
+      if (tracker.top() != mapping[c]) {
+        return false;
+      } else {
+        tracker.pop();
+      }
     }
   }
 
