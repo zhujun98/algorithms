@@ -1,7 +1,3 @@
-//
-// Created by jun on 2/15/18.
-//
-
 #ifndef LEECODE_007_H
 #define LEECODE_007_H
 
@@ -22,7 +18,7 @@
 int reverse(int x) {
   long long reversed = 0;
   while(x) {
-    reversed = reversed*10 + x%10;
+    reversed = reversed * 10 + x % 10;
     x /= 10;
   }
 

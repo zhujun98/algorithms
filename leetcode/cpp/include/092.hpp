@@ -1,7 +1,3 @@
-//
-// Created by jun on 10/28/17.
-//
-
 #ifndef LEECODE_092_H
 #define LEECODE_092_H
 
