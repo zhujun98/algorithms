@@ -1,7 +1,3 @@
-//
-// Created by jun on 2/20/18.
-//
-
 #ifndef LEECODE_048_H
 #define LEECODE_048_H
 

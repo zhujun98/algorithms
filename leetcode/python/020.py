@@ -5,7 +5,7 @@ from collections import deque
 
 
 def isValid(s: str) -> bool:
-    stack = deque();
+    stack = deque()
     mapping = {')': '(', ']': '[', '}': '{'}
 
     for c in s:

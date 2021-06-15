@@ -1,7 +1,3 @@
-//
-// Created by jun on 10/28/17.
-//
-
 #ifndef LEECODE_206_H
 #define LEECODE_206_H
 
