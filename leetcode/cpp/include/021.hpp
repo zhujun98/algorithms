@@ -1,7 +1,3 @@
-//
-// Created by jun on 10/30/17.
-//
-
 #ifndef LEECODE_021_H
 #define LEECODE_021_H
 
@@ -16,6 +12,7 @@
  *
  */
 
+// time complexity O(n + m), space complexity O(1)
 ListNode* mergeTwoSortedLists(ListNode* l1, ListNode* l2) {
   ListNode dummy = ListNode(0);
 
@@ -36,6 +33,7 @@ ListNode* mergeTwoSortedLists(ListNode* l1, ListNode* l2) {
   return dummy.next;
 }
 
+// time complexity O(n + m), space complexity O(n + m)
 ListNode* mergeTwoSortedListsRecursive(ListNode* l1, ListNode* l2) {
   if (l1 == nullptr) return l2;
   if (l2 == nullptr) return l1;
