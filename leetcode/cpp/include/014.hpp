@@ -1,7 +1,3 @@
-//
-// Created by jun on 2/13/18.
-//
-
 #ifndef LEECODE_014_H
 #define LEECODE_014_H
 
@@ -28,7 +24,6 @@ std::string longestCommonPrefix(std::vector<std::string>& strs) {
                                       return a.size() < b.size();
                                     })->size();
 
-  std::string common_prefix;
   for (int i=0; i<min_length; ++i) {
     for (int j=1; j<strs.size(); ++j)
       if (strs[j][i] != strs[j-1][i]) return strs[0].substr(0, i);
