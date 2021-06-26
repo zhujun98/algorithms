@@ -1,7 +1,3 @@
-//
-// Created by jun on 10/16/17.
-//
-
 #ifndef LEECODE_053_H
 #define LEECODE_053_H
 
