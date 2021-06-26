@@ -1,7 +1,3 @@
-//
-// Created by jun on 2/14/18.
-//
-
 #ifndef LEECODE_058_H
 #define LEECODE_058_H
 
@@ -25,6 +21,7 @@
 #include <string>
 
 
+// time complexity O(N), space complexity O(1)
 int lengthOfLastWord(std::string s) {
   // skip the trailing spaces
   auto it1 = s.rbegin();
