@@ -1,7 +1,3 @@
-//
-// Created by jun on 12/21/17.
-//
-
 #ifndef LEECODE_027_H
 #define LEECODE_027_H
 
@@ -28,30 +24,35 @@
  */
 // the vector is passed by value for the convenience of test
 
-// Time complexity O(N) solution that does not maintain all the
-// elements in the array.
+// time complexity O(N), space complexity O(1).
 int removeElement(std::vector<int> nums, int val) {
-  int end = 0;
+  int n = 0;
   for (int i=0; i < nums.size(); ++i) {
-    if (nums[i] != val) nums[end++] = nums[i];
+    if (nums[i] != val) {
+      nums[n++] = nums[i];
+    }
   }
-  return end;
+  return n;
 }
 
-// Time complexity O(N) solution that maintains all the
-// elements in the array.
-int removeElement1(std::vector<int> nums, int val) {
-  int end = nums.size() - 1;
+// time complexity O(N), space complexity O(1)
+// A faster solution if the elements to be removed are only a few.
+int removeElement2(std::vector<int>& nums, int val) {
   int i = 0;
-  while (i <= end) {
-    if (nums[end] == val) --end;
-    else if (nums[i] == val) {
-      std::swap(nums[i], nums[end]);
-    } else ++i;
+  int n = nums.size();
+  while (i < n) {
+    if (nums[i] == val) {
+      // move the to-be-removed element to the end
+      // Note: one can use std::swap(nums[i], nums[n-1]) to maintain all the elements.
+      nums[i] = nums[n-1];
+      // shrink the array
+      --n;
+    } else {
+      ++i;
+    }
   }
-  return end+1;
+
+  return n;
 }
-
-
 
 #endif //LEECODE_027_H

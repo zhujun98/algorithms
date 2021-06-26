@@ -259,16 +259,16 @@ TEST(Test024, GeneralTest) {
 TEST(Test027, GeneralTest) {
   std::vector<int> nums0 {3, 2, 2, 3};
   EXPECT_EQ(removeElement(nums0, 3), 2);
-  EXPECT_EQ(removeElement1(nums0, 3), 2);
+  EXPECT_EQ(removeElement2(nums0, 3), 2);
   std::vector<int> nums1;
   EXPECT_EQ(removeElement(nums1, 3), 0);
-  EXPECT_EQ(removeElement1(nums1, 3), 0);
+  EXPECT_EQ(removeElement2(nums1, 3), 0);
   std::vector<int> nums2 {2};
   EXPECT_EQ(removeElement(nums2, 3), 1);
-  EXPECT_EQ(removeElement1(nums2, 3), 1);
+  EXPECT_EQ(removeElement2(nums2, 3), 1);
   std::vector<int> nums3 {3};
   EXPECT_EQ(removeElement(nums3, 3), 0);
-  EXPECT_EQ(removeElement1(nums3, 3), 0);
+  EXPECT_EQ(removeElement2(nums3, 3), 0);
 }
 
 TEST(Test029, GeneralTest) {
