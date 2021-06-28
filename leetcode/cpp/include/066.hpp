@@ -1,7 +1,3 @@
-//
-// Created by jun on 2/17/18.
-//
-
 #ifndef LEECODE_066_H
 #define LEECODE_066_H
 
@@ -19,7 +15,7 @@
  */
 #include <vector>
 
-
+// time complexity O(N), space complexity O(N)
 std::vector<int> plusOne(std::vector<int> digits) {
   for (int i=digits.size() - 1; i>=0; --i) {
     if (digits[i] == 9) {
