@@ -1,7 +1,3 @@
-//
-// Created by jun on 11/11/17.
-//
-
 #ifndef LEECODE_070_H
 #define LEECODE_070_H
 

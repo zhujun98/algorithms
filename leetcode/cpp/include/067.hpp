@@ -1,7 +1,3 @@
-//
-// Created by jun on 2/15/18.
-//
-
 #ifndef LEECODE_067_H
 #define LEECODE_067_H
 
